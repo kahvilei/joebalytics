@@ -3,6 +3,7 @@ const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const app = express();
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 
 
 // routes
@@ -25,11 +26,10 @@ app.use('/api/summoners', summoners);
 app.use('/api/matches', matches);
 app.use('/api/user', user);
 
-// app.use(express.static(path.join(__dirname, "../build")));
-// app.get('/', (req, res) => {
-//   const indexFile = path.resolve('../build/index.html');
-//   res.sendFile(indexFile);
-// });
+app.use(express.static(path.join(__dirname, "../build")));
+app.get('/*', (req, res) => {
+  res.sendFile('index.html', {root: 'build'});
+ });
 
 
 app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
