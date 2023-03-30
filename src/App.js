@@ -3,8 +3,8 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import { useEffect } from "react";
 import "./App.css";
+import React from 'react';
 //page
 import AddSummoner from "./views/AddSummoner";
 import ShowSummonerList from "./views/ShowSummonerList";

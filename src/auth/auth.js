@@ -7,7 +7,7 @@ const authProviderAPI = {
   async signin(user, callback) {
     try {
       const res = await axios.post(
-        "http://localhost:8082/api/user/login",
+        "/api/user/login",
         user,
         {
           headers: {
@@ -29,7 +29,7 @@ const authProviderAPI = {
   async signup(user, callback) {
     try {
       const res = await axios.post(
-        "http://localhost:8082/api/user/register",
+        "/api/user/register",
         user,
         {
           headers: {
@@ -49,7 +49,7 @@ const authProviderAPI = {
   },
   async checksignin(callback) {
     try {
-      let res = await axios.get("http://localhost:8082/api/user/isLoggedIn", {
+      let res = await axios.get("/api/user/isLoggedIn", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },

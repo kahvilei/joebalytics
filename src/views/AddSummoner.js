@@ -27,7 +27,7 @@ const AddSummoner = (props) => {
         },
       };
       await axios.post(
-        "http://localhost:8082/api/summoners/",
+        "/api/summoners/",
         summoner,
         config
       );

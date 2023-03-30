@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import "../../App.css";
+
 import { useAuth } from "../../auth/auth";
 
 function Navigation() {

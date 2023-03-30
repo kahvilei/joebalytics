@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import '../App.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SummonerCard from './partials/SummonerCard';
@@ -9,7 +8,7 @@ function ShowSummonerList() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8082/api/summoners')
+      .get('/api/summoners')
       .then((res) => {
         setSummoners(res.data);
       })

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import "../App.css";
+
 import axios from "axios";
 import { useAuth } from "../auth/auth";
 
@@ -33,19 +33,19 @@ function SummonerDetails(props) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8082/api/summoners/${region}/${name}`)
+      .get(`/api/summoners/${region}/${name}`)
       .then((res) => {
         setSummoner(res.data);
       })
       .catch((err) => {
         console.log("Error from SummonerDetails");
       });
-  }, [summoner._id]);
+  }, [name, region]);
 
   const onDeleteClick = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:8082/api/summoners/${summoner._id}`,
+        `/api/summoners/${summoner._id}`,
         {
           headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -59,10 +59,10 @@ function SummonerDetails(props) {
   };
   const onUpdateClick = (id) => {
     axios
-      .put(`http://localhost:8082/api/summoners/${summoner._id}`)
+      .put(`/api/summoners/${summoner._id}`)
       .then((res) => {
         axios
-          .get(`http://localhost:8082/api/summoners/${summoner._id}`)
+          .get(`/api/summoners/${summoner._id}`)
           .then((res) => {
             setSummoner(res.data);
           })
