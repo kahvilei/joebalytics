@@ -19,6 +19,7 @@ import { RequireAuth, AuthProvider } from "./auth/auth";
 
 function App() {
   return (
+    <div>
     <AuthProvider>
       <Router>
         <Navigation></Navigation>
@@ -41,8 +42,9 @@ function App() {
             />
           </Routes>
         </div>
-      </Router>
-    </AuthProvider>
+    </Router>
+    </AuthProvider> 
+    </div>
   );
 };
 
