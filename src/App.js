@@ -6,14 +6,14 @@ import {
 import "./App.css";
 import React from 'react';
 //page
-import AddSummoner from "./views/AddSummoner";
-import ShowSummonerList from "./views/ShowSummonerList";
-import SummonerDetails from "./views/SummonerDetails";
-import Login from "./views/Login";
-import Register from "./views/Register";
+import Home from "./views/pages/Home"
+import AddSummoner from "./views/components/AddSummoner";
+import SummonerDetails from "./views/pages/SummonerDetails";
+import Login from "./views/components/Login";
+import Register from "./views/components/Register";
 //partial
-import Navigation from "./views/partials/Navigation";
-import Menu from "./views/partials/Menu";
+import Navigation from "./views/components/Navigation";
+import Menu from "./views/components/Menu";
 //auth
 import { RequireAuth, AuthProvider } from "./auth/auth";
 
@@ -27,7 +27,7 @@ function App() {
           <Menu></Menu>
           <div className="content">
           <Routes>
-            <Route exact path="/" element={<ShowSummonerList />} />
+            <Route exact path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
