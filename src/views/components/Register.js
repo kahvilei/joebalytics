@@ -1,8 +1,8 @@
 import { useLayoutEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import ValidationError from "./partials/ValidationError";
+import ValidationError from "../partials/ValidationError";
 
-import { useAuth } from "../auth/auth";
+import { useAuth } from "../../auth/auth";
 
 const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");

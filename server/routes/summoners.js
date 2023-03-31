@@ -5,9 +5,7 @@ const router = express.Router();
 
 // Load Book model
 const Summoner = require("../models/Summoner");
-const Match = require("../models/Match");
-const { removeMatchesbyPuuid } = require("../controllers/riot");
-const { isLoggedIn } = require('../middleware');
+const { isLoggedIn } = require("../middleware");
 
 // @route GET api/summoners/test
 // @description tests summoners route
@@ -38,12 +36,69 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/:id/populate/:populate", async (req, res) => {
+  try {
+    if (req.params.populate === "challenges") {
+      let summoner = await Summoner.findById(req.params.id).populate({
+        path: "challengeData.challenges",
+        model: "Challenge",
+      });
+      res.json(summoner);
+    } else if (req.params.populate === "masteries") {
+      let summoner = await Summoner.findById(req.params.id).populate(
+        "masteryData"
+      );
+      res.json(summoner);
+    } else {
+      let summoner = await Summoner.findById(req.params.id)
+        .populate({
+          path: "challengeData.challenges",
+          model: "Challenge",
+        })
+        .populate("masteryData");
+      res.json(summoner);
+    }
+  } catch {
+    res.status(404).json({ msg: "No Summoner found" });
+  }
+});
+
+router.get("/:region/:name/populate/:populate", async (req, res) => {
+  try {
+    if (req.params.populate === "challenges") {
+      let summoner = await Summoner.findOne({
+        $and: [{ nameURL: req.params.name }, { regionURL: req.params.region }],
+      }).populate({
+        path: "challengeData.challenges",
+        model: "Challenge",
+      });
+      res.json(summoner);
+    } else if (req.params.populate === "masteries") {
+      let summoner = await Summoner.findOne({
+        $and: [{ nameURL: req.params.name }, { regionURL: req.params.region }],
+      }).populate("masteryData");
+      res.json(summoner);
+    } else {
+      let summoner = await Summoner.findOne({
+        $and: [{ nameURL: req.params.name }, { regionURL: req.params.region }],
+      })
+        .populate({
+          path: "challengeData.challenges",
+          model: "Challenge",
+        })
+        .populate("masteryData");
+      res.json(summoner);
+    }
+  } catch {
+    res.status(404).json({ msg: "No Summoner found" });
+  }
+});
+
 router.get("/:region/:name", async (req, res) => {
   try {
-    let summoner = await Summoner.findOne( {$and: [
-      { nameURL: req.params.name },
-      { regionURL: req.params.region },
-      ]});
+    let summoner = await Summoner.findOne({
+      $and: [{ nameURL: req.params.name }, { regionURL: req.params.region }],
+    });
     res.json(summoner);
   } catch {
     res.status(404).json({ msg: "No Summoner found" });
@@ -55,10 +110,19 @@ router.get("/:region/:name", async (req, res) => {
 // @access Public
 router.post("/", isLoggedIn, async (req, res) => {
   try {
-    let summoner = await Summoner.create(req.body);
-    res.json({ msg: "Summoner added successfully" });
+    let exists = await Summoner.findOne({
+      $and: [{ name: req.body.name }, { regionDisplay: req.body.region }],
+    });
+    if (exists) {
+      res
+        .status(400)
+        .json({ msg: `This summoner already exists in the database` });
+    } else {
+      await Summoner.create(req.body);
+      res.json({ msg: "Summoner added successfully" });
+    }
   } catch (e) {
-    if (e.code == 11000) {
+    if (e.code === 11000) {
       res
         .status(400)
         .json({ msg: `This summoner already exists in the database` });

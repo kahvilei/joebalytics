@@ -7,11 +7,14 @@ const SummonerCard = (props) => {
 
   return (
     <div className='card-container'>
+      <div className = "summoner-icon"><img alt = "summoner icon" src = {`http://ddragon.leagueoflegends.com/cdn/13.6.1/img/profileicon/${summoner.profileIconId}.png`}></img></div>
       <div className='desc'>
-        <h2>
-          <Link to={`/summoner/${summoner.regionURL}/${summoner.nameURL}`}>{summoner.name}</Link>
-        </h2>
-        <h3>{summoner.regionDisplay}</h3>
+        <div className = "name-and-rank">
+          <p>
+            <Link to={`/summoner/${summoner.regionURL}/${summoner.nameURL}`}>{summoner.name}</Link>
+          </p>
+        </div>
+        <p>Level {summoner.summonerLevel}</p>
       </div>
     </div>
   );

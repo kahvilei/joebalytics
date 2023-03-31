@@ -44,14 +44,20 @@ a:hover {
   color: var(--evening-blue);
 }
 
-a.button {
+a.button , button{
   background-color: var(--gold);
   color: var(--white);
   border-radius: 5px;
+  padding: 5px;
+  margin: 0px 5px;
+  outline: none;
+  border: none;
 }
-a.button:hover {
+a.button:hover , button {
   background-color: var(--hover-gold);
 }
+
+
 
 .nav {
   height: 54px;

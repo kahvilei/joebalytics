@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { useAuth } from "../auth/auth";
+import { useAuth } from "../../auth/auth";
 
 function SummonerDetails(props) {
   const [summoner, setSummoner] = useState({});

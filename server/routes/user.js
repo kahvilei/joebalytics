@@ -41,7 +41,7 @@ router.post("/register", async (req, res) => {
         }
       );
     } catch (e) {
-      if (e.code == 11000) {
+      if (e.code === 11000) {
         res.status(400).json({ msg: `Unable to add this User, ${e}` });
       }
     }

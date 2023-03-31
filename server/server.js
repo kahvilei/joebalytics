@@ -10,6 +10,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 const summoners = require('./routes/summoners');
 const matches = require('./routes/matches');
 const masteries = require('./routes/masteries');
+const challenges = require('./routes/challenges');
 const user = require('./routes/user');
 
 // Connect Database
@@ -26,6 +27,7 @@ app.use(express.json({ extended: false }));
 app.use('/api/summoners', summoners);
 app.use('/api/matches', matches);
 app.use('/api/masteries', masteries);
+app.use('/api/challenges', challenges);
 app.use('/api/user', user);
 
 app.use(express.static(path.join(__dirname, "../build")));

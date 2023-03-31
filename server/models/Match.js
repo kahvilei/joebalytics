@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Participant = require("./Participant");
 
 const MatchSchema = new Schema({
         metadata: {

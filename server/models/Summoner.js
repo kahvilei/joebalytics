@@ -11,9 +11,8 @@ const {
 const { regionMapping } = require("../config/regionMapping");
 // Load Mastery model
 const Mastery = require("./Mastery");
-const Challenge = require("./Challenges");
+const Challenge = require("./Challenge");
 const Participant = require("./Participant");
-const Challenges = require("./Challenges");
 
 const SummonerSchema = new Schema({
     regionDisplay: {
@@ -79,6 +78,7 @@ const SummonerSchema = new Schema({
                     await recordRecentMatches(this.puuid, this.regionGeo, init);
 
                     //gets all challenge data from riot
+                    let challengeList = [];
                     let challengeData = await getChallengeDataByPuuid(
                         this.puuid,
                         this.regionServer
@@ -89,9 +89,10 @@ const SummonerSchema = new Schema({
                     ) {
                         return false;
                     }else {//creates new and updates existing mastery items for this summoner
+                        
                         for (let challenge of challengeData.data.challenges) {
                             challenge.puuid = this.puuid;
-                            let exists = await Challenges.findOne({
+                            let exists = await Challenge.findOne({
                                 $and: [
                                     { challengeId: challenge.challengeId },
                                     { puuid: challenge.puuid },
@@ -102,14 +103,13 @@ const SummonerSchema = new Schema({
                                 let newScore = challenge.achievedTime;
                                 let ID = exists.challengeId;
                                 if (oldScore !== newScore) {
-                                    
                                     await Challenge.findByIdAndUpdate(exists._id, challenge);
                                     console.log(`Challenge ${ID} updated for ${this.name}`);
                                 }
                             } else {                              
                                 let newChallenge = await Challenge.create(challenge);
                                 let ID = challenge.challengeId;
-                                this.challengeData.challenges.push(newChallenge);
+                                challengeList.push(newChallenge);
                                 console.log(
                                     `Challenge ${ID} created for ${this.name}`
                                 );
@@ -117,14 +117,16 @@ const SummonerSchema = new Schema({
                         }
                         console.log(`Challenge updates complete for ${this.name}`);
                     }
+
                     this.challengeData = challengeData.data;
+                    this.challengeData.challenges = challengeList;
 
                     //gets all ranked league data from riot
                     let rankedData = await getRankedDataBySummId(
                         this.id,
                         this.regionServer
                     );
-                    if (rankedData.response != undefined && rankedData.response != null) {
+                    if (rankedData.response !== undefined && rankedData.response != null) {
                         return false;
                     }
                     this.rankedData = rankedData.data;
@@ -135,7 +137,7 @@ const SummonerSchema = new Schema({
                         this.regionServer
                     );
                     if (
-                        masteryData.response != undefined &&
+                        masteryData.response !== undefined &&
                         masteryData.response != null
                     ) {
                         return false;
@@ -294,7 +296,7 @@ SummonerSchema.pre(
                     $in: this.masteryData,
                 },
             });
-            await Challenges.deleteMany({
+            await Challenge.deleteMany({
                 _id: {
                     $in: this.challengeData.challenges,
                 },

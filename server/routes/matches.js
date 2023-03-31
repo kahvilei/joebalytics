@@ -5,7 +5,6 @@ const router = express.Router();
 
 // Load Match model
 const Match = require('../models/Match');
-const {removeMatchesbyPuuid} = require('../controllers/riot');
 
 // @route GET api/Matches/test
 // @description tests Matches route
@@ -20,6 +19,46 @@ router.get('/', (req, res) => {
     .then(Matches => res.json(Matches))
     .catch(err => res.status(404).json({ msg: 'No Matches found' }));
 });
+
+router.get('/recent', async (req, res) => {
+    
+  try{
+      let matches = await Match.find().sort({gameStartTimestamp: 'desc' })
+      res.json(matches);
+  }catch(e){
+      res.status(404).json({ msg: 'No matches found' })
+  }
+})
+
+router.get('/recent/populate', async (req, res) => {
+    
+  try{
+      let matches = await Match.find().sort({gameStartTimestamp: 'desc' }).populate('info.participants')
+      res.json(matches);
+  }catch(e){
+      res.status(404).json({ msg: 'No matches found' })
+  }
+})
+
+router.get('/recent/:limit/populate', async (req, res) => {
+  let limit = req.params.limit;
+  try{
+      let matches = await Match.find().sort({gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
+      res.json(matches);
+  }catch(e){
+      res.status(404).json({ msg: 'No matches found' })
+  }
+})
+
+router.get('/recent/:limit', async (req, res) => {
+  let limit = req.params.limit;
+  try{
+      let matches = await Match.find().sort({gameStartTimestamp: 'desc' }).limit(limit)
+      res.json(matches);
+  }catch(e){
+      res.status(404).json({ msg: 'No matches found' })
+  }
+})
 
 // @route GET api/match/:id
 // @description Get single Match by id
