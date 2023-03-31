@@ -13,17 +13,19 @@ import Login from "./views/Login";
 import Register from "./views/Register";
 //partial
 import Navigation from "./views/partials/Navigation";
+import Menu from "./views/partials/Menu";
 //auth
 import { RequireAuth, AuthProvider } from "./auth/auth";
 
 
 function App() {
   return (
-    <div>
     <AuthProvider>
       <Router>
         <Navigation></Navigation>
-        <div>
+        <div className="main">
+          <Menu></Menu>
+          <div className="content">
           <Routes>
             <Route exact path="/" element={<ShowSummonerList />} />
             <Route path="/login" element={<Login />} />
@@ -41,10 +43,10 @@ function App() {
               }
             />
           </Routes>
+          </div>
         </div>
     </Router>
     </AuthProvider> 
-    </div>
   );
 };
 

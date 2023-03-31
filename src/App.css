@@ -1,38 +1,103 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+   /*main colors*/
+  --midnight: #0C0C21;
+  --deep-sea: #091531;
+  --primary-blue: #121E3A;
+  --lake: #1D2D54;
+  --evening-blue: #5E89EE;
+  --gold: #C99A54;
+  --hover-gold: #b1751b;
+  --white: #ffffff;
+
+  /*rank colors*/
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body{
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  margin: 0;
+  background-color: var( --midnight);
+  color: var(--white)
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-content: flex-start;
+}
+.content {
+  width: 100vw;
+  box-sizing: border-box;
+  padding: 65px 10px 10px 240px;
+}
+
+a,p,div,table,ul,ol{
+  font-size: 14px;
+}
+
+a{
+  text-decoration: none;
+  color: var(--gold);
+}
+a:hover {
+  color: var(--evening-blue);
+}
+
+a.button {
+  background-color: var(--gold);
+  color: var(--white);
+  border-radius: 5px;
+}
+a.button:hover {
+  background-color: var(--hover-gold);
+}
+
+.nav {
+  height: 54px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: var(--deep-sea);
+  border-bottom: 1px solid var(--gold);
+  position: fixed;
+  width: 100vw;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-.App-link {
-  color: #61dafb;
+.nav a {
+  padding: 5px;
+  font-size: 14px;
+  margin-left: 5px;
+}
+.nav a.button {
+  background-color: var(--gold);
+  color: var(--white);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav a.button:hover {
+  background-color: var(--hover-gold);
+}
+.menu {
+  width: 230px;
+  background: var(--primary-blue);
+  height: calc(100vh - 55px);
+  position: fixed;
+  top: 55px;
+}
+
+.menu a {
+  width: 100%;
+  display: block;
+  padding: 20px;
+  box-sizing: border-box;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.menu a:hover {
+  background-color: var(--lake);
 }

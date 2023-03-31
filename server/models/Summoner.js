@@ -11,7 +11,9 @@ const {
 const { regionMapping } = require("../config/regionMapping");
 // Load Mastery model
 const Mastery = require("./Mastery");
+const Challenge = require("./Challenges");
 const Participant = require("./Participant");
+const Challenges = require("./Challenges");
 
 const SummonerSchema = new Schema({
     regionDisplay: {
@@ -82,10 +84,38 @@ const SummonerSchema = new Schema({
                         this.regionServer
                     );
                     if (
-                        challengeData.response != undefined &&
-                        challengeData.response != null
+                        challengeData.response !== undefined &&
+                        challengeData.response !== null
                     ) {
                         return false;
+                    }else {//creates new and updates existing mastery items for this summoner
+                        for (let challenge of challengeData.data.challenges) {
+                            challenge.puuid = this.puuid;
+                            let exists = await Challenges.findOne({
+                                $and: [
+                                    { challengeId: challenge.challengeId },
+                                    { puuid: challenge.puuid },
+                                ],
+                            });
+                            if (exists) {
+                                let oldScore = exists.achievedTime;
+                                let newScore = challenge.achievedTime;
+                                let ID = exists.challengeId;
+                                if (oldScore !== newScore) {
+                                    
+                                    await Challenge.findByIdAndUpdate(exists._id, challenge);
+                                    console.log(`Challenge ${ID} updated for ${this.name}`);
+                                }
+                            } else {                              
+                                let newChallenge = await Challenge.create(challenge);
+                                let ID = challenge.challengeId;
+                                this.challengeData.challenges.push(newChallenge);
+                                console.log(
+                                    `Challenge ${ID} created for ${this.name}`
+                                );
+                            }
+                        }
+                        console.log(`Challenge updates complete for ${this.name}`);
                     }
                     this.challengeData = challengeData.data;
 
@@ -219,11 +249,8 @@ const SummonerSchema = new Schema({
         },
         challenges: [
             {
-                challengeId: Number,
-                percentile: Number,
-                level: String,
-                value: Number,
-                achievedTime: Number,
+                type: Schema.Types.ObjectId,
+                ref: "Challenge",
             },
         ],
         preferences: {
@@ -265,6 +292,11 @@ SummonerSchema.pre(
             await Mastery.deleteMany({
                 _id: {
                     $in: this.masteryData,
+                },
+            });
+            await Challenges.deleteMany({
+                _id: {
+                    $in: this.challengeData.challenges,
                 },
             });
         }

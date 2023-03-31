@@ -8,18 +8,18 @@ function Navigation() {
 
   if (!auth.user) {
     return (
-      <div className="login">
-        <p>You are not logged in.</p>
-        <Link to={`/login`}>Login</Link>
+      <div className="logged-out-nav nav">
         <Link to={`/register`}>Register</Link>
+        <Link className = "button" to={`/login`}>Login</Link>
       </div>
     );
   }
 
   return (
-    <div className="logout">
-      <p>
-        Welcome {auth.user}!{" "}
+    <div className="logged-in-nav nav">
+      <div>
+        Logged in as {auth.user}
+        </div>
         <button
           onClick={() => {
             auth.signout(() => navigate("/"));
@@ -27,7 +27,6 @@ function Navigation() {
         >
           Sign out
         </button>
-      </p>
     </div>
   );
 }

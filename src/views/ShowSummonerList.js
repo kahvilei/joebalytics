@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SummonerCard from './partials/SummonerCard';
 
+
 function ShowSummonerList() {
   const [summoners, setSummoners] = useState([]);
 

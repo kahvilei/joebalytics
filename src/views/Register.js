@@ -4,7 +4,6 @@ import ValidationError from "./partials/ValidationError";
 
 import { useAuth } from "../auth/auth";
 
-
 const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
