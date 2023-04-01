@@ -24,6 +24,10 @@ const getChallengeDataByPuuid = async (puuid, region) => {
   );
 };
 
+const getChallengeConfig = async (id) => {
+  return await axios.get(`https://na1.api.riotgames.com/lol/challenges/v1/challenges/config?api_key=${key}`)
+}
+
 const getRankedDataBySummId = async (id, region) => {
   return await axios.get(
     `https://${region}.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}?api_key=${key}`
@@ -43,8 +47,8 @@ const recordRecentMatches = async (puuid, region, init) => {
   let games = init
     ? "start=0&count=30"
     : mostRecent.length > 0
-    ? `startTime=${removeDigits(mostRecent[0].info.gameEndTimestamp, 3)}`
-    : "start=0&count=30";
+      ? `startTime=${removeDigits(mostRecent[0].info.gameEndTimestamp, 3)}`
+      : "start=0&count=30";
 
   let response = await axios.get(
     `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?${games}&api_key=${key}`
@@ -75,7 +79,7 @@ const collectMatchDataFromArray = async (region, list) => {
         );
         let matchData = res.data;
         let newParticipantList = [];
-        for(let participant of matchData.info.participants){
+        for (let participant of matchData.info.participants) {
           participant.matchId = matchData.metadata.matchId;
           let newParticipant = await Participant.create(participant)
           newParticipantList.push(newParticipant);
@@ -97,19 +101,19 @@ const removeDigits = (x, n) => {
 };
 
 //this function is not currently in use, but may be useful in the future. Deletes all matches associated with a summoner but not associated with any other watched summoners
-const removeMatchesByPuuid = async (puuid, allSumms) => {
-  let toLeave = [];
-  for (summoner in AllSumms) {
-    toLeave.push(summoner.puuid);
-  }
-  let toDelete = await Match.find({
-    $and: [
-      { "metadata.participants": puuid },
-      { "metadata.participants": { $nin: toLeave } },
-    ],
-  });
-  return toDelete;
-};
+// const removeMatchesByPuuid = async (puuid, allSumms) => {
+//   let toLeave = [];
+//   for (summoner in AllSumms) {
+//     toLeave.push(summoner.puuid);
+//   }
+//   let toDelete = await Match.find({
+//     $and: [
+//       { "metadata.participants": puuid },
+//       { "metadata.participants": { $nin: toLeave } },
+//     ],
+//   });
+//   return toDelete;
+// };
 
 module.exports = {
   getMasteryBySummId,
@@ -118,5 +122,5 @@ module.exports = {
   getSummonerDetails,
   recordRecentMatches,
   getSummonerDetailsByPuuid,
-  removeMatchesByPuuid,
+  getChallengeConfig,
 };

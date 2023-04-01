@@ -9,16 +9,24 @@
   --evening-blue: #5E89EE;
   --gold: #C99A54;
   --hover-gold: #b1751b;
-  --white: #ffffff;
+  --text-main: #ffffff;
 
   /*rank colors*/
+  --iron: #484443;
+  --bronze: #7c574a;
+  --silver: #6d7376;
+  --platinum: #41c1b2;
+  --diamond: #426dc5;
+  --master: #a156a8;
+  --grandmaster: #99404c;
+  --challenger:#dfc154;
 }
 
 body{
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
   margin: 0;
   background-color: var( --midnight);
-  color: var(--white)
+  color: var(--text-main)
 }
 
 .main {
@@ -26,10 +34,31 @@ body{
   flex-direction: row;
   align-content: flex-start;
 }
+.page {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
 .content {
   width: 100vw;
   box-sizing: border-box;
   padding: 65px 10px 10px 240px;
+}
+.main-column {
+  width: 70%;
+}
+.side-column {
+  width: 25%;
+}
+
+img {
+  max-width: 100%;
+}
+
+h2 {
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--gold);
 }
 
 a,p,div,table,ul,ol{
@@ -46,7 +75,7 @@ a:hover {
 
 a.button , button{
   background-color: var(--gold);
-  color: var(--white);
+  color: var(--text-main);
   border-radius: 5px;
   padding: 5px;
   margin: 0px 5px;
@@ -80,7 +109,7 @@ a.button:hover , button {
 }
 .nav a.button {
   background-color: var(--gold);
-  color: var(--white);
+  color: var(--text-main);
 }
 
 .nav a.button:hover {
@@ -106,4 +135,173 @@ a.button:hover , button {
 
 .menu a:hover {
   background-color: var(--lake);
+}
+
+/*summoner card styles*/
+.ShowSummonerList .list {
+  max-width: 345px;
+}
+
+.summoner-icon img {
+  width: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+}
+
+.card-container {
+  border-radius: 5px;
+  padding: 30px;
+  display: flex;
+  background-color: var(--primary-blue);
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.name-and-rank {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--lake);
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.desc {
+  width: calc(100% - 56px);
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+
+.summoner-level {
+  color: var(--text-main);
+  font-size: 12px;
+}
+
+.summoner-name {
+  color: var(--text-main);
+}
+
+.circle {
+  width: 15px;
+  height: 15px;
+  background-color: var(--midnight);
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
+.rank {
+  display: flex;
+}
+
+.iron .circle {
+  background-color: var(--iron);
+}
+.iron.rank {
+  color: var(--iron);
+}
+
+.bronze .circle {
+  background-color: var(--bronze);
+}
+.bronze.rank {
+  color: var(--bronze);
+}
+
+.silver .circle {
+  background-color: var(--silver);
+}
+.silver.rank {
+  color: var(--silver);
+}
+
+.gold .circle {
+  background-color: var(--gold);
+}
+.gold.rank {
+  color: var(--gold);
+}
+
+.platinum .circle {
+  background-color: var(--platinum);
+}
+.platinum.rank {
+  color: var(--platinum);
+}
+
+.diamond .circle {
+  background-color: var(--diamond);
+}
+.diamond.rank {
+  color: var(--diamond);
+}
+
+.master .circle {
+  background-color: var(--master);
+}
+.master.rank {
+  color: var(--master);
+}
+
+.grandmaster .circle {
+  background-color: var(--grandmaster);
+}
+.grandmaster.rank {
+  color: var(--grandmaster);
+}
+
+.challenger .circle {
+  background-color: var(--challenger);
+}
+.challenger.rank {
+  color: var(--challenger);
+}
+
+/* home page */
+
+
+
+/* challenges */
+
+.challenge.card-container {
+  background: none;
+  width: 25%;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  padding: 10px;
+}
+.challenge.card-container img{
+  width: 70px
+}
+.challenge-ranking .list {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+.challenge .summoner-name {
+  width:100%;
+  padding-bottom: 0px;
+  font-size: 18px;
+}
+.challenge .challenge-name {
+  font-size: 12px;
+  color: var(--text-main);
+  padding-bottom: 5px;
+}
+.challenge .percentile {
+  font-size: 12px;
+  color: var(--evening-blue);
+  font-style: italic;
+}
+.challenge .details {
+  width: 90px;
+}
+.challenge.rank {
+  color: var(--gold);
+  font-size: 30px;
+  font-weight: 600;
 }

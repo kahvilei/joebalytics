@@ -11,6 +11,8 @@ const MasterySchema = new Schema({
     chestGranted: Boolean,
     tokensEarned: Number,
     summonerId: String,
+    profileIconId: Number,
+    summonerName: String,
     winRate: Number,
     gamesPlayed: Number
 });
