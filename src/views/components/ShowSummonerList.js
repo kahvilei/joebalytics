@@ -3,7 +3,7 @@ import axios from 'axios';
 import SummonerCard from '../partials/SummonerCard';
 
 
-function ShowSummonerList() {
+function ShowSummonerList(props) {
   const [summoners, setSummoners] = useState([]);
 
   useEffect(() => {

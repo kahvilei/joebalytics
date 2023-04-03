@@ -4,12 +4,12 @@ import ChallengeCard from '../partials/ChallengeCard';
 
 
 
-function ShowSummonerList() {
+function ShowChallengeRanking(props) {
   const [challenges, setChallenges] = useState([]);
 
   useEffect(() => {
     axios
-      .get('/api/challenges/top/8')
+      .get(`/api/challenges/top/${props.count}`)
       .then((res) => {
         setChallenges(res.data);
       })
@@ -30,4 +30,4 @@ function ShowSummonerList() {
   );
 }
 
-export default ShowSummonerList;
+export default ShowChallengeRanking;

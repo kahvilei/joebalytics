@@ -31,6 +31,7 @@ app.use('/api/challenges', challenges);
 app.use('/api/user', user);
 
 app.use(express.static(path.join(__dirname, "../build")));
+
 app.get('/*', (req, res) => {
   res.sendFile('index.html', {root: 'build'});
  });

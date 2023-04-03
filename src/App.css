@@ -38,14 +38,22 @@ body{
   display: flex;
   justify-content: space-evenly;
   align-items: flex-start;
+  max-width: 1700px;
+  padding: 30px;
 }
+
 .content {
   width: 100vw;
   box-sizing: border-box;
   padding: 65px 10px 10px 240px;
+  display: flex;
+  justify-content: center;
 }
 .main-column {
   width: 70%;
+}
+section {
+  margin: 0px 0px 50px 0px;
 }
 .side-column {
   width: 25%;
@@ -57,7 +65,7 @@ img {
 
 h2 {
   text-transform: uppercase;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--gold);
 }
 
@@ -84,6 +92,13 @@ a.button , button{
 }
 a.button:hover , button {
   background-color: var(--hover-gold);
+}
+.dot-spacer {
+  margin: 5px 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--gold);
 }
 
 
@@ -273,9 +288,11 @@ a.button:hover , button {
   box-sizing: border-box;
   flex-wrap: nowrap;
   padding: 10px;
+  justify-content: left;
 }
 .challenge.card-container img{
-  width: 70px
+  width: 70px;
+  padding: 10px;
 }
 .challenge-ranking .list {
   display: flex;
@@ -304,4 +321,48 @@ a.button:hover , button {
   color: var(--gold);
   font-size: 30px;
   font-weight: 600;
+  width: 35px;
+  text-align: end;
+  display: block;
+}
+
+/* mastery */
+.mastery-ranking .list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
+  align-content: flex-start;
+}
+
+.mastery.card-container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 240px;
+  flex-basis: calc(25% - 15px);
+}
+
+.mastery.icon img {
+  width: 70px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+}
+
+.mastery .champion-name {
+  font-size: 18px;
+  color: var(--gold);
+}
+
+.mastery .summoner-name {
+  padding: 3px 0px 20px 0px;
+}
+
+.mastery .details {
+  display: flex;
+  color: var(--evening-blue);
+  align-items: center;
+  font-size: 12px;
 }
