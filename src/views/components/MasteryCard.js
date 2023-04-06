@@ -11,7 +11,7 @@ const MasteryCard = (props) => {
       <div className = "details">
         <div className = "mastery-name" >Mastery {mastery.championLevel}</div>
         <div className = "dot-spacer"></div>
-        <div className = "percentile">{mastery.championPoints} points</div>
+        <div className = "percentile">{mastery.championPoints.toLocaleString()} points</div>
       </div>
     </div>
   );

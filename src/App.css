@@ -22,6 +22,65 @@
   --challenger:#dfc154;
 }
 
+/* loading ring */
+
+.lds-ring {
+  display: inline-block;
+  height: auto;
+  position: relative;
+  display: flex;
+  width: 100%;
+  font-size: 300%;
+  justify-content: center;
+  align-content: center;
+  aspect-ratio: 1 / 1;
+  align-items: center;
+}
+.lds-ring.rectangle {
+  aspect-ratio: 2 / 1;
+}
+.lds-ring.short-rectangle {
+  aspect-ratio: 3 / 1;
+}
+.lds-ring.tall-rectangle {
+  aspect-ratio: 2 / 1;
+}
+.lds-ring div {
+  -webkit-animation: lds-ring 1.2s cubic-bezier(.5,0,.5,1) infinite;
+  animation: lds-ring 1.2s cubic-bezier(.5,0,.5,1) infinite;
+  border: 0.1em solid transparent;
+  border-radius: 50%;
+  border-top-color: var(--lake);
+  box-sizing: border-box;
+  display: block;
+  height: 1em;
+  font-size: inherit;
+  position: absolute;
+  width: 1em;
+}
+.lds-ring.gold div {
+  border-top-color: var(--gold);
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* end load ring */
+
 body{
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
   margin: 0;
@@ -29,17 +88,21 @@ body{
   color: var(--text-main)
 }
 
-.main {
-  display: flex;
-  flex-direction: row;
-  align-content: flex-start;
-}
 .page {
   display: flex;
   justify-content: space-evenly;
-  align-items: flex-start;
-  max-width: 1700px;
   padding: 30px;
+  width: 100%;
+  align-items: center;
+}
+.page.w-sidebar {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 30px;
+  max-width: 1700px;
+  width: 100%;
+  align-items: flex-start;
+  flex-direction: row;
 }
 
 .content {
@@ -52,16 +115,47 @@ body{
 .main-column {
   width: 70%;
 }
-section {
-  margin: 0px 0px 50px 0px;
-}
+
 .side-column {
   width: 25%;
+}
+
+section {
+  margin: 0px 0px 50px 0px;
+  width: 100%;
+  max-width: 1500px;
 }
 
 img {
   max-width: 100%;
 }
+
+@media (max-width: 1400px) {
+  .page.w-sidebar {
+    flex-direction: column;
+  }
+  .main-column {
+    width: 100%;
+  }
+  .side-column {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .challenge.card-container {
+    padding: 5px;
+    flex-basis: calc(50% - 18px);
+  }
+}
+
+@media (max-width: 515px) {
+  .challenge.card-container {
+    flex-basis: calc(100%);
+  }
+}
+
+/* text */
 
 h2 {
   text-transform: uppercase;
@@ -115,6 +209,7 @@ a.button:hover , button {
   width: 100vw;
   padding: 10px;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 .nav a {
@@ -276,7 +371,11 @@ a.button:hover , button {
 
 /* home page */
 
+/* summoner show page */
 
+.summoner.page {
+  flex-direction: column;
+}
 
 /* challenges */
 
@@ -298,6 +397,7 @@ a.button:hover , button {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
+  container-type: inline-size;
 }
 .challenge .summoner-name {
   width:100%;
@@ -326,14 +426,36 @@ a.button:hover , button {
   display: block;
 }
 
+@container (max-width: 1030px) {
+  .challenge.card-container {
+    width: 100%;
+    min-width: 240px;
+    flex-basis: calc(33% - 15px);
+  }
+}
+
+@container (max-width: 700px) {
+  .challenge.card-container {
+    padding: 5px;
+    flex-basis: calc(50% - 18px);
+  }
+}
+
+@container (max-width: 515px) {
+  .challenge.card-container {
+    flex-basis: calc(100%);
+  }
+}
+
 /* mastery */
 .mastery-ranking .list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
   flex-direction: row;
   align-content: flex-start;
+  container-type: inline-size;
 }
 
 .mastery.card-container {
@@ -342,7 +464,8 @@ a.button:hover , button {
   flex-direction: column;
   width: 100%;
   min-width: 240px;
-  flex-basis: calc(25% - 15px);
+  flex-basis: calc(25% - 18px);
+  margin: 9px;
 }
 
 .mastery.icon img {
@@ -365,4 +488,24 @@ a.button:hover , button {
   color: var(--evening-blue);
   align-items: center;
   font-size: 12px;
+}
+
+@container (max-width: 1030px) {
+  .mastery.card-container {
+    width: 100%;
+    min-width: 240px;
+    flex-basis: calc(33% - 15px);
+  }
+}
+
+@container (max-width: 900px) {
+  .mastery.card-container {
+    flex-basis: calc(50% - 18px);
+  }
+}
+
+@container (max-width: 515px) {
+  .mastery.card-container {
+    flex-basis: calc(100%);
+  }
 }

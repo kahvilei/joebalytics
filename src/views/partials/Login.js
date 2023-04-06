@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../auth/auth";
-import ValidationError from "../partials/ValidationError";
+import ValidationError from "../components/ValidationError";
 
 function Login() {
   let navigate = useNavigate();

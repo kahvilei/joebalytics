@@ -1,10 +1,10 @@
-import ShowSummonerList from "../components/ShowSummonerList";
-import ShowChallengeRanking from "../components/ShowChallengeRanking";
-import ShowMasteryRanking from "../components/ShowMasteryRanking";
+import ShowSummonerList from "../partials/ShowSummonerList";
+import ShowChallengeRanking from "../partials/ShowChallengeRanking";
+import ShowMasteryRanking from "../partials/ShowMasteryRanking";
 
 function Home() {
   return (
-    <div className="home page">
+    <div className="home page w-sidebar">
       <div className="main-column">
         <section>
           <h2>Challenges Ranking</h2>

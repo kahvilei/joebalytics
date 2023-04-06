@@ -11,7 +11,7 @@ const ChallengeCard = (props) => {
       <div className = "details">
         <div className = "summoner-name">{challenge.summonerName}</div>
         <div className = "challenge-name" title = {challenge.shortDesc}>{challenge.challengeName}</div>
-        <div className = "percentile">Top {challenge.percentile}%</div>
+        <div className = "percentile">Top {(challenge.percentile*100).toFixed(2)}%</div>
       </div>
     </div>
   );

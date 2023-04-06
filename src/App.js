@@ -7,13 +7,13 @@ import "./App.css";
 import React from 'react';
 //page
 import Home from "./views/pages/Home"
-import AddSummoner from "./views/components/AddSummoner";
+import AddSummoner from "./views/partials/AddSummoner";
 import SummonerDetails from "./views/pages/SummonerDetails";
-import Login from "./views/components/Login";
-import Register from "./views/components/Register";
+import Login from "./views/partials/Login";
+import Register from "./views/partials/Register";
 //partial
-import Navigation from "./views/components/Navigation";
-import Menu from "./views/components/Menu";
+import Navigation from "./views/partials/Navigation";
+import Menu from "./views/partials/Menu";
 //auth
 import { RequireAuth, AuthProvider } from "./auth/auth";
 

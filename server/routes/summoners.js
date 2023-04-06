@@ -24,6 +24,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/update-all", async (req, res) => {
+  try {
+    let summoners = await Summoner.find();
+    for(let summoner of summoners){
+      await summoner.save();   
+    }
+    res.json({ msg: "Updated successfully" });
+  } catch {
+    res.status(404).json({ msg: "No Summoners found" });
+  }
+});
+
 // @route GET api/summoners/:id
 // @description Get single summoner by id
 // @access Public

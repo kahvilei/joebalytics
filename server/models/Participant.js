@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ParticipantSchema = new Schema({
+  gameMode: {
+    type: String,
+    default: 'NORMAL-TEST',
+    required: [true, "gameMode required"],
+  },
   matchId: String,
   allInPings: Number,
   assistMePings: Number,
