@@ -31,7 +31,7 @@ const getQueueName = (id) =>{
             return queues[queue].description;
         }
     }
-    return "unnamed";
+    return "any";
 }
 
 export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName};

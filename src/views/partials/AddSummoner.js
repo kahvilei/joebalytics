@@ -1,3 +1,5 @@
+import {rootAddress} from '../../config/config';
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -27,7 +29,7 @@ const AddSummoner = (props) => {
         },
       };
       await axios.post(
-        "/api/summoners/",
+        rootAddress[process.env.NODE_ENV] + "/api/summoners/",
         summoner,
         config
       );

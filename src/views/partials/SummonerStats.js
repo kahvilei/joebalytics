@@ -1,3 +1,5 @@
+import {rootAddress} from '../../config/config';
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -27,7 +29,7 @@ function SummonerStats(props) {
     setIsLoading(true);
     //get list of modes played, returns queue IDs
     axios
-      .get(`/api/matches/stats/${champ}/${role}/any/queueId/1000/unique/${region}/${name}`)
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/any/queueId/1000/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setModeList(res.data); 
@@ -39,7 +41,7 @@ function SummonerStats(props) {
         console.log("Error from SummonerDetails");
       });
       axios
-      .get(`/api/matches/stats/${champ}/any/${mode}/teamPosition/1000/unique/${region}/${name}`)
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/any/${mode}/teamPosition/1000/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setRoleList(res.data); 
@@ -134,7 +136,7 @@ function StatCard(props){
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`/api/matches/stats/${champ}/${role}/${mode}/${statProp}/${limit}/${aggregation}/${region}/${name}`)
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/${mode}/${statProp}/${limit}/${aggregation}/${region}/${name}`)
       .then((res) => {
         setStat(res.data); 
         setIsLoading(false);

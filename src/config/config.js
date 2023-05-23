@@ -4,4 +4,9 @@ const authHeaders = {
     }
 }
 
-module.exports = {authHeaders};
+const rootAddress = {
+    production: "",
+    development: "http://localhost:3000",
+}
+
+module.exports = {authHeaders, rootAddress};

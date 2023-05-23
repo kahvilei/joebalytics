@@ -1,3 +1,5 @@
+import {rootAddress} from '../../config/config';
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -6,7 +8,7 @@ import LoadingCircle from "../components/LoadingCircle";
 
 function ShowChallengeRanking(props) {
   const [challenges, setChallenges] = useState([]);
-  let getRequest = `/api/challenges/top/${props.count}`;
+  let getRequest = rootAddress[process.env.NODE_ENV] + `/api/challenges/top/${props.count}`;
   const [isLoading, setIsLoading] = useState([]);
 
   const { region, name } = useParams();
@@ -14,7 +16,7 @@ function ShowChallengeRanking(props) {
   const mode = props.mode;
 
   if (name) {
-    getRequest = `/api/challenges/top/${
+    getRequest = rootAddress[process.env.NODE_ENV] + `/api/challenges/top/${
       props.count
     }/${region.toLowerCase()}/${name.toLowerCase()}`;
   }

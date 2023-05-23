@@ -1,3 +1,5 @@
+import {rootAddress} from '../config/config';
+
 import * as React from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import axios from "axios";
@@ -7,7 +9,7 @@ const authProviderAPI = {
   async signin(user, callback) {
     try {
       const res = await axios.post(
-        "/api/user/login",
+        rootAddress[process.env.NODE_ENV] + "/api/user/login",
         user,
         {
           headers: {
@@ -29,7 +31,7 @@ const authProviderAPI = {
   async signup(user, callback) {
     try {
       const res = await axios.post(
-        "/api/user/register",
+        rootAddress[process.env.NODE_ENV] + "/api/user/register",
         user,
         {
           headers: {
@@ -49,7 +51,7 @@ const authProviderAPI = {
   },
   async checksignin(callback) {
     try {
-      let res = await axios.get("/api/user/isLoggedIn", {
+      let res = await axios.get(rootAddress[process.env.NODE_ENV] + "/api/user/isLoggedIn", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },

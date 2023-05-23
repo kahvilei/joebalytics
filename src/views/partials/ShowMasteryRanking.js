@@ -1,3 +1,5 @@
+import {rootAddress} from '../../config/config';
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
@@ -10,12 +12,12 @@ function ShowMasteryRanking(props) {
   const [masteries, setMasteries] = useState([]);
   const [isLoading, setIsLoading] = useState([]);
 
-  let getRequest = `/api/masteries/top/${props.count}`;
+  let getRequest = rootAddress[process.env.NODE_ENV] + `/api/masteries/top/${props.count}`;
 
   const { region, name } = useParams();
 
   if(name){
-    getRequest = `/api/masteries/top/${props.count}/${region.toLowerCase()}/${name.toLowerCase()}`;
+    getRequest = rootAddress[process.env.NODE_ENV] + `/api/masteries/top/${props.count}/${region.toLowerCase()}/${name.toLowerCase()}`;
   }
 
   useEffect(() => {

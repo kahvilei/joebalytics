@@ -1,3 +1,5 @@
+import {rootAddress} from '../../config/config';
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -39,7 +41,7 @@ function SummonerHeader(props) {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`/api/summoners/${region}/${name}`)
+      .get(rootAddress[process.env.NODE_ENV] + `/api/summoners/${region}/${name}`)
       .then((res) => {
         setSummoner(res.data);
         setIsLoading(false);
@@ -52,7 +54,7 @@ function SummonerHeader(props) {
 
   const onDeleteClick = async (id) => {
     try {
-      await axios.delete(`/api/summoners/${summoner._id}`, {
+      await axios.delete(rootAddress[process.env.NODE_ENV] + `/api/summoners/${summoner._id}`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -65,10 +67,10 @@ function SummonerHeader(props) {
   const onUpdateClick = (id) => {
     setIsUpdating(true);
     axios
-      .put(`/api/summoners/${summoner._id}`)
+      .put(rootAddress[process.env.NODE_ENV] + `/api/summoners/${summoner._id}`)
       .then((res) => {
         axios
-          .get(`/api/summoners/${summoner._id}`)
+          .get(rootAddress[process.env.NODE_ENV] + `/api/summoners/${summoner._id}`)
           .then((res) => {
             setSummoner(res.data);
             setIsUpdating(false);
