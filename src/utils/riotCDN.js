@@ -1,5 +1,8 @@
-const data = require('./championInfo.json');
-const champions = data.data;
+const champtionData = require('./championInfo.json');
+const champions = champtionData.data;
+
+const queueData = require('./queueInfo.json');
+const queues = queueData.data;
 
 const getSummonerIcon = (id) => {
     return `https://ddragon.leagueoflegends.com/cdn/13.6.1/img/profileicon/${id}.png`
@@ -22,4 +25,13 @@ const getChampName = (id) =>{
     return "unnamed";
 }
 
-export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName};
+const getQueueName = (id) =>{
+    for (let queue in queues){
+        if(parseInt(queues[queue].queueId) === id){
+            return queues[queue].description;
+        }
+    }
+    return "unnamed";
+}
+
+export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName};

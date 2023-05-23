@@ -114,12 +114,25 @@ router.get('/:id', (req, res) => {
 
 // stat specific pulling
 
-router.get('/stats/:mode/:stat/:limit/:aggregation/:region/:name', async (req, res) => {
+router.get('/stats/:champ/:role/:mode/:stat/:limit/:aggregation/:region/:name', async (req, res) => {
   let region = req.params.region;
   let name = req.params.name;
-  let mode = req.params.mode;
   let stat = req.params.stat;
   let limit = req.params.limit;
+  
+  let role = req.params.role;
+  if(role === "any"){
+    role = {$exists: true};
+  }
+  let champ = req.params.champ;
+  if(champ === "any"){
+    champ = {$exists: true};
+  }
+  let mode = req.params.mode;
+  if(mode === "any"){
+    mode = {$exists: true};
+  }
+  
   let aggregation = req.params.aggregation;
 
   try {
@@ -128,12 +141,8 @@ router.get('/stats/:mode/:stat/:limit/:aggregation/:region/:name', async (req, r
     });
     try {
       let matches = [];
-      if(mode !== "ANY"){
-        matches = await Participant.find({ "puuid": summoner.puuid, "gameMode": mode }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-      }
-      else{
-        matches = await Participant.find({ "puuid": summoner.puuid }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-      }
+      matches = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+
       let list = []
       let result = 0;
       for(let match of matches){
@@ -147,6 +156,8 @@ router.get('/stats/:mode/:stat/:limit/:aggregation/:region/:name', async (req, r
         result = Math.min(...list);
       }else if(aggregation === "mode"){
         result = mathMode(list);
+      }else if(aggregation === "unique"){
+        result = list.filter(onlyUnique);
       }else if(aggregation === "add"){
         result = list.reduce((a, b) => a + b);
       }else{
@@ -161,13 +172,25 @@ router.get('/stats/:mode/:stat/:limit/:aggregation/:region/:name', async (req, r
   }
 })
 
-router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/:region/:name', async (req, res) => {
+router.get('/stats/:champ/:role/:mode/:stat/:subStat/:limit/:aggregation/:region/:name', async (req, res) => {
   let region = req.params.region;
   let name = req.params.name;
-  let mode = req.params.mode;
   let stat = req.params.stat;
   let subStat = req.params.subStat;
   let limit = req.params.limit;
+
+  let role = req.params.role;
+  if(role === "any"){
+    role = {$exists: true};
+  }
+  let champ = req.params.champ;
+  if(champ === "any"){
+    champ = {$exists: true};
+  }
+  let mode = req.params.mode;
+  if(mode === "any"){
+    mode = {$exists: true};
+  }
 
   let aggregation = req.params.aggregation;
   if(aggregation === "avg"){
@@ -180,12 +203,9 @@ router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/:region/:name', asyn
     });
     try {
       let matches = [];
-      if(mode !== "ANY"){
-        matches = await Participant.find({ "puuid": summoner.puuid, "gameMode": mode }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-      }
-      else{
-        matches = await Participant.find({ "puuid": summoner.puuid }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-      }
+      
+      matches = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+      
       let list = []
       let result = 0;
       for(let match of matches){
@@ -201,6 +221,8 @@ router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/:region/:name', asyn
         result = Math.min(...list);
       }else if(aggregation === "mode"){
         result = mathMode(list);
+      }else if(aggregation === "unique"){
+        result = list.filter(onlyUnique);
       }else if(aggregation === "add"){
         result = list.reduce((a, b) => a + b);
       }else{
@@ -215,11 +237,23 @@ router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/:region/:name', asyn
   }
 })
 
-router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/', async (req, res) => {
-  let mode = req.params.mode;
+router.get('/stats/:champ/:role/:mode/:stat/:subStat/:limit/:aggregation/', async (req, res) => {
   let stat = req.params.stat;
   let subStat = req.params.subStat;
   let limit = req.params.limit;
+  
+  let role = req.params.role;
+  if(role === "any"){
+    role = {$exists: true};
+  }
+  let champ = req.params.champ;
+  if(champ === "any"){
+    champ = {$exists: true};
+  }
+  let mode = req.params.mode;
+  if(mode === "any"){
+    mode = {$exists: true};
+  }
 
   let aggregation = req.params.aggregation;
   if(aggregation === "avg"){
@@ -231,12 +265,9 @@ router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/', async (req, res) 
     for(let summoner of summoners){
       try {
         let matches = [];
-        if(mode !== "ANY"){
-          matches = await Participant.find({ "puuid": summoner.puuid, "gameMode": mode }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-        }
-        else{
-          matches = await Participant.find({ "puuid": summoner.puuid }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-        }
+        
+        matches = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+        
         let list = []
         
         for(let match of matches){
@@ -253,6 +284,8 @@ router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/', async (req, res) 
           result.push({"name" : summoner.name, stat : Math.min(...list)});
         }else if(aggregation === "mode"){
           result.push({"name" : summoner.name, stat : mathMode(list)});
+        }else if(aggregation === "unique"){
+          result.push({"name" : summoner.name, stat : list.filter(onlyUnique)});
         }else if(aggregation === "add"){
           result.push({"name" : summoner.name, stat : list.reduce((a, b) => a + b)});
         }else{
@@ -270,10 +303,22 @@ router.get('/stats/:mode/:stat/:subStat/:limit/:aggregation/', async (req, res) 
   }
 })
 
-router.get('/stats/:mode/:stat/:limit/:aggregation/', async (req, res) => {
-  let mode = req.params.mode;
+router.get('/stats/:champ/:role/:mode/:stat/:limit/:aggregation/', async (req, res) => {
   let stat = req.params.stat;
   let limit = req.params.limit;
+
+  let role = req.params.role;
+  if(role === "any"){
+    role = {$exists: true};
+  }
+  let champ = req.params.champ;
+  if(champ === "any"){
+    champ = {$exists: true};
+  }
+  let mode = req.params.mode;
+  if(mode === "any"){
+    mode = {$exists: true};
+  }
 
   let aggregation = req.params.aggregation;
   if(aggregation === "avg"){
@@ -285,33 +330,37 @@ router.get('/stats/:mode/:stat/:limit/:aggregation/', async (req, res) => {
     for(let summoner of summoners){
       try {
         let matches = [];
-        if(mode !== "ANY"){
-          matches = await Participant.find({ "puuid": summoner.puuid, "gameMode": mode }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-        }
-        else{
-          matches = await Participant.find({ "puuid": summoner.puuid }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-        }
-        let list = []
         
-        for(let match of matches){
-          if(match.teamEarlySurrendered === false){
-  
-            list.push(match[stat]);
+        matches = await Participant.find({ "puuid": summoner.puuid, "queueId": mode , "championId" : champ, "teamPosition": role }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+      
+        let list = []
+
+        if(matches.length !== 0){
+
+          for(let match of matches){
+            if(match.teamEarlySurrendered === false){
+    
+              list.push(match[stat]);
+            }
           }
+          if(aggregation === "avg"){
+            result.push({"name" : summoner.name, stat :list.reduce((a, b) => a + b) / list.length});
+          }else if(aggregation === "max"){
+            result.push({"name" : summoner.name, stat :Math.max(...list)});
+          }else if(aggregation === "min"){
+            result.push({"name" : summoner.name, stat : Math.min(...list)});
+          }else if(aggregation === "mode"){
+            result.push({"name" : summoner.name, stat : mathMode(list)});
+          }else if(aggregation === "unique"){
+            result.push({"name" : summoner.name, stat : list.filter(onlyUnique)});
+          }else if(aggregation === "add"){
+            result.push({"name" : summoner.name, stat : list.reduce((a, b) => a + b)});
+          }else{
+            result.push( {"name" : summoner.name, stat : list} );
+          }
+
         }
-        if(aggregation === "avg"){
-          result.push({"name" : summoner.name, stat :list.reduce((a, b) => a + b) / list.length});
-        }else if(aggregation === "max"){
-          result.push({"name" : summoner.name, stat :Math.max(...list)});
-        }else if(aggregation === "min"){
-          result.push({"name" : summoner.name, stat : Math.min(...list)});
-        }else if(aggregation === "mode"){
-          result.push({"name" : summoner.name, stat : mathMode(list)});
-        }else if(aggregation === "add"){
-          result.push({"name" : summoner.name, stat : list.reduce((a, b) => a + b)});
-        }else{
-          result.push( {"name" : summoner.name, stat : list} );
-        }
+          
         
       } catch (e) {
         return res.status(404).json({ msg: 'Invalid request' })
@@ -323,6 +372,10 @@ router.get('/stats/:mode/:stat/:limit/:aggregation/', async (req, res) => {
     return res.status(404).json({ msg: "No Summoner found" });
   }
 })
+
+function onlyUnique(value, index, array) {
+  return array.indexOf(value) === index;
+}
 
 var mathMode = a => {
   a = a.slice().sort((x, y) => x - y);

@@ -78,46 +78,60 @@ const SummonerSchema = new Schema({
           //records all user matches from the last match added matching this user's puuid to now, if this is the first save, it loads 20 games
           await recordRecentMatches(this.puuid, this.regionGeo, init);
 
-          await Challenge.deleteMany({
-            _id: {
-              $in: this.challengeData.challenges,
-            },
-          });
-          //gets all challenge data from riot
-          let challengeList = [];
-          let challengeData = await getChallengeDataByPuuid(
-            this.puuid,
-            this.regionServer
-          );
-          if (
-            challengeData.response !== undefined &&
-            challengeData.response !== null
-          ) {
-            return false;
-          } else {
-            //creates new and updates existing mastery items for this summoner
-            let challengeConfig = await getChallengeConfig();
-            for (let challenge of challengeData.data.challenges) { 
-                let config = challengeConfig.data.find(challengeConfig => challengeConfig.id === challenge.challengeId)
-                if(config){
+          try {
+            await Challenge.deleteMany({
+              _id: {
+                $in: this.challengeData.challenges,
+              },
+            });
+            this.challengeData.challenges = [];
+            //gets all challenge data from riot
+            let challengeList = [];
+            let challengeData = await getChallengeDataByPuuid(
+              this.puuid,
+              this.regionServer
+            );
+            if (
+              challengeData.response !== undefined &&
+              challengeData.response !== null
+            ) {
+              return false;
+            } else {
+              //creates new and updates existing mastery items for this summoner
+              let challengeConfig = await getChallengeConfig();
+              for (let challenge of challengeData.data.challenges) {
+                try {
+                  let config = challengeConfig.data.find(
+                    (challengeConfig) =>
+                      challengeConfig.id === challenge.challengeId
+                  );
+                  if (config) {
                     challenge.challengeName = config.localizedNames.en_US.name;
-                    challenge.shortDesc = config.localizedNames.en_US.shortDescription;
+                    challenge.shortDesc =
+                      config.localizedNames.en_US.shortDescription;
                     challenge.summonerName = this.name;
                     challenge.profileIconId = this.profileIconId;
                     challenge.puuid = this.puuid;
+                    challenge.uniqueId = this.puuid + challenge.challengeId;
                     let ID = challenge.challengeId;
                     challengeList.push(challenge);
                     console.log(`Challenge ${ID} created for ${this.name}`);
-                } 
-                else{
+                  } else {
                     console.log(challengeConfig);
-                } 
+                  }
+                } catch (e) {
+                  console.log(e);
+                }
+              }
+              console.log(`Challenge updates complete for ${this.name}`);
             }
-            console.log(`Challenge updates complete for ${this.name}`);
-          }
-          let newChallengeList = await Challenge.insertMany(challengeList);
-          this.challengeData = challengeData.data;
-          this.challengeData.challenges = newChallengeList;
+            let newChallengeList = await Challenge.insertMany(challengeList);
+            this.challengeData.categoryPoints =
+              challengeData.data.categoryPoints;
+            this.challengeData.totalPoints = challengeData.data.totalPoints;
+            this.challengeData.preferences = challengeData.data.preferences;
+            this.challengeData.challenges = newChallengeList;
+          } catch (e) {}
 
           //gets all ranked league data from riot
           let rankedData = await getRankedDataBySummId(
@@ -139,44 +153,54 @@ const SummonerSchema = new Schema({
           });
 
           //gets all champion mastery data from riot
-          let masteryList = [];
-          let masteryData = await getMasteryBySummId(
-            this.id,
-            this.regionServer
-          );
-          if (
-            masteryData.response !== undefined &&
-            masteryData.response != null
-          ) {
-            return false;
-          } else {
-            //creates new and updates existing mastery items for this summoner
-            for (let mastery of masteryData.data) {
-              mastery.summonerName = this.name;
-              mastery.profileIconId = this.profileIconId;
-              let pastGames = await Participant.find({
-                $and: [
-                  { championId: mastery.championId },
-                  { summonerId: mastery.summonerId },
-                ],
-              });
-              mastery.gamesPlayed = pastGames.length;
-              if (pastGames.length > 5) {
-                let counter = 0;
-                for (let game of pastGames) {
-                  counter += game.win ? 1 : 0;
-                }
-                mastery.winRate = counter / pastGames.length;
-              }
+          try {
+            this.masteryData = [];
+            let masteryList = [];
+            let masteryData = await getMasteryBySummId(
+              this.id,
+              this.regionServer
+            );
+            if (
+              masteryData.response !== undefined &&
+              masteryData.response != null
+            ) {
+              return false;
+            } else {
+              //creates new and updates existing mastery items for this summoner
+              for (let mastery of masteryData.data) {
+                try {
+                  mastery.summonerName = this.name;
+                  mastery.profileIconId = this.profileIconId;
+                  mastery.uniqueId = this.puuid + mastery.championId;
+                  let pastGames = await Participant.find({
+                    $and: [
+                      { championId: mastery.championId },
+                      { summonerId: mastery.summonerId },
+                    ],
+                  });
+                  mastery.gamesPlayed = pastGames.length;
+                  if (pastGames.length > 5) {
+                    let counter = 0;
+                    for (let game of pastGames) {
+                      counter += game.win ? 1 : 0;
+                    }
+                    mastery.winRate = counter / pastGames.length;
+                  }
 
-              masteryList.push(mastery);
-              console.log(
-                `Mastery creation complete for champ ${mastery.championId}`
-              );
+                  masteryList.push(mastery);
+                  console.log(
+                    `Mastery creation complete for champ ${mastery.championId}`
+                  );
+                } catch (e) {
+                  console.log(e);
+                }
+              }
+              let newMasteryList = await Mastery.insertMany(masteryList);
+              this.masteryData = newMasteryList;
+              console.log(`Mastery updates complete for ${this.name}`);
             }
-            let newMasteryList = await Mastery.insertMany(masteryList);
-            this.masteryData = newMasteryList;
-            console.log(`Mastery updates complete for ${this.name}`);
+          } catch (e) {
+            console.log(e);
           }
           return true;
         }

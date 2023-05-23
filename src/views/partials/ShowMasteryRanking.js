@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from "react-router-dom";
 import axios from 'axios';
 import MasteryCard from '../components/MasteryCard';
 import LoadingCircle from '../components/LoadingCircle';
@@ -11,8 +12,10 @@ function ShowMasteryRanking(props) {
 
   let getRequest = `/api/masteries/top/${props.count}`;
 
-  if(props.name){
-    getRequest = `/api/masteries/top/${props.count}/${props.region.toLowerCase()}/${props.name.toLowerCase()}`;
+  const { region, name } = useParams();
+
+  if(name){
+    getRequest = `/api/masteries/top/${props.count}/${region.toLowerCase()}/${name.toLowerCase()}`;
   }
 
   useEffect(() => {

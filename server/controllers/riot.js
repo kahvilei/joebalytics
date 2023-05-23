@@ -45,10 +45,10 @@ const recordRecentMatches = async (puuid, region, init) => {
     .sort({ "info.gameEndTimestamp": -1 })
     .limit(1);
   let games = init
-    ? "start=0&count=30"
+    ? "start=0&count=50"
     : mostRecent.length > 0
       ? `startTime=${removeDigits(mostRecent[0].info.gameEndTimestamp, 3)}`
-      : "start=0&count=30";
+      : "start=0&count=50";
 
   let response = await axios.get(
     `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?${games}&api_key=${key}`
@@ -82,6 +82,8 @@ const collectMatchDataFromArray = async (region, list) => {
         for (let participant of matchData.info.participants) {
           participant.matchId = matchData.metadata.matchId;
           participant.gameMode = matchData.info.gameMode;
+          participant.queueId = matchData.info.queueId;
+          participant.gameStartTimestamp = matchData.info.gameStartTimestamp;
           let newParticipant = await Participant.create(participant)
           newParticipantList.push(newParticipant);
         }

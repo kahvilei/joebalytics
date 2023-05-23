@@ -36,6 +36,13 @@
   aspect-ratio: 1 / 1;
   align-items: center;
 }
+
+.lds-ring.small{
+  width: 100%;
+  font-size: 100%;
+  aspect-ratio: 0;
+}
+
 .lds-ring.rectangle {
   aspect-ratio: 2 / 1;
 }
@@ -60,6 +67,9 @@
 }
 .lds-ring.gold div {
   border-top-color: var(--gold);
+}
+.lds-ring.small div {
+  border-width: 0.2em;
 }
 .lds-ring div:nth-child(1) {
   animation-delay: -0.45s;
@@ -91,14 +101,12 @@ body{
 .page {
   display: flex;
   justify-content: space-evenly;
-  padding: 30px;
   width: 100%;
   align-items: center;
 }
 .page.w-sidebar {
   display: flex;
   justify-content: space-evenly;
-  padding: 30px;
   max-width: 1700px;
   width: 100%;
   align-items: flex-start;
@@ -108,7 +116,7 @@ body{
 .content {
   width: 100vw;
   box-sizing: border-box;
-  padding: 65px 10px 10px 240px;
+  padding: 55px 10px 10px 230px;
   display: flex;
   justify-content: center;
 }
@@ -121,9 +129,17 @@ body{
 }
 
 section {
-  margin: 0px 0px 50px 0px;
+  padding: 25px 25px 25px 25px;
+  box-sizing: border-box;
   width: 100%;
   max-width: 1500px;
+}
+
+section.full-width {
+  padding: 0px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 img {
@@ -142,11 +158,10 @@ img {
   }
 }
 
-@media (max-width: 700px) {
-  .challenge.card-container {
-    padding: 5px;
-    flex-basis: calc(50% - 18px);
-  }
+@media (max-width: 900px) {
+  .content {
+    padding: 65px 10px 10px 10px;
+}
 }
 
 @media (max-width: 515px) {
@@ -179,11 +194,18 @@ a.button , button{
   background-color: var(--gold);
   color: var(--text-main);
   border-radius: 5px;
-  padding: 5px;
+  padding: 8px;
   margin: 0px 5px;
   outline: none;
   border: none;
+  cursor: pointer;
 }
+
+button.btn-outline-danger {
+  background: none;
+  color: var(--grandmaster);
+}
+
 a.button:hover , button {
   background-color: var(--hover-gold);
 }
@@ -201,20 +223,18 @@ a.button:hover , button {
   height: 54px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: center;
-  background-color: var(--deep-sea);
-  border-bottom: 1px solid var(--gold);
+  background-color: var(--primary-blue);
+  border-bottom: 1px solid var(--primary-blue);
   position: fixed;
   width: 100vw;
+  justify-content: space-between;
   padding: 10px;
   box-sizing: border-box;
   z-index: 1;
 }
 
 .nav a {
-  padding: 5px;
-  font-size: 14px;
   margin-left: 5px;
 }
 .nav a.button {
@@ -225,12 +245,78 @@ a.button:hover , button {
 .nav a.button:hover {
   background-color: var(--hover-gold);
 }
+
+.nav .checkbox {
+  position: absolute;  
+  top: 15px;
+  display: none;
+  height: 32px;
+  width: 32px;
+  z-index: 5;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.nav .hamburger-lines {
+  display: none;
+  height: 26px;
+  width: 32px;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.nav .hamburger-lines .line {
+  display: none;
+  height: 3px;
+  width: 100%;
+  border-radius: 0px;
+  background: var(--gold);
+}
+
+.nav .hamburger-lines .line1 {
+  transform-origin: 0% 0%;
+  transition: transform 0.4s ease-in-out;
+}
+
+.nav .hamburger-lines .line2 {
+  transition: transform 0.2s ease-in-out;
+}
+
+.nav .hamburger-lines .line3 {
+  transform-origin: 0% 100%;
+  transition: transform 0.4s ease-in-out;
+}
+
+.nav .active .hamburger-lines .line1 {
+  transform: rotate(45deg);
+}
+
+.nav .active .hamburger-lines .line2 {
+  transform: scaleY(0);
+}
+
+.nav .active .hamburger-lines .line3 {
+  transform: rotate(-45deg);
+}
+
+.loggedin-status {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
 .menu {
   width: 230px;
   background: var(--primary-blue);
   height: calc(100vh - 55px);
   position: fixed;
   top: 55px;
+  z-index: 1;
 }
 
 .menu a {
@@ -247,10 +333,26 @@ a.button:hover , button {
   background-color: var(--lake);
 }
 
-/*summoner card styles*/
-.ShowSummonerList .list {
-  max-width: 345px;
+@media (max-width: 900px) {
+  .menu {
+    left: -235px;
+  }
+  .menu.active {
+    left: 0px;
+  }
+  .nav .checkbox {
+    display: block;
+  }
+  
+  .nav .hamburger-lines {
+    display: flex;
+  }
+  .nav .hamburger-lines .line {
+    display: block;
+  }
+  
 }
+/*summoner card styles*/
 
 .summoner-icon img {
   width: 50px;
@@ -377,6 +479,125 @@ a.button:hover , button {
   flex-direction: column;
 }
 
+.filters select {
+  padding: 10px;
+  margin: 5px;
+  color: var(--main-text);
+  background-color: var(--lake);
+  border: none;
+}
+
+.stats {
+  display: flex;
+}
+
+.summoner-stat-card .stat {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.summoner-stat-card .title {
+  font-size: 12px;
+  color: #7a859e;
+} 
+
+.summoner-stat-card {
+  min-width: 100px;
+  min-height: 100px;
+  background-color: var(--midnight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+  margin: 5px;
+}
+
+.summoner-header {
+  padding: 50px;
+  background-color: var(--deep-sea);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.summoner-header .summoner-icon img {
+  width: 190px;
+}
+
+.summoner-header-inner-wrap{
+  max-width: 1500px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+h1.summoner-name {
+  margin: 0px 10px 0px 0px;
+}
+
+.delete-update-butt {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.update button.button {
+  min-width: 62.69px;
+  min-height: 31.33px;
+}
+
+.pre-text {
+  font-size: 12px;
+  color: var(--evening-blue);
+  font-style: italic;
+}
+
+.name-and-level {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.summoner-header .summoner-level {
+  color: var(--evening-blue);
+  font-style: italic;
+}
+
+section.summoner-nav {
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  background-color: var(--deep-sea);
+  max-width: 100%;
+}
+
+.summoner-nav a {
+  padding: 20px;
+  margin: 0px 5px;
+}
+
+.summoner-nav a:hover {
+  background-color: var(--primary-blue);
+}
+
+.summoner-nav a:active {
+  background-color: var(--midnight);
+}
+
+.undefined a#mastery {
+  background-color: var(--midnight);
+}
+
+.challenges a#challenges {
+  background-color: var(--midnight);
+}
+
+.mastery a#mastery {
+  background-color: var(--midnight);
+}
+
 /* challenges */
 
 .challenge.card-container {
@@ -426,6 +647,33 @@ a.button:hover , button {
   display: block;
 }
 
+
+/* listing mode styles */
+
+.listing .challenge.card-container {
+  width: 100%;
+  border-bottom: 1px solid var(--gold);
+  border-radius: 0;
+  justify-content: space-between;
+}
+
+.listing .challenge.card-container>div {
+  display: flex;
+  align-items: center;
+}
+
+.listing .challenge.card-container img {
+  padding: 10px;
+  width: 50px;
+}
+
+.listing .challenge .challenge-name {
+  font-size: 14px;
+  padding: 0px;
+  width: 200px;
+}
+
+
 @container (max-width: 1030px) {
   .challenge.card-container {
     width: 100%;
@@ -464,7 +712,7 @@ a.button:hover , button {
   flex-direction: column;
   width: 100%;
   min-width: 240px;
-  flex-basis: calc(25% - 18px);
+  flex-basis: calc(20% - 18px);
   margin: 9px;
 }
 
@@ -490,11 +738,19 @@ a.button:hover , button {
   font-size: 12px;
 }
 
+@container (max-width: 1580px) {
+  .mastery.card-container {
+    width: 100%;
+    min-width: 240px;
+    flex-basis: calc(25% - 18px);
+  }
+}
+
 @container (max-width: 1030px) {
   .mastery.card-container {
     width: 100%;
     min-width: 240px;
-    flex-basis: calc(33% - 15px);
+    flex-basis: calc(33% - 18px);
   }
 }
 

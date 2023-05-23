@@ -146,7 +146,6 @@ router.post("/", isLoggedIn, async (req, res) => {
 
 // @route GET api/summoners/:id
 // @description Update summoner
-// @access Public
 router.put("/:id", async (req, res) => {
   try {
     let summoner = await Summoner.findById(req.params.id);

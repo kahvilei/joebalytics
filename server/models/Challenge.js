@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const ChallengeSchema = new Schema(
         {
+            uniqueId: {
+                type: String,
+                unique: true
+            },
             puuid: String,
             profileIconId: Number,
             summonerName: String,

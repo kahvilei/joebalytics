@@ -31,6 +31,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
+              path="/summoner/:region/:name/:page"
+              element={<SummonerDetails />}
+            />
+            <Route
               path="/summoner/:region/:name"
               element={<SummonerDetails />}
             />

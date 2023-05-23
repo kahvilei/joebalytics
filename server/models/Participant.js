@@ -2,11 +2,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ParticipantSchema = new Schema({
+  uniqueId: {
+    type: String,
+    unique: true
+  },
   gameMode: {
     type: String,
     default: 'NORMAL-TEST',
     required: [true, "gameMode required"],
   },
+  gameStartTimestamp: Number,
   matchId: String,
   allInPings: Number,
   assistMePings: Number,
@@ -15,6 +20,7 @@ const ParticipantSchema = new Schema({
   baronKills: Number,
   basicPings: Number,
   bountyLevel: Number,
+  queueId: Number,
   challenges: {
     "12AssistStreakCount": Number,
     abilityUses: Number,

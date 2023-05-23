@@ -1,41 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import { useAuth } from "../../auth/auth";
+import { getSummonerIcon } from "../../utils/riotCDN";
+import LoadingCircle from "../components/LoadingCircle";
+import SummonerStats from "./SummonerStats";
 
-function SummonerDetails(props) {
+function SummonerHeader(props) {
   const [summoner, setSummoner] = useState({});
+  const [isLoading, setIsLoading] = useState([]);
+  const [isUpdating, setIsUpdating] = useState([]);
 
   const { region, name } = useParams();
   const navigate = useNavigate();
 
   let auth = useAuth();
 
-  var timeStamp = summoner.lastUpdated;
-  var dateFormat = new Date(timeStamp);
-  let amercianHours = dateFormat.getHours();
-  if (amercianHours > 12) {
-    amercianHours -= 12;
+  let tier = "unranked";
+  let rank = "";
+  if (summoner.rankedData && summoner.rankedData[0]) {
+    tier = summoner.rankedData[0].tier.toLowerCase();
+    rank = summoner.rankedData[0].rank;
   }
 
-  var lastUpdate =
-    "Last Updated: " +
-    (dateFormat.getMonth() + 1) +
-    "/" +
-    dateFormat.getDate() +
-    "/" +
-    dateFormat.getFullYear() +
-    " " +
-    amercianHours +
-    ":" +
-    dateFormat.getMinutes();
+  var timeStamp = summoner.lastUpdated;
+  var dateFormat = new Date(timeStamp);
+  let amercianHours = dateFormat.toLocaleString([], {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  var lastUpdate = amercianHours;
 
   useEffect(() => {
+    setIsLoading(true);
     axios
       .get(`/api/summoners/${region}/${name}`)
       .then((res) => {
         setSummoner(res.data);
+        setIsLoading(false);
+        setIsUpdating(false);
       })
       .catch((err) => {
         console.log("Error from SummonerDetails");
@@ -55,6 +63,7 @@ function SummonerDetails(props) {
     }
   };
   const onUpdateClick = (id) => {
+    setIsUpdating(true);
     axios
       .put(`/api/summoners/${summoner._id}`)
       .then((res) => {
@@ -62,6 +71,7 @@ function SummonerDetails(props) {
           .get(`/api/summoners/${summoner._id}`)
           .then((res) => {
             setSummoner(res.data);
+            setIsUpdating(false);
           })
           .catch((err) => {
             console.log("Error from SummonerDetails");
@@ -72,59 +82,53 @@ function SummonerDetails(props) {
       });
   };
 
-  const SummonerItem = (
-    <div>
-      <table className="table table-hover table-dark">
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Name</td>
-            <td>{summoner.name}</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Level</td>
-            <td>{summoner.summonerLevel}</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Region</td>
-            <td>{summoner.regionDisplay}</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>Icon</td>
-            <td>{summoner.profileIconId}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
+  function Update() {
+    if (auth.user) {
+      if (isUpdating) {
+        return (
+          <div className="delete-update-butt">
+            <div className="pre-text">Updating...</div>
+            <div className="update">
+              <button className="button">
+                <LoadingCircle color={"dark"} size = {"small"} aspectRatio={"square"} />
+              </button>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="delete-update-butt">
+            <div className="pre-text">Last update: {lastUpdate}</div>
+            <div className="update">
+              <button
+                type="button"
+                className="button"
+                onClick={() => {
+                  onUpdateClick(summoner._id);
+                }}
+              >
+                Refresh
+              </button>
+            </div>
+          </div>
+        );
+      }
+    }
+  }
 
-  function Options() {
+  function Delete() {
     if (auth.user) {
       return (
-        <div>
-          <div className="col-md-6 m-auto">
+        <div className="delete-update-butt">
+          <div className="delete">
             <button
               type="button"
-              className="btn btn-outline-danger btn-lg btn-block"
+              className="btn btn-outline-danger"
               onClick={() => {
                 onDeleteClick(summoner._id);
               }}
             >
-              Delete Summoner
-            </button>
-          </div>
-          <div className="col-md-6 m-auto">
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-lg btn-block"
-              onClick={() => {
-                onUpdateClick(summoner._id);
-              }}
-            >
-              Update Summoner
+              Delete
             </button>
           </div>
         </div>
@@ -132,11 +136,38 @@ function SummonerDetails(props) {
     }
   }
 
-  return (
-    <div className="summoner page">
-
-    </div>
-  );
+  if (isLoading) {
+    return (
+      <div className="summoner-header">
+        <LoadingCircle color={"dark"} aspectRatio={"short-rectangle"} />
+      </div>
+    );
+  } else {
+    return (
+      <div className="summoner-header">
+        <div className="summoner-header-inner-wrap">
+          <div className="summoner-icon">
+            <img
+              alt="summoner icon"
+              src={getSummonerIcon(summoner.profileIconId)}
+            ></img>
+          </div>
+          <div className="desc">
+            <div className="name-and-rank">
+              <div className="name-and-level">
+                <h1 className="summoner-name">{summoner.name}</h1>
+                <div className="summoner-level">
+                  Level {summoner.summonerLevel}
+                </div>
+              </div>
+              <Update />
+            </div>
+            <SummonerStats/> 
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default SummonerDetails;
+export default SummonerHeader;
