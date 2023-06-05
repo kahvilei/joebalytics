@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 
-
+const db = process.env.MONGO_CONNECT;
 // routes
 const summoners = require('./routes/summoners');
 const matches = require('./routes/matches');
@@ -14,7 +14,7 @@ const challenges = require('./routes/challenges');
 const user = require('./routes/user');
 
 // Connect Database
-connectDB();
+connectDB(db);
 // cors
 app.use(cors({ origin: true, credentials: true }));
 
