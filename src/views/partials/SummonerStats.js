@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { getRoleName, getQueueName } from "../../utils/riotCDN";
+import { getChampName, getRoleName, getQueueName } from "../../utils/riotCDN";
 import LoadingCircle from "../components/LoadingCircle";
 
 function SummonerStats(props) {
@@ -17,6 +17,7 @@ function SummonerStats(props) {
   const [roleList, setRoleList] = useState(['any']);
 
   const [champ, setChamp] = useState('any');
+  const [champList, setChampList] = useState(['any']);
 
   //used to set and determine how many games to limit stats results to. 
   //limitlist contains a set available numbers to limit to, capping at the max games that exist
@@ -53,24 +54,29 @@ function SummonerStats(props) {
         limits.push(hardLimit);
       }
       setLimitList(limits); 
-
+      setIsLoading(false);
     })
     .catch((err) => {
       setLimitList([0]); 
-      
+      setIsLoading(false);
       console.log("Error from SummonerDetails");
     });
+  }, [champ, role, mode, region, name]);
+
+  useEffect(() => {
+ 
+    
     //get list of modes played, returns queue IDs
     axios
       .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/any/queueId/${limit}/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setModeList(res.data); 
-        
+    
       })
       .catch((err) => {
         setModeList(['any']); 
-        
+   
         console.log("Error from SummonerDetails");
       });
     //get list of roles played, returns role IDs
@@ -79,11 +85,24 @@ function SummonerStats(props) {
       .then((res) => {
         res.data.push('any');
         setRoleList(res.data); 
-        setIsLoading(false);
+  
       })
       .catch((err) => {
         setRoleList(['any']); 
-        setIsLoading(false);
+      
+        console.log("Error from SummonerDetails");
+      });
+      //get list of champs played, returns champ IDs
+      axios
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/any/${role}/${mode}/championId/${limit}/unique/${region}/${name}`)
+      .then((res) => {
+        res.data.push('any');
+        setChampList(res.data); 
+  
+      })
+      .catch((err) => {
+        setChampList(['any']); 
+      
         console.log("Error from SummonerDetails");
       });
   }, [champ, role, mode, limit, region, name]);
@@ -100,9 +119,9 @@ function SummonerStats(props) {
     for (let limitNum of limitList){
       if(limitNum !== ''){
         if(limitNum === limitList.slice(-1)[0]){
-          options.push(<option key = {key++} value={limitNum} ><div className = "option"> All games ({limitNum})</div></option>);
+          options.push(<option key = {key++} value={limitNum} > All games ({limitNum})</option>);
         }else{
-          options.push(<option key = {key++} value={limitNum} ><div className = "option">{limitNum}</div></option>);
+          options.push(<option key = {key++} value={limitNum} >Past {limitNum} games</option>);
         }
       }
     }
@@ -134,6 +153,31 @@ function SummonerStats(props) {
     
     return(
         <select className = "position-filter" onChange={onPositionUpdate} value={role}>
+            {options}
+        </select>
+    );
+    
+  }
+
+  const onChampUpdate = (e) => {
+    setChamp(e.target.value);
+  };
+
+  function ChampFilter(){
+    let options = [];
+    let key = 0;
+    for (let champId of champList){
+      if(champId !== ''){
+        if(champId === 'any'){
+          options.push(<option key = {key++} value={champId} >All champions</option>);
+        }else{
+          options.push(<option key = {key++} value={champId} >{getChampName(champId)}</option>);
+        }
+      }
+    }
+    
+    return(
+        <select className = "position-filter" onChange={onChampUpdate} value={champ}>
             {options}
         </select>
     );
@@ -188,6 +232,7 @@ function SummonerStats(props) {
             <LimitFilter />
             <ModeFilter />
             <PositionFilter />
+            <ChampFilter />
             <a className = "reset-filter" href = "#" onClick={onReset}>Reset Filters</a>
             <LoadingNotify></LoadingNotify>
         </div>
