@@ -46,6 +46,9 @@
 .lds-ring.rectangle {
   aspect-ratio: 2 / 1;
 }
+.lds-ring.square {
+  aspect-ratio: 1 / 1;
+}
 .lds-ring.short-rectangle {
   aspect-ratio: 3 / 1;
 }
@@ -479,6 +482,12 @@ a.button:hover , button {
   flex-direction: column;
 }
 
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .filters select {
   padding: 10px;
   margin: 5px;
@@ -500,7 +509,7 @@ select.limit-filter {
 }
 
 a.reset-filter {
-  min-width: 150px;
+  min-width: 100px;
   font-style: italic;
   margin-left: 10px;
 }

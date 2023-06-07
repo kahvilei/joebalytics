@@ -23,16 +23,14 @@ function SummonerStats(props) {
   const [limit, setLimit] = useState(10);
   const [limitList, setLimitList] = useState([0]);
 
-  const [modeIsLoading, setModeIsLoading] = useState([]);
-  const [limitIsLoading, setLimitIsLoading] = useState([]);
-  const [roleIsLoading, setRoleIsLoading] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { region, name } = useParams();
 
 
   useEffect(() => {
  
-    setModeIsLoading(true);
+    setIsLoading(true);
     //get number of games that fit current selection
     axios
     .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/${mode}/queueId/10000/any/${region}/${name}`)
@@ -55,11 +53,11 @@ function SummonerStats(props) {
         limits.push(hardLimit);
       }
       setLimitList(limits); 
-      setLimitIsLoading(false);
+
     })
     .catch((err) => {
       setLimitList([0]); 
-      setLimitIsLoading(false);
+      
       console.log("Error from SummonerDetails");
     });
     //get list of modes played, returns queue IDs
@@ -68,11 +66,11 @@ function SummonerStats(props) {
       .then((res) => {
         res.data.push('any');
         setModeList(res.data); 
-        setModeIsLoading(false);
+        
       })
       .catch((err) => {
         setModeList(['any']); 
-        setModeIsLoading(false);
+        
         console.log("Error from SummonerDetails");
       });
     //get list of roles played, returns role IDs
@@ -81,11 +79,11 @@ function SummonerStats(props) {
       .then((res) => {
         res.data.push('any');
         setRoleList(res.data); 
-        setRoleIsLoading(false);
+        setIsLoading(false);
       })
       .catch((err) => {
         setRoleList(['any']); 
-        setRoleIsLoading(false);
+        setIsLoading(false);
         console.log("Error from SummonerDetails");
       });
   }, [champ, role, mode, limit, region, name]);
@@ -102,9 +100,9 @@ function SummonerStats(props) {
     for (let limitNum of limitList){
       if(limitNum !== ''){
         if(limitNum === limitList.slice(-1)[0]){
-          options.push(<option key = {key++} value={limitNum} > All games ({limitNum})</option>);
+          options.push(<option key = {key++} value={limitNum} ><div className = "option"> All games ({limitNum})</div></option>);
         }else{
-          options.push(<option key = {key++} value={limitNum} >{limitNum}</option>);
+          options.push(<option key = {key++} value={limitNum} ><div className = "option">{limitNum}</div></option>);
         }
       }
     }
@@ -171,6 +169,19 @@ function SummonerStats(props) {
     setLimit(10);
   };
 
+  function LoadingNotify(){
+    if (isLoading) {
+      return (
+        <div>
+          <LoadingCircle color={"gold"} size = {"small"} aspectRatio= {"square"} />
+          </div>
+      );
+    }else{
+      return (<div></div>
+       );
+    }
+  }
+
     return (
       <div className="summoner-stats">
         <div className="filters">
@@ -178,6 +189,7 @@ function SummonerStats(props) {
             <ModeFilter />
             <PositionFilter />
             <a className = "reset-filter" href = "#" onClick={onReset}>Reset Filters</a>
+            <LoadingNotify></LoadingNotify>
         </div>
         <div className="stats">
             <StatCard stat = {"win"} title = {"Win Rate"} display = {"percentage"} aggr = {"avg"} champ = {champ} role = {role} mode = {mode} limit = {limit} region = {region} name = {name}/>

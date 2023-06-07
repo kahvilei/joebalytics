@@ -26,19 +26,19 @@ const getChampName = (id) =>{
 }
 
 const getRoleName = (id) =>{
-    if(id == "UTILITY"){
+    if(id === "UTILITY"){
         return "Support";
     }
-    if(id == "BOTTOM"){
+    if(id === "BOTTOM"){
         return "Bottom";
     }
-    if(id == "JUNGLE"){
+    if(id === "JUNGLE"){
         return "Jungle";
     }
-    if(id == "TOP"){
+    if(id === "TOP"){
         return "Top";
     }
-    if(id == "MIDDLE"){
+    if(id === "MIDDLE"){
         return "Middle";
     }
     return "unnamed";
