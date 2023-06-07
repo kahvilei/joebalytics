@@ -210,6 +210,7 @@ function SummonerStats(props) {
   const onReset = (e) => {
     setMode('any');
     setRole('any');
+    setChamp('any');
     setLimit(10);
   };
 
