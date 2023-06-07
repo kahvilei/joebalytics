@@ -51,10 +51,10 @@ function Navigation() {
           }}
           id="nav-collapse"
         >
-          <div class="hamburger-lines">
-            <span class="line line1"></span>
-            <span class="line line2"></span>
-            <span class="line line3"></span>
+          <div className="hamburger-lines">
+            <span className="line line1"></span>
+            <span className="line line2"></span>
+            <span className="line line3"></span>
           </div>
         </div>
       <UserTools />

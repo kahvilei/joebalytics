@@ -10,6 +10,7 @@ import LoadingCircle from "../components/LoadingCircle";
 
 function SummonerStats(props) {
   const [stats, setStats] = useState('no stats found');
+
   const [mode, setMode] = useState('any');
   const [modeList, setModeList] = useState(['any']);
 
@@ -17,39 +18,75 @@ function SummonerStats(props) {
   const [roleList, setRoleList] = useState(['any']);
 
   const [champ, setChamp] = useState('any');
-  const [limit, setLimit] = useState(20);
 
-  const [isLoading, setIsLoading] = useState([]);
+  //used to set and determine how many games to limit stats results to. 
+  //limitlist contains a set available numbers to limit to, capping at the max games that exist
+  const [limit, setLimit] = useState(10);
+  const [limitList, setLimitList] = useState([0]);
+
+  const [modeIsLoading, setModeIsLoading] = useState([]);
+  const [limitIsLoading, setLimitIsLoading] = useState([]);
+  const [roleIsLoading, setRoleIsLoading] = useState([]);
 
   const { region, name } = useParams();
 
 
   useEffect(() => {
  
-    setIsLoading(true);
+    setModeIsLoading(true);
+    //get number of games that fit current selection
+    axios
+    .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/${mode}/queueId/10000/any/${region}/${name}`)
+    .then((res) => {
+      let limits = [];
+      let hardLimit = res.data.length;
+      if(hardLimit > 4 && hardLimit < 10){
+        limits.push(5);
+      }
+      if(hardLimit > 9){
+        limits.push(10);
+      }
+      if(hardLimit > 55){
+        limits.push(50);
+      }
+      if(hardLimit > 105){
+        limits.push(100);
+      }
+      if(hardLimit > 0){
+        limits.push(hardLimit);
+      }
+      setLimitList(limits); 
+      setLimitIsLoading(false);
+    })
+    .catch((err) => {
+      setLimitList([0]); 
+      setLimitIsLoading(false);
+      console.log("Error from SummonerDetails");
+    });
     //get list of modes played, returns queue IDs
     axios
-      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/any/queueId/1000/unique/${region}/${name}`)
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/any/queueId/${limit}/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setModeList(res.data); 
-        
+        setModeIsLoading(false);
       })
       .catch((err) => {
         setModeList(['any']); 
-        
+        setModeIsLoading(false);
         console.log("Error from SummonerDetails");
       });
+    //get list of roles played, returns role IDs
       axios
-      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/any/${mode}/teamPosition/1000/unique/${region}/${name}`)
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/any/${mode}/teamPosition/${limit}/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setRoleList(res.data); 
-        setIsLoading(false);
+        setRoleIsLoading(false);
       })
       .catch((err) => {
         setRoleList(['any']); 
-        setIsLoading(false);
+        setRoleIsLoading(false);
         console.log("Error from SummonerDetails");
       });
   }, [champ, role, mode, limit, region, name]);
@@ -61,13 +98,24 @@ function SummonerStats(props) {
   };
 
   function LimitFilter(){
+    let options = [];
+    let key = 0;
+    for (let limitNum of limitList){
+      if(limitNum !== ''){
+        if(limitNum === limitList.slice(-1)[0]){
+          options.push(<option key = {key++} value={limitNum} > All games ({limitNum})</option>);
+        }else{
+          options.push(<option key = {key++} value={limitNum} >{limitNum}</option>);
+        }
+      }
+    }
+    
     return(
-        <select  onChange={onLimitUpdate} value={limit}>
-            <option value='10' >10</option>
-            <option value='20' >20</option>
-            <option value='50' >50</option>
+        <select className = "limit-filter" onChange={onLimitUpdate} value={limit}>
+           {options}
         </select>
     );
+    
   }
 
   const onPositionUpdate = (e) => {
@@ -76,16 +124,23 @@ function SummonerStats(props) {
 
   function PositionFilter(){
     let options = [];
+    let key = 0;
     for (let roleId of roleList){
       if(roleId !== ''){
-        options.push(<option value={roleId} >{roleId}</option>);
+        if(roleId === 'any'){
+          options.push(<option key = {key++} value={roleId} >All roles</option>);
+        }else{
+          options.push(<option key = {key++} value={roleId} >{roleId}</option>);
+        }
       }
     }
+    
     return(
-        <select  onChange={onPositionUpdate} value={role}>
+        <select className = "position-filter" onChange={onPositionUpdate} value={role}>
             {options}
         </select>
     );
+    
   }
 
   const onModeUpdate = (e) => {
@@ -94,14 +149,21 @@ function SummonerStats(props) {
 
   function ModeFilter(){
     let options = [];
+    let key = 0;
     for (let modeId of modeList){
-      options.push(<option value={modeId} >{getQueueName(modeId)}</option>);
+      if(modeId === 'any'){
+        options.push(<option key = {key++} value={modeId} >All game modes</option>);
+      }else{
+      options.push(<option key = {key++} value={modeId} >{getQueueName(modeId)}</option>);
+      }
     }
+    
     return(
-        <select  onChange={onModeUpdate} value={mode}>
+        <select className = "mode-filter" onChange={onModeUpdate} value={mode}>
             {options}
         </select>
     );
+    
   }
 
     return (

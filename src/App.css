@@ -487,6 +487,19 @@ a.button:hover , button {
   border: none;
 }
 
+select.mode-filter {
+  min-width: 230px;
+}
+
+select.position-filter {
+  min-width: 120px;
+}
+
+select.limit-filter {
+  min-width: 150px;
+}
+
+
 .stats {
   display: flex;
 }
