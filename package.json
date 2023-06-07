@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "node ./server/server.js",
-    "dev start": "set PORT=3006 ROOT=http://localhost:3000/ && react-scripts start",
+    "dev-start": "set PORT=3006 ROOT=http://localhost:3000/ && react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "dev": "nodemon ./server/server.js"
