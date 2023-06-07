@@ -4,8 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { useAuth } from "../../auth/auth";
-import { getSummonerIcon, getQueueName } from "../../utils/riotCDN";
+import { getRoleName, getQueueName } from "../../utils/riotCDN";
 import LoadingCircle from "../components/LoadingCircle";
 
 function SummonerStats(props) {
@@ -130,7 +129,7 @@ function SummonerStats(props) {
         if(roleId === 'any'){
           options.push(<option key = {key++} value={roleId} >All roles</option>);
         }else{
-          options.push(<option key = {key++} value={roleId} >{roleId}</option>);
+          options.push(<option key = {key++} value={roleId} >{getRoleName(roleId)}</option>);
         }
       }
     }
@@ -166,12 +165,19 @@ function SummonerStats(props) {
     
   }
 
+  const onReset = (e) => {
+    setMode('any');
+    setRole('any');
+    setLimit(10);
+  };
+
     return (
       <div className="summoner-stats">
         <div className="filters">
             <LimitFilter />
             <ModeFilter />
             <PositionFilter />
+            <a className = "reset-filter" href = "#" onClick={onReset}>Reset Filters</a>
         </div>
         <div className="stats">
             <StatCard stat = {"win"} title = {"Win Rate"} display = {"percentage"} aggr = {"avg"} champ = {champ} role = {role} mode = {mode} limit = {limit} region = {region} name = {name}/>

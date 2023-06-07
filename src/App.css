@@ -499,6 +499,12 @@ select.limit-filter {
   min-width: 150px;
 }
 
+a.reset-filter {
+  min-width: 150px;
+  font-style: italic;
+  margin-left: 10px;
+}
+
 
 .stats {
   display: flex;

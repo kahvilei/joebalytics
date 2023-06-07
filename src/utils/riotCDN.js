@@ -25,6 +25,25 @@ const getChampName = (id) =>{
     return "unnamed";
 }
 
+const getRoleName = (id) =>{
+    if(id == "UTILITY"){
+        return "Support";
+    }
+    if(id == "BOTTOM"){
+        return "Bottom";
+    }
+    if(id == "JUNGLE"){
+        return "Jungle";
+    }
+    if(id == "TOP"){
+        return "Top";
+    }
+    if(id == "MIDDLE"){
+        return "Middle";
+    }
+    return "unnamed";
+}
+
 const getQueueName = (id) =>{
     for (let queue in queues){
         if(parseInt(queues[queue].queueId) === id){
@@ -34,4 +53,4 @@ const getQueueName = (id) =>{
     return "any";
 }
 
-export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName};
+export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName, getRoleName};
