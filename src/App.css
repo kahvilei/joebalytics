@@ -322,7 +322,7 @@ a.button:hover , button {
   z-index: 1;
 }
 
-.menu a {
+.menu a, .menu .menuHead .menuHeadText{
   width: 100%;
   display: block;
   padding: 20px;
@@ -332,8 +332,44 @@ a.button:hover , button {
   text-decoration: none;
 }
 
-.menu a:hover {
+.menu .menuHead .menuHeadArrow {
+  width: 60px;
+  font-size: 25px;
+  display: flex;
+    color: var(--gold);
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    transition: .1s;
+    user-select: none;
+}
+
+.menu a:hover, .menu .menuHead:hover {
   background-color: var(--lake);
+}
+
+.subMenu {
+  padding-left: 30px;
+  display: none;
+}
+
+.subMenu.active{
+  display: block;
+}
+
+.menuHead.active .menuHeadArrow{
+  transform: rotate(90deg);
+}
+
+.subMenu a {
+  text-transform: none;
+  padding: 10px;
+  color: white;
+}
+
+.menuHead {
+  display: flex;
+  align-items: center;
 }
 
 @media (max-width: 900px) {
