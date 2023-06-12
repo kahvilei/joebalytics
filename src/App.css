@@ -204,6 +204,12 @@ a.button , button{
   cursor: pointer;
 }
 
+.info-blue {
+  font-size: 12px;
+  color: var(--evening-blue);
+  font-style: italic;
+}
+
 button.btn-outline-danger {
   background: none;
   color: var(--grandmaster);
@@ -220,7 +226,62 @@ a.button:hover , button {
   background-color: var(--gold);
 }
 
+/* dropdown styles */
 
+.dropDown-wrap {
+  margin: 5px;
+}
+
+.dropDown {
+  height: 36px;
+  box-sizing: border-box;
+  margin-top: 5px;
+  background-color: var(--lake);
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropDown .list {
+  display: none;
+  position: absolute;
+  background-color: var(--lake);
+  width: max-content;
+  overflow: auto;
+  max-height: 400px;
+}
+
+.dropDown .list::-webkit-scrollbar-track {
+  padding: 2px;
+}
+
+.dropDown .list::-webkit-scrollbar {
+  width: 7px;
+}
+
+.dropDown .list::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  padding: 2px;
+  background-color: var(--evening-blue);
+}
+
+.dropDown .current{
+  padding: 10px;
+}
+
+.dropDown:focus .list.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.list .item {
+  padding: 10px 10px;
+}
+
+.list .item:hover {
+  background-color: var(--deep-sea);
+}
+/* nav styles */
 
 .nav {
   height: 54px;
@@ -234,7 +295,7 @@ a.button:hover , button {
   justify-content: space-between;
   padding: 10px;
   box-sizing: border-box;
-  z-index: 1;
+  z-index: 2;
 }
 
 .nav a {
@@ -399,6 +460,10 @@ a.button:hover , button {
   border: 3px solid var(--gold);
 }
 
+.summoner-icon {
+  padding: 0px 20px 20px 0px;
+}
+
 .card-container {
   border-radius: 5px;
   padding: 30px;
@@ -422,7 +487,6 @@ a.button:hover , button {
 
 .desc {
   width: calc(100% - 56px);
-  padding-left: 20px;
   box-sizing: border-box;
 }
 
@@ -548,6 +612,11 @@ a.reset-filter {
   min-width: 100px;
   font-style: italic;
   margin-left: 10px;
+  margin-top: 20px;
+}
+
+.filter-loading{
+  margin-top: 20px;
 }
 
 
@@ -585,6 +654,8 @@ a.reset-filter {
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  z-index: 1;
   container-type:inline-size;
 }
 .summoner-header .summoner-icon img {

@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getChampName, getRoleName, getQueueName } from "../../utils/riotCDN";
 import LoadingCircle from "../components/LoadingCircle";
+import DropDown from "../components/DropDown";
 
 function SummonerStats(props) {
   const [stats, setStats] = useState('no stats found');
@@ -109,33 +110,35 @@ function SummonerStats(props) {
    
 
 
-  const onLimitUpdate = (e) => {
-    setLimit(e.target.value);
+  const onLimitUpdate = (value) => {
+    setLimit(value);
   };
 
   function LimitFilter(){
     let options = [];
     let key = 0;
+    let max = 10;
     for (let limitNum of limitList){
       if(limitNum !== ''){
         if(limitNum === limitList.slice(-1)[0]){
-          options.push(<option key = {key++} value={limitNum} > All games ({limitNum})</option>);
+          options[limitNum] =(<div key = {key++} value={limitNum} > All games ({limitNum})</div>);
+          max = limitNum;
         }else{
-          options.push(<option key = {key++} value={limitNum} >Past {limitNum} games</option>);
+          options[limitNum] =(<div key = {key++} value={limitNum} >Past {limitNum} games</div>);
         }
       }
     }
     
+    let defaultLimit = options[limit]  ? options[limit] : options[max]
+    
     return(
-        <select className = "limit-filter" onChange={onLimitUpdate} value={limit}>
-           {options}
-        </select>
-    );
+      <DropDown label = {"Number of games"} className = "mode-filter" selectFunction={onLimitUpdate} defaultValue={defaultLimit} items = {options}/>
+  );
     
   }
 
-  const onPositionUpdate = (e) => {
-    setRole(e.target.value);
+  const onPositionUpdate = (value) => {
+    setRole(value);
   };
 
   function PositionFilter(){
@@ -144,48 +147,48 @@ function SummonerStats(props) {
     for (let roleId of roleList){
       if(roleId !== ''){
         if(roleId === 'any'){
-          options.push(<option key = {key++} value={roleId} >All roles</option>);
+          options[roleId] =(<div key = {key++} value={roleId} >All roles</div>);
         }else{
-          options.push(<option key = {key++} value={roleId} >{getRoleName(roleId)}</option>);
+          options[roleId] =(<div key = {key++} value={roleId} >{getRoleName(roleId)}</div>);
         }
       }
     }
+
+    let defaultRole = options[role]  ? options[role] : options['any']
     
     return(
-        <select className = "position-filter" onChange={onPositionUpdate} value={role}>
-            {options}
-        </select>
+      <DropDown label = {"Role"} className = "position-filter" selectFunction={onPositionUpdate} defaultValue={defaultRole} items = {options}/>
     );
     
   }
 
-  const onChampUpdate = (e) => {
-    setChamp(e.target.value);
+  const onChampUpdate = (value) => {
+    setChamp(value);
   };
 
   function ChampFilter(){
-    let options = [];
+    let options = {};
     let key = 0;
     for (let champId of champList){
       if(champId !== ''){
         if(champId === 'any'){
-          options.push(<option key = {key++} value={champId} >All champions</option>);
+          options[champId] = (<div key = {key++} value={champId} >All champions</div>);
         }else{
-          options.push(<option key = {key++} value={champId} >{getChampName(champId)}</option>);
+          options[champId] = (<div key = {key++} value={champId} >{getChampName(champId)}</div>);
         }
       }
     }
+
+    let defaultChamp = options[champ]  ? options[champ] : options['any']
     
     return(
-        <select className = "position-filter" onChange={onChampUpdate} value={champ}>
-            {options}
-        </select>
+        <DropDown label = {"Champion"} className = "champ-filter" selectFunction={onChampUpdate} defaultValue={defaultChamp} items = {options}/>
     );
     
   }
 
-  const onModeUpdate = (e) => {
-    setMode(e.target.value);
+  const onModeUpdate = (value) => {
+    setMode(value);
   };
 
   function ModeFilter(){
@@ -193,17 +196,17 @@ function SummonerStats(props) {
     let key = 0;
     for (let modeId of modeList){
       if(modeId === 'any'){
-        options.push(<option key = {key++} value={modeId} >All game modes</option>);
+        options[modeId] = (<div key = {key++} value={modeId} >All game modes</div>);
       }else{
-      options.push(<option key = {key++} value={modeId} >{getQueueName(modeId)}</option>);
+      options[modeId] = (<div key = {key++} value={modeId} >{getQueueName(modeId)}</div>);
       }
     }
+
+    let defaultMode = options[mode]  ? options[mode] : options['any']
     
     return(
-        <select className = "mode-filter" onChange={onModeUpdate} value={mode}>
-            {options}
-        </select>
-    );
+      <DropDown label = {"Game mode"} className = "mode-filter" selectFunction={onModeUpdate} defaultValue={defaultMode} items = {options}/>
+  );
     
   }
 
@@ -217,9 +220,9 @@ function SummonerStats(props) {
   function LoadingNotify(){
     if (isLoading) {
       return (
-        <div>
+        <div className = "filter-loading">
           <LoadingCircle color={"gold"} size = {"small"} aspectRatio= {"square"} />
-          </div>
+        </div>
       );
     }else{
       return (<div></div>

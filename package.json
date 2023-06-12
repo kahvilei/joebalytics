@@ -29,10 +29,10 @@
   },
   "scripts": {
     "start": "node ./server/server.js",
-    "dev-start": "set PORT=3006 ROOT=http://localhost:3000/ && react-scripts start",
+    "dev-react": "set PORT=3006 ROOT=http://localhost:3000/ && react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "dev": "nodemon ./server/server.js"
+    "dev-serv": "nodemon ./server/server.js"
   },
   "devDependencies": {
     "dotenv-webpack": "^8.0.1",
