@@ -1,6 +1,8 @@
 import React, { useState, useLayoutEffect } from "react";
 
 function DropDown(props) {
+  const [dataLoading, setDataLoading] = useState(props.dataLoading);
+
   const [currentItem, setCurrentItem] = useState(props.defaultValue);
   const [itemCount, setItemCount] = useState(0);
   const [currentSearch, setCurrentSearch] = useState("");
@@ -18,7 +20,7 @@ function DropDown(props) {
     isSearchable = true;
   }
 
-  let isList = true;
+  const [isList, setIsList] = useState(true);
 
   const [items, setItems] = useState();
 
@@ -26,9 +28,9 @@ function DropDown(props) {
     let mappedList = [];
     let count = Object.keys(props.items).length;
     let counter = 0;
-    if (count === 0 || count === 1) {
+    if (count === 0 || count === 1 || dataLoading) {
       mappedList = "";
-      isList = false;
+      setIsList(false)
     } else {
       Object.entries(props.items).map((item, k) => {
         if (currentItem) {
@@ -69,7 +71,7 @@ function DropDown(props) {
     }
     setItemCount(counter+1);
     setItems(mappedList);
-  }, [currentSearch, cursor]);
+  }, [currentItem, currentSearch, cursor, isSearchable, props.items, dataLoading]);
 
   const currentUpdate = (item) => {
     setCurrentItem(item);
@@ -152,7 +154,7 @@ function DropDown(props) {
         </div>
       </div>
     );
-  } else {
+  } else if (!dataLoading){
     return (
       <div className={"dropDown-wrap " + (isList ? "list" : "not-list")}>
         <div className="dropDown-label info-blue">{label}</div>
@@ -165,6 +167,20 @@ function DropDown(props) {
         </div>
       </div>
     );
+  } else{
+    return (
+      <div className="dropDown-wrap loading">
+        <div className="dropDown-label info-blue">{label}</div>
+        <div className="dropDown empty">
+          <div className="current">
+            {currentItem}     
+            <div className="arrow">&#9656;</div>
+          </div>
+          
+        </div>
+      </div>
+    );
+
   }
 }
 

@@ -26,6 +26,10 @@ function SummonerStats(props) {
   const [limitList, setLimitList] = useState([0]);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [limitIsLoading, setLimitIsLoading] = useState(true);
+  const [roleIsLoading, setRoleIsLoading] = useState(true);
+  const [modeIsLoading, setModeIsLoading] = useState(true);
+  const [champIsLoading, setChampIsLoading] = useState(true);
 
   const { region, name } = useParams();
 
@@ -33,6 +37,7 @@ function SummonerStats(props) {
   useEffect(() => {
  
     setIsLoading(true);
+    setLimitIsLoading(true);
     //get number of games that fit current selection
     axios
     .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/${mode}/queueId/10000/any/${region}/${name}`)
@@ -56,6 +61,7 @@ function SummonerStats(props) {
       }
       setLimitList(limits); 
       setIsLoading(false);
+      setLimitIsLoading(false);
     })
     .catch((err) => {
       setLimitList([0]); 
@@ -65,40 +71,49 @@ function SummonerStats(props) {
   }, [champ, role, mode, region, name]);
 
   useEffect(() => {
- 
-    
     //get list of modes played, returns queue IDs
+    setModeIsLoading(true)
     axios
       .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/${role}/any/queueId/${limit}/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setModeList(res.data); 
+        setModeIsLoading(false)
     
       })
       .catch((err) => {
         setModeList(['any']); 
-   
+
         console.log("Error from SummonerDetails");
       });
+  }, [champ, role, limit, region, name]);
+
+  useEffect(() => {
     //get list of roles played, returns role IDs
+    setRoleIsLoading(true)
       axios
       .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/${champ}/any/${mode}/teamPosition/${limit}/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setRoleList(res.data); 
+        setRoleIsLoading(false)
   
       })
       .catch((err) => {
         setRoleList(['any']); 
-      
         console.log("Error from SummonerDetails");
       });
+  }, [champ, mode, limit, region, name]);
+
+  useEffect(() => {
       //get list of champs played, returns champ IDs
+      setChampIsLoading(true)
       axios
       .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats/any/${role}/${mode}/championId/${limit}/unique/${region}/${name}`)
       .then((res) => {
         res.data.push('any');
         setChampList(res.data); 
+        setChampIsLoading(false)
   
       })
       .catch((err) => {
@@ -106,7 +121,7 @@ function SummonerStats(props) {
       
         console.log("Error from SummonerDetails");
       });
-  }, [champ, role, mode, limit, region, name]);
+  }, [role, mode, limit, region, name]);
    
 
 
@@ -132,7 +147,7 @@ function SummonerStats(props) {
     let defaultLimit = options[limit]  ? options[limit] : options[max]
     
     return(
-      <DropDown label = {"Number of games"} className = "mode-filter" selectFunction={onLimitUpdate} defaultValue={defaultLimit} items = {options}/>
+      <DropDown dataLoading={limitIsLoading} label = {"Number of games"} className = "mode-filter" selectFunction={onLimitUpdate} defaultValue={defaultLimit} items = {options}/>
   );
     
   }
@@ -157,7 +172,7 @@ function SummonerStats(props) {
     let defaultRole = options[role]  ? options[role] : options['any']
     
     return(
-      <DropDown label = {"Role"} className = "position-filter" selectFunction={onPositionUpdate} defaultValue={defaultRole} items = {options}/>
+      <DropDown dataLoading={roleIsLoading} label = {"Role"} className = "position-filter" selectFunction={onPositionUpdate} defaultValue={defaultRole} items = {options}/>
     );
     
   }
@@ -182,7 +197,7 @@ function SummonerStats(props) {
     let defaultChamp = options[champ]  ? options[champ] : options['any']
     
     return(
-        <DropDown searchable = {true} label = {"Champion"} className = "champ-filter" selectFunction={onChampUpdate} defaultValue={defaultChamp} items = {options}/>
+        <DropDown dataLoading={champIsLoading} searchable = {true} label = {"Champion"} className = "champ-filter" selectFunction={onChampUpdate} defaultValue={defaultChamp} items = {options}/>
     );
     
   }
@@ -205,7 +220,7 @@ function SummonerStats(props) {
     let defaultMode = options[mode]  ? options[mode] : options['any']
     
     return(
-      <DropDown label = {"Game mode"} className = "mode-filter" selectFunction={onModeUpdate} defaultValue={defaultMode} items = {options}/>
+      <DropDown dataLoading={modeIsLoading} label = {"Game mode"} className = "mode-filter" selectFunction={onModeUpdate} defaultValue={defaultMode} items = {options}/>
   );
     
   }

@@ -7,6 +7,7 @@
   --primary-blue: #121E3A;
   --lake: #1D2D54;
   --evening-blue: #5E89EE;
+  --dull-blue: #737e99;
   --gold: #C99A54;
   --hover-gold: #b1751b;
   --text-main: #ffffff;
@@ -117,9 +118,9 @@ body{
 }
 
 .content {
-  width: 100vw;
+  width: 100%;
   box-sizing: border-box;
-  padding: 55px 10px 10px 230px;
+  padding: 55px 0px 10px 230px;
   display: flex;
   justify-content: center;
 }
@@ -230,6 +231,10 @@ a.button:hover , button {
 
 .dropDown-wrap {
   margin: 5px;
+}
+
+.dropDown-wrap.loading {
+  color: var(--dull-blue);
 }
 
 .dropDown {
