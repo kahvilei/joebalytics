@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 
 function DropDown(props) {
   const [currentItem, setCurrentItem] = useState(props.defaultValue);
+  const [itemCount, setItemCount] = useState(0);
   const [currentSearch, setCurrentSearch] = useState("");
+  const [cursor, setCursor] = useState(0);
+  const selectFunction = props.selectFunction;
 
   let label = "";
   if (props.label) {
@@ -17,52 +20,60 @@ function DropDown(props) {
 
   let isList = true;
 
-  const mappedList = (list) => {
-    let mappedList = {};
-    let count = Object.keys(list).length;
+  const [items, setItems] = useState();
+
+  useLayoutEffect(() => {
+    let mappedList = [];
+    let count = Object.keys(props.items).length;
+    let counter = 0;
     if (count === 0 || count === 1) {
       mappedList = "";
       isList = false;
     } else {
-      mappedList = Object.entries(list).map((item, k) => {
+      Object.entries(props.items).map((item, k) => {
         if (currentItem) {
+          let cursorState = (counter === cursor)? "cursor" : "";
           if (isSearchable) {
-            if (item[1].props.children.toLowerCase().includes(currentSearch.toLowerCase())) {
-              return (
-                <div
-                  className="item"
-                  onClick={() => currentUpdate(item[1])}
-                  key={k}
-                >
-                  {item[1]}
-                </div>
-              );
+            if (
+              item[1].props.children
+                .toLowerCase()
+                .includes(currentSearch.toLowerCase())
+            ) {
+              mappedList[counter] = (<div
+                className={"item " + cursorState}
+                onClick={() => currentUpdate(item[1])}
+                key={k}
+              >
+                {item[1]}
+              </div>);
+              counter++;
             }
           } else {
             if (item[1].props.value === currentItem.props.value) {
             } else {
-              return (
+              mappedList[counter] = (
                 <div
-                  className="item"
+                  className={"item " + cursorState}
                   onClick={() => currentUpdate(item[1])}
                   key={k}
                 >
                   {item[1]}
                 </div>
               );
+              counter++;
             }
           }
         } else {
         }
       });
     }
-    return mappedList;
-  };
+    setItemCount(counter+1);
+    setItems(mappedList);
+  }, [currentSearch, cursor]);
 
-  const [items, setItems] = useState(mappedList(props.items));
   const currentUpdate = (item) => {
     setCurrentItem(item);
-    props.selectFunction(item.props.value);
+    selectFunction(item.props.value);
   };
 
   const toggleDrop = (e) => {
@@ -77,19 +88,63 @@ function DropDown(props) {
     }
   };
 
-  const setSearchValue = (e) => {
+  const handleKeyUp = (e) => {
+    if(cursor > itemCount - 1){
+      setCursor(0);
+    }
+    // arrow up/down button should select next/previous list element
+    if (e.keyCode === 38 && cursor > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      setCursor(cursor - 1);
+    } else if (e.keyCode === 40 && cursor < itemCount) {
+      e.preventDefault();
+      e.stopPropagation();
+      setCursor(cursor + 1);
+    } else if (e.keyCode === 13) {
+      e.preventDefault();
+      currentUpdate(items[cursor].props.children);
+    } else {
+      setSearchValue(e);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+
+    // prevent defautl key behavior
+    if (e.keyCode === 38 ) {
+      e.preventDefault();
+      e.stopPropagation();
+ 
+    } else if (e.keyCode === 40 ) {
+      e.preventDefault();
+      e.stopPropagation();
+
+    } else if (e.keyCode === 13) {
+      e.preventDefault();
+      
+    } else {
+      
+    }
+  };
+
+  const setSearchValue = async (e) => {
     let search = e.currentTarget.innerText;
     setCurrentSearch(search);
-    setItems(mappedList(props.items));
-  }
+  };
 
   if (isSearchable) {
     return (
       <div className={"dropDown-wrap " + (isList ? "list" : "not-list")}>
         <div className="dropDown-label info-blue">{label}</div>
-        <div tabIndex="0" className="dropDown">
-          <div contentEditable = "true" onKeyUp={(e) => setSearchValue(e)} className="search" type="text"></div>
-          <div className="current">
+        <div onKeyDown={(e) => handleKeyDown(e)} tabIndex="0" className="dropDown">
+          <div
+            contentEditable="true"
+            onKeyUp={(e) => handleKeyUp(e)}
+            className="search"
+            type="text"
+          ></div>
+          <div onFocus={toggleDrop} className="current">
             {currentItem}
             <div className="arrow">&#9656;</div>
           </div>
@@ -101,8 +156,8 @@ function DropDown(props) {
     return (
       <div className={"dropDown-wrap " + (isList ? "list" : "not-list")}>
         <div className="dropDown-label info-blue">{label}</div>
-        <div tabIndex="0" className="dropDown">
-          <div onClick={toggleDrop} className="current">
+        <div onKeyDown={(e) => handleKeyDown(e)} onKeyUp={(e) => handleKeyUp(e)} tabIndex="0" className="dropDown">
+          <div className="current">
             {currentItem}
             <div className="arrow">&#9656;</div>
           </div>
