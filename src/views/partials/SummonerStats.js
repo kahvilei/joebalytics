@@ -115,7 +115,7 @@ function SummonerStats(props) {
   };
 
   function LimitFilter(){
-    let options = [];
+    let options = {};
     let key = 0;
     let max = 10;
     for (let limitNum of limitList){
@@ -142,7 +142,7 @@ function SummonerStats(props) {
   };
 
   function PositionFilter(){
-    let options = [];
+    let options = {};
     let key = 0;
     for (let roleId of roleList){
       if(roleId !== ''){
@@ -182,7 +182,7 @@ function SummonerStats(props) {
     let defaultChamp = options[champ]  ? options[champ] : options['any']
     
     return(
-        <DropDown label = {"Champion"} className = "champ-filter" selectFunction={onChampUpdate} defaultValue={defaultChamp} items = {options}/>
+        <DropDown searchable = {true} label = {"Champion"} className = "champ-filter" selectFunction={onChampUpdate} defaultValue={defaultChamp} items = {options}/>
     );
     
   }
@@ -192,7 +192,7 @@ function SummonerStats(props) {
   };
 
   function ModeFilter(){
-    let options = [];
+    let options = {};
     let key = 0;
     for (let modeId of modeList){
       if(modeId === 'any'){

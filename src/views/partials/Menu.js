@@ -62,7 +62,7 @@ function Menu() {
       <div className="menuItem">
         <div className="menuHead" onClick={(e) => {toggleSubMenu(e);}}>
           <div className="menuHeadText">Summoners</div>
-          <div className="menuHeadArrow">&#8250;</div>
+          <div className="menuHeadArrow">&#9656;</div>
         </div>
         <div className="subMenu">
           {summonerList}

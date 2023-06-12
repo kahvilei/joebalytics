@@ -265,11 +265,22 @@ a.button:hover , button {
   background-color: var(--evening-blue);
 }
 
-.dropDown .current{
+.dropDown .current {
+  display: flex;
   padding: 10px;
+  justify-content: space-between;
 }
 
-.dropDown:focus .list.active {
+.dropDown .current :first-child{
+  margin-right: 10px;
+}
+
+.dropDown:focus .list {
+  display: flex;
+  flex-direction: column;
+}
+
+.search:focus+.current+.list{
   display: flex;
   flex-direction: column;
 }
@@ -280,6 +291,39 @@ a.button:hover , button {
 
 .list .item:hover {
   background-color: var(--deep-sea);
+}
+
+.not-list .arrow {
+  display: none;
+}
+
+.list .arrow{
+  transition: .1s;;
+}
+
+.dropDown:focus .current .arrow{
+  transform: rotate(90deg);
+}
+
+.search:focus+.current .arrow{
+  transform: rotate(90deg);
+}
+
+.search:focus+.current :first-child{
+  opacity: 0;
+}
+
+.search{
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  width: calc(100%);
+  box-sizing: border-box;
+}
+
+.search:focus{
+  opacity: 1;
 }
 /* nav styles */
 
