@@ -1,12 +1,16 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 function DropDown(props) {
   const [dataLoading, setDataLoading] = useState(props.dataLoading);
 
   const [currentItem, setCurrentItem] = useState(props.defaultValue);
+  // const defaultItem = props.defaultValue;
+  const isAlphaOrder = props.isAlphaOrder;
+
   const [itemCount, setItemCount] = useState(0);
   const [currentSearch, setCurrentSearch] = useState("");
   const [cursor, setCursor] = useState(0);
+
   const selectFunction = props.selectFunction;
 
   let label = "";
@@ -24,30 +28,40 @@ function DropDown(props) {
 
   const [items, setItems] = useState();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let mappedList = [];
     let count = Object.keys(props.items).length;
+    let listToMap = Object.entries(props.items);
+    if (isAlphaOrder) {
+      listToMap = Object.entries(props.items).sort();
+    }
     let counter = 0;
     if (count === 0 || count === 1 || dataLoading) {
       mappedList = "";
-      setIsList(false)
+      setIsList(false);
     } else {
-      Object.entries(props.items).map((item, k) => {
+      listToMap.map((item, k) => {
         if (currentItem) {
-          let cursorState = (counter === cursor)? "cursor" : "";
+          let cursorState = counter === cursor ? "cursor" : "";
           if (isSearchable) {
+            let text = item[1].props.children;
+            if(typeof text !== 'string'){
+              text = reduceObjToString(text, "");
+            }
             if (
-              item[1].props.children
+              text
                 .toLowerCase()
                 .includes(currentSearch.toLowerCase())
             ) {
-              mappedList[counter] = (<div
-                className={"item " + cursorState}
-                onClick={() => currentUpdate(item[1])}
-                key={k}
-              >
-                {item[1]}
-              </div>);
+              mappedList[counter] = (
+                <div
+                  className={"item " + cursorState}
+                  onClick={() => currentUpdate(item[1])}
+                  key={k}
+                >
+                  {item[1]}
+                </div>
+              );
               counter++;
             }
           } else {
@@ -69,9 +83,31 @@ function DropDown(props) {
         }
       });
     }
-    setItemCount(counter+1);
+    setItemCount(counter + 1);
     setItems(mappedList);
-  }, [currentItem, currentSearch, cursor, isSearchable, props.items, dataLoading]);
+  }, [
+    currentItem,
+    currentSearch,
+    cursor,
+    isSearchable,
+    props.items,
+    dataLoading,
+  ]);
+
+  const reduceObjToString = (obj, agr) => {
+    if(Array.isArray(obj)){
+      let returnString = "";
+      for(let item of obj){
+        returnString += reduceObjToString(item.props.children, agr);
+      }
+      return returnString;
+    }else if(typeof obj === 'object' ){
+      let returnString = "";
+      return returnString;
+    }else{
+      return agr + obj;
+    }
+  }
 
   const currentUpdate = (item) => {
     setCurrentItem(item);
@@ -80,18 +116,33 @@ function DropDown(props) {
 
   const toggleDrop = (e) => {
     let dropHead = e.currentTarget;
-    let dropMenu = dropHead.nextSibling;
-    if (!dropMenu.className.includes("active")) {
-      dropMenu.className = "list active";
-      dropHead.className = "current active";
-    } else {
-      dropMenu.className = "list";
-      dropHead.className = "current";
+    let dropMenu = e.currentTarget;   
+    if(e.currentTarget.className.includes("search")){
+      dropHead = e.currentTarget.nextSibling;
+      dropMenu = dropHead.nextSibling;   
+    }else{
+      dropHead = e.currentTarget.children[0];
+      dropMenu = dropHead.nextSibling;   
+    }
+    
+    if(e.type === "click"){
+      if (dropHead.className.includes("active")) {
+        dropMenu.className = "list";
+        dropHead.className = "current";
+        e.currentTarget.blur()
+      } else {
+        dropMenu.className = "list active";
+        dropHead.className = "current active";
+        e.currentTarget.focus()
+      }
+    }else{
+        dropMenu.className = "list";
+        dropHead.className = "current";
     }
   };
 
   const handleKeyUp = (e) => {
-    if(cursor > itemCount - 1){
+    if (cursor > itemCount - 1) {
       setCursor(0);
     }
     // arrow up/down button should select next/previous list element
@@ -112,21 +163,16 @@ function DropDown(props) {
   };
 
   const handleKeyDown = (e) => {
-
     // prevent defautl key behavior
-    if (e.keyCode === 38 ) {
+    if (e.keyCode === 38) {
       e.preventDefault();
       e.stopPropagation();
- 
-    } else if (e.keyCode === 40 ) {
+    } else if (e.keyCode === 40) {
       e.preventDefault();
       e.stopPropagation();
-
     } else if (e.keyCode === 13) {
       e.preventDefault();
-      
     } else {
-      
     }
   };
 
@@ -139,48 +185,59 @@ function DropDown(props) {
     return (
       <div className={"dropDown-wrap " + (isList ? "list" : "not-list")}>
         <div className="dropDown-label info-blue">{label}</div>
-        <div onKeyDown={(e) => handleKeyDown(e)} tabIndex="0" className="dropDown">
+        <div
+          onKeyDown={(e) => handleKeyDown(e)}
+          tabIndex="0"
+          className="dropDown"
+        >
           <div
             contentEditable="true"
             onKeyUp={(e) => handleKeyUp(e)}
+            onClick={(e) => toggleDrop(e)}
+            onBlur={(e) => toggleDrop(e)}
             className="search"
             type="text"
           ></div>
-          <div onFocus={toggleDrop} className="current">
+          <div className="current">
             {currentItem}
-            <div className="arrow">&#9656;</div>
+            <div className="arrow">&#9662;</div>
           </div>
           <div className="list">{items}</div>
         </div>
       </div>
     );
-  } else if (!dataLoading){
+  } else if (!dataLoading) {
     return (
       <div className={"dropDown-wrap " + (isList ? "list" : "not-list")}>
         <div className="dropDown-label info-blue">{label}</div>
-        <div onKeyDown={(e) => handleKeyDown(e)} onKeyUp={(e) => handleKeyUp(e)} tabIndex="0" className="dropDown">
+        <div
+          onKeyDown={(e) => handleKeyDown(e)}
+          onKeyUp={(e) => handleKeyUp(e)}
+          onClick={(e) => toggleDrop(e)}
+          onBlur={(e) => toggleDrop(e)}
+          tabIndex="0"
+          className="dropDown"
+        >
           <div className="current">
             {currentItem}
-            <div className="arrow">&#9656;</div>
+            <div className="arrow">&#9662;</div>
           </div>
           <div className="list">{items}</div>
         </div>
       </div>
     );
-  } else{
+  } else {
     return (
       <div className="dropDown-wrap loading">
         <div className="dropDown-label info-blue">{label}</div>
         <div className="dropDown empty">
           <div className="current">
-            {currentItem}     
-            <div className="arrow">&#9656;</div>
+            {currentItem}
+            <div className="arrow">&#9662;</div>
           </div>
-          
         </div>
       </div>
     );
-
   }
 }
 

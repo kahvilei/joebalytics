@@ -238,7 +238,6 @@ a.button:hover , button {
 }
 
 .dropDown {
-  height: 36px;
   box-sizing: border-box;
   margin-top: 5px;
   background-color: var(--lake);
@@ -272,8 +271,10 @@ a.button:hover , button {
 
 .dropDown .current {
   display: flex;
-  padding: 10px;
+  padding: 5px 15px;
+  height: 35px;
   justify-content: space-between;
+  align-items: center;
 }
 
 .dropDown .current :first-child{
@@ -307,11 +308,11 @@ a.button:hover , button {
 }
 
 .dropDown:focus .current .arrow{
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 .search:focus+.current .arrow{
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 .search:focus+.current{
   position: absolute;
@@ -342,6 +343,22 @@ a.button:hover , button {
   position: relative;
   min-width: 100px;
   padding-right: 30px
+}
+/** styles for listing with champ image **/
+.champ-listing {
+  display: flex;
+  align-items: center;
+}
+
+.champ-listing .icon {
+  max-width: 20px;
+  display: flex;
+  margin-right: 10px;
+  align-items: center;
+}
+
+.champ-listing .icon img {
+  border-width: 2px;
 }
 /* nav styles */
 
@@ -481,7 +498,7 @@ a.button:hover , button {
 }
 
 .menuHead.active .menuHeadArrow{
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 .subMenu a {
@@ -922,7 +939,7 @@ section.summoner-nav {
   margin: 9px;
 }
 
-.mastery.icon img {
+.icon img{
   width: 70px;
   border-radius: 50%;
   border: 3px solid var(--gold);
