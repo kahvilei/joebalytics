@@ -540,7 +540,7 @@ a.button:hover , button {
 }
 
 .summoner-icon {
-  padding: 0px 20px 20px 0px;
+  padding: 10px;
 }
 
 .card-container {
@@ -741,6 +741,10 @@ a.reset-filter {
   width: 190px;
 }
 
+.summoner-header .summoner-icon {
+  padding: 0px 20px 20px 0px;
+}
+
 .summoner-header-inner-wrap{
   max-width: 1500px;
   display: flex;
@@ -834,8 +838,9 @@ section.summoner-nav {
   justify-content: left;
 }
 .challenge.card-container img{
+  margin: 10px;
+  border: none;
   width: 70px;
-  padding: 10px;
 }
 .challenge-ranking .list {
   display: flex;
