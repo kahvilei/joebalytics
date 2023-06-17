@@ -7,6 +7,8 @@ const ChallengeCard = (props) => {
   const mode = props.mode;
   const name = props.name;
 
+  const challengePercentile = (challenge.percentile === 0) ? "Max (Top 0%)" : `Top ${(challenge.percentile * 100).toFixed(2)}%`
+
   if (mode === "listing" && name === undefined) {
     return (
       <div className="challenge card-container">
@@ -27,7 +29,7 @@ const ChallengeCard = (props) => {
         </div>
         <div>
           <div className="percentile">
-            Top {(challenge.percentile * 100).toFixed(2)}%
+          {challengePercentile}
           </div>
         </div>
       </div>
@@ -51,7 +53,7 @@ const ChallengeCard = (props) => {
         </div>
         <div>
           <div className="percentile">
-            Top {(challenge.percentile * 100).toFixed(2)}%
+          {challengePercentile}
           </div>
         </div>
       </div>
@@ -72,7 +74,7 @@ const ChallengeCard = (props) => {
             {challenge.challengeName}
           </div>
           <div className="percentile">
-            Top {(challenge.percentile * 100).toFixed(2)}%
+          {challengePercentile}
           </div>
         </div>
       </div>
@@ -92,7 +94,7 @@ const ChallengeCard = (props) => {
             {challenge.challengeName}
           </div>
           <div className="percentile">
-            Top {(challenge.percentile * 100).toFixed(2)}%
+          {challengePercentile}
           </div>
         </div>
       </div>

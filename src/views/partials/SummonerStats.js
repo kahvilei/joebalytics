@@ -187,7 +187,7 @@ function SummonerStats(props) {
     for (let roleId of roleList) {
       if (roleId !== "") {
         if (roleId === "any") {
-          options[roleId] = (
+          options[0] = (
             <div key={key++} value={roleId}>
               All roles
             </div>
@@ -202,7 +202,7 @@ function SummonerStats(props) {
       }
     }
 
-    let defaultRole = options[role] ? options[role] : options["any"];
+    let defaultRole = options[role] ? options[role] : options[0];
 
     return (
       <DropDown
@@ -269,7 +269,7 @@ function SummonerStats(props) {
     let key = 0;
     for (let modeId of modeList) {
       if (modeId === "any") {
-        options[modeId] = (
+        options[0] = (
           <div key={key++} value={modeId}>
             All game modes
           </div>
@@ -283,7 +283,7 @@ function SummonerStats(props) {
       }
     }
 
-    let defaultMode = options[mode] ? options[mode] : options["any"];
+    let defaultMode = options[mode] ? options[mode] : options[0];
 
     return (
       <DropDown

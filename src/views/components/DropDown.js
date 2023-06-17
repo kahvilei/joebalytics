@@ -4,7 +4,7 @@ function DropDown(props) {
   const [dataLoading, setDataLoading] = useState(props.dataLoading);
 
   const [currentItem, setCurrentItem] = useState(props.defaultValue);
-  // const defaultItem = props.defaultValue;
+  const defaultItem = props.defaultValue;
   const isAlphaOrder = props.isAlphaOrder;
 
   const [itemCount, setItemCount] = useState(0);

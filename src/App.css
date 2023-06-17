@@ -539,8 +539,10 @@ a.button:hover , button {
   border: 3px solid var(--gold);
 }
 
-.summoner-icon {
-  padding: 10px;
+.card-container .summoner-icon {
+  padding: 0px 15px 0px 0px;
+  box-sizing: border-box;
+  width: 56px;
 }
 
 .card-container {
