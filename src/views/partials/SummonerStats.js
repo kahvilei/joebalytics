@@ -1,7 +1,7 @@
 import { rootAddress } from "../../config/config";
 
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams} from "react-router-dom";
 
 import axios from "axios";
 import {
@@ -16,14 +16,17 @@ import DropDown from "../components/DropDown";
 function SummonerStats(props) {
   const [stats, setStats] = useState("no stats found");
 
-  const [mode, setMode] = useState("any");
+  const [searchParams, setSearchParams] = useSearchParams({});
+
+  const [mode, setMode] = useState(searchParams.get('mode')?searchParams.get('mode'):'any');
   const [modeList, setModeList] = useState(["any"]);
 
-  const [role, setRole] = useState("any");
+  const [role, setRole] = useState(searchParams.get('role')?searchParams.get('role'):'any');
   const [roleList, setRoleList] = useState(["any"]);
 
-  const [champ, setChamp] = useState("any");
+  const [champ, setChamp] = useState(parseInt(searchParams.get('champ'))?parseInt(searchParams.get('champ')):'any');
   const [champList, setChampList] = useState(["any"]);
+
 
   //used to set and determine how many games to limit stats results to.
   //limitlist contains a set available numbers to limit to, capping at the max games that exist
@@ -178,6 +181,8 @@ function SummonerStats(props) {
   }
 
   const onPositionUpdate = (value) => {
+    searchParams.set('role', value);
+    setSearchParams(searchParams);
     setRole(value);
   };
 
@@ -217,6 +222,8 @@ function SummonerStats(props) {
   }
 
   const onChampUpdate = (value) => {
+    searchParams.set('champ', value);
+    setSearchParams(searchParams);
     setChamp(value);
   };
 
@@ -261,6 +268,8 @@ function SummonerStats(props) {
   }
 
   const onModeUpdate = (value) => {
+    searchParams.set('mode', value);
+    setSearchParams(searchParams);
     setMode(value);
   };
 
@@ -298,9 +307,10 @@ function SummonerStats(props) {
   }
 
   const onReset = (e) => {
-    setMode("any");
-    setRole("any");
-    setChamp("any");
+    setSearchParams({});
+    setRole('any');
+    setMode('any');
+    setChamp('any');
     setLimit(10);
   };
 
@@ -323,9 +333,9 @@ function SummonerStats(props) {
         <ModeFilter />
         <PositionFilter />
         <ChampFilter />
-        <a className="reset-filter" href="#" onClick={onReset}>
+        <div className="reset-filter" onClick={onReset}>
           Reset Filters
-        </a>
+        </div>
         <LoadingNotify></LoadingNotify>
       </div>
       <div className="stats">

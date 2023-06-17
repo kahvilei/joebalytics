@@ -102,6 +102,45 @@ router.get('/recent/:limit/:region/:name', async (req, res) => {
   }
 })
 
+router.get('/recent/:limit/populate/:region/:name/:champ/:role/:mode', async (req, res) => {
+  let limit = req.params.limit;
+  let region = req.params.region;
+  let name = req.params.name;
+
+  let role = req.params.role;
+  if(role === "any"){
+    role = {$exists: true};
+  }
+  let champ = req.params.champ;
+  if(champ === "any"){
+    champ = {$exists: true};
+  }
+  let mode = req.params.mode;
+  if(mode === "any"){
+    mode = {$exists: true};
+  }
+
+  try {
+    let summoner = await Summoner.findOne({
+      $and: [{ nameURL: name }, { regionURL: region }],
+    });
+    try {
+      let participants = [];
+      let matchIds = [];
+      participants = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+      for(let participant of participants){
+        matchIds.push(participant.matchId);
+      }
+      let matches = await Match.find({ "metadata.matchId": { $in: matchIds }, }).sort({ gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
+      res.json(matches);
+    } catch (e) {
+      res.status(404).json({ msg: 'No matches found' })
+    }
+  } catch {
+    return res.status(404).json({ msg: "No Summoner found" });
+  }
+})
+
 
 // @route GET api/match/:id
 // @description Get single Match by id
