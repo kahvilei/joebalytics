@@ -689,9 +689,11 @@ select.limit-filter {
   min-width: 150px;
 }
 
-a.reset-filter {
+div.reset-filter {
   min-width: 100px;
   font-style: italic;
+  color: var(--gold);
+  cursor: pointer;
   margin-left: 10px;
   margin-top: 20px;
 }
@@ -815,7 +817,7 @@ section.summoner-nav {
   background-color: var(--midnight);
 }
 
-.undefined a#mastery {
+.undefined a#matches {
   background-color: var(--midnight);
 }
 
