@@ -997,3 +997,21 @@ section.summoner-nav {
     flex-basis: calc(100%);
   }
 }
+
+/** match history **/
+
+.match-list .list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.match-card {
+  padding: 20px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  display: flex;
+  width: 100%;
+  background-color: var(--primary-blue);
+  border-radius: 5px;
+}

@@ -1,6 +1,7 @@
 import ShowSummonerList from "../partials/ShowSummonerList";
 import ShowChallengeRanking from "../partials/ShowChallengeRanking";
 import ShowMasteryRanking from "../partials/ShowMasteryRanking";
+import ShowMatchList from "../partials/ShowMatchList";
 
 function Home() {
   return (
@@ -13,6 +14,11 @@ function Home() {
         <section>
           <h2>Champion Masteries</h2>
           <ShowMasteryRanking count = {8}/>
+        </section>
+        <section>
+          <h2>Recent Matches</h2>
+          <ShowMatchList count = {10}/>
+          {/* //TODO: add pagination */}
         </section>
       </div>
       <div className="side-column">
