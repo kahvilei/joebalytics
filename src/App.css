@@ -10,7 +10,7 @@
   --dull-blue: #737e99;
   --gold: #C99A54;
   --hover-gold: #b1751b;
-  --text-main: #ffffff;
+  --text-main: #f1f5fd;
 
   /*rank colors*/
   --iron: #484443;
@@ -21,6 +21,14 @@
   --master: #a156a8;
   --grandmaster: #99404c;
   --challenger:#dfc154;
+
+  /*success - failure colors*/
+  --success: #67d1a0;
+  --failure: #ad4740;
+  --success-transparent: rgba(103, 209, 160, 0.3);
+  --failure-transparent: rgba(173, 71, 64, 0.3);
+  --warning: #e6b93b;
+
 }
 
 /* loading ring */
@@ -1007,11 +1015,169 @@ section.summoner-nav {
 }
 
 .match-card {
-  padding: 20px;
+  padding: 15px;
   box-sizing: border-box;
   margin-bottom: 20px;
-  display: flex;
   width: 100%;
   background-color: var(--primary-blue);
   border-radius: 5px;
 }
+
+.match-summary-teams {
+  display: flex;
+}
+
+.match-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.match-summary .player {
+  display: flex;
+  align-items: center;
+}
+
+.team-100 .player {
+  flex-direction: row-reverse;
+}
+
+.match-summary .player img {
+  max-width: 25px;
+  border: 2px solid var(--gold);
+  border-radius: 25px;
+}
+
+.position-icons img {
+  max-width: 20px;
+  padding: 4.5px 5px;
+}
+
+.position-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.team-list {
+  min-width: 150px;
+  max-width: 150px;
+  text-overflow: ellipsis;
+}
+
+.team-list .summoner-name {
+  color: var(--dull-blue);
+  font-size: 12px;
+}
+
+.team-200 .summoner-name {
+  padding-left: 5px;
+}
+
+.team-100 .summoner-name {
+  padding-right: 5px;
+}
+
+.focused-match-summary {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  margin: 10px 0px;
+  border-radius: 5px;
+  border: 1px solid var(--lake);
+  border-radius: 0px 5px 5px 0px;
+  gap: 10px;
+}
+
+.victory.focused-match-summary {
+  border-color: var(--success-transparent);
+}
+
+.defeat.focused-match-summary {
+  border-color: var(--failure-transparent);
+} 
+
+.match-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.match-summary-focus {
+  flex-grow: 1;
+}
+
+.match-summary-team-list {
+  min-width: 400px;
+  display: flex;
+  justify-content: center;
+}
+
+.match-card-header {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.champion-icon img {
+  border-radius: 100%;
+  max-width: 80px;
+  border: 4px solid;
+}
+
+.defeat .champion-icon img {
+  border-color: var(--failure);
+}
+
+.victory .champion-icon img {
+  border-color: var(--success);
+}
+
+.summoner-champ-wrapper {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+}
+
+.victory .match-details-head  {
+  border-color: var(--success-transparent);
+}
+
+.defeat .match-details-head  {
+  border-color: var(--failure-transparent);
+}
+
+.stats-wrapper {
+  display: flex;
+}
+
+.stats-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.match-details-head {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  align-content: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid;
+}
+
+.match-details-head  .win {
+  font-style: italic;
+}
+
+.victory .match-details-head .win{
+  color: var(--success);
+}
+
+.defeat .match-details-head .win {
+  color: var(--failure);
+}
+

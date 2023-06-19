@@ -7,6 +7,10 @@ function Home() {
   return (
     <div className="home page w-sidebar">
       <div className="main-column">
+      <section>
+          <h2>Recent Matches</h2>
+          <ShowMatchList count = {5}/>
+        </section>
         <section>
           <h2>Challenges Ranking</h2>
           <ShowChallengeRanking count = {12}/>
@@ -15,11 +19,7 @@ function Home() {
           <h2>Champion Masteries</h2>
           <ShowMasteryRanking count = {8}/>
         </section>
-        <section>
-          <h2>Recent Matches</h2>
-          <ShowMatchList count = {10}/>
-          {/* //TODO: add pagination */}
-        </section>
+        
       </div>
       <div className="side-column">
         <h2>Summoners</h2>

@@ -129,17 +129,18 @@ router.get('/recent/:timestamp/:limit/populate/:region/:name/:champ/:role/:mode'
   }
 
   try {
-    let summoner = await Summoner.findOne({
+    let summoner = await Summoner.find({
       $and: [{ nameURL: name }, { regionURL: region }],
     });
     try {
-      let participants = [];
-      let matchIds = [];
-      participants = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-      for(let participant of participants){
-        matchIds.push(participant.matchId);
-      }
-      let matches = await Match.find({ "metadata.matchId": { $in: matchIds }, "gameStartTimestamp": { $lt: timestamp } }).sort({ gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
+      //create array of puuids from summoner objects
+      let puuids = summoner.map((summoner) => summoner.puuid);
+
+      let participants = await Participant.find({ "puuid": { $in: puuids}, "queueId": mode, "championId" : champ, "teamPosition": role, "gameStartTimestamp": { $lt: timestamp } }).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+      //create array of match ids from participant objects
+      let matchIds = participants.map((participant) => participant.matchId);
+
+      let matches = await Match.find({ "metadata.matchId": { $in: matchIds }}).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants')
       res.json(matches);
     } catch (e) {
       res.status(404).json({ msg: 'No matches found' })
@@ -177,17 +178,17 @@ router.get('/recent/:limit/populate/:region/:name/:champ/:role/:mode', async (re
   }
 
   try {
-    let summoner = await Summoner.findOne({
+    let summoner = await Summoner.find({
       $and: [{ nameURL: name }, { regionURL: region }],
     });
     try {
-      let participants = [];
-      let matchIds = [];
-      participants = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-      for(let participant of participants){
-        matchIds.push(participant.matchId);
-      }
-      let matches = await Match.find({ "metadata.matchId": { $in: matchIds }, }).sort({ gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
+      let puuids = summoner.map((summoner) => summoner.puuid);
+
+      let participants = await Participant.find({ "puuid": { $in: puuids}, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+
+      let matchIds = participants.map((participant) => participant.matchId);
+      
+      let matches = await Match.find({ "metadata.matchId": { $in: matchIds }, }).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants')
       res.json(matches);
     } catch (e) {
       res.status(404).json({ msg: 'No matches found' })

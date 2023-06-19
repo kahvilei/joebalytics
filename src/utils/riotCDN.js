@@ -44,6 +44,10 @@ const getRoleName = (id) =>{
     return "unnamed";
 }
 
+const getRoleIcon = (id) =>{
+    return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-career-stats/global/default/images/position_${id}.png`
+}
+
 const getQueueName = (id) =>{
     for (let queue in queues){
         if(parseInt(queues[queue].queueId) === id){
@@ -53,4 +57,4 @@ const getQueueName = (id) =>{
     return "any";
 }
 
-export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName, getRoleName};
+export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName, getRoleName, getRoleIcon};

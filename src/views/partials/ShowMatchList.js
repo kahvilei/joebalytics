@@ -7,6 +7,7 @@ import MatchCard from "../components/MatchCard";
 import LoadingCircle from "../components/LoadingCircle";
 
 function ShowMatchList(props) {
+  const limit = props.count ? props.count : 10;
   const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState([]);
 
@@ -39,13 +40,13 @@ function ShowMatchList(props) {
   useEffect(() => {
     setIsLoading(true);
     //gets list of matches to display in match list
-    //TODO: add load more feature -- will have to configure on server side as well
     axios
       .get(
         rootAddress[process.env.NODE_ENV] +
-          `/api/matches/recent/10/populate/${region}/${name}/${champ}/${role}/${mode}`
+          `/api/matches/recent/${limit}/populate/${region}/${name}/${champ}/${role}/${mode}`
       )
       .then((res) => {
+
         setMatches(res.data);
       })
       .catch((err) => {
@@ -82,7 +83,7 @@ function ShowMatchList(props) {
 
   //load more function, that loads 10 more matches after the earliest timestamp in the current list.
   function loadMore(){
-    const earliestTimestamp = matches[matches.length-1].timestamp;
+    const earliestTimestamp = matches[matches.length-1].info.gameStartTimestamp;
     axios
       .get(
         rootAddress[process.env.NODE_ENV] +
