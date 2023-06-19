@@ -187,7 +187,7 @@ router.get('/recent/:limit/populate/:region/:name/:champ/:role/:mode', async (re
       let participants = await Participant.find({ "puuid": { $in: puuids}, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
 
       let matchIds = participants.map((participant) => participant.matchId);
-      
+
       let matches = await Match.find({ "metadata.matchId": { $in: matchIds }, }).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants')
       res.json(matches);
     } catch (e) {
@@ -212,7 +212,13 @@ router.get('/:id', (req, res) => {
 
 router.get('/stats/:champ/:role/:mode/:stat/:limit/:aggregation/:region/:name', async (req, res) => {
   let region = req.params.region;
+  if(region === "any"){
+    region = {$exists: true};
+  }
   let name = req.params.name;
+  if(name === "any"){
+    name = {$exists: true};
+  }
   let stat = req.params.stat;
   let limit = req.params.limit;
   
@@ -232,12 +238,13 @@ router.get('/stats/:champ/:role/:mode/:stat/:limit/:aggregation/:region/:name', 
   let aggregation = req.params.aggregation;
 
   try {
-    let summoner = await Summoner.findOne({
+    let summoner = await Summoner.find({
       $and: [{ nameURL: name }, { regionURL: region }],
     });
     try {
+      let puuids = summoner.map((summoner) => summoner.puuid);
       let matches = [];
-      matches = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+      matches = await Participant.find({ "puuid": { $in: puuids}, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
 
       let list = []
       let result = 0;
@@ -270,7 +277,13 @@ router.get('/stats/:champ/:role/:mode/:stat/:limit/:aggregation/:region/:name', 
 
 router.get('/stats/:champ/:role/:mode/:stat/:subStat/:limit/:aggregation/:region/:name', async (req, res) => {
   let region = req.params.region;
+  if(region === "any"){
+    region = {$exists: true};
+  }
   let name = req.params.name;
+  if(name === "any"){
+    name = {$exists: true};
+  }
   let stat = req.params.stat;
   let subStat = req.params.subStat;
   let limit = req.params.limit;
@@ -294,13 +307,14 @@ router.get('/stats/:champ/:role/:mode/:stat/:subStat/:limit/:aggregation/:region
   }
 
   try {
-    let summoner = await Summoner.findOne({
+    let summoner = await Summoner.find({
       $and: [{ nameURL: name }, { regionURL: region }],
     });
     try {
+      let puuids = summoner.map((summoner) => summoner.puuid);
       let matches = [];
       
-      matches = await Participant.find({ "puuid": summoner.puuid, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+      matches = await Participant.find({ "puuid": { $in: puuids}, "queueId": mode, "championId" : champ, "teamPosition": role}).sort({ gameStartTimestamp: 'desc' }).limit(limit);
       
       let list = []
       let result = 0;

@@ -68,6 +68,7 @@ function Menu() {
           {summonerList}
         </div>
       </div>
+      <Link to={`/matches`}>Matches</Link>
     </div>
   );
 }

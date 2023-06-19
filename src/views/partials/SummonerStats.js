@@ -39,7 +39,14 @@ function SummonerStats(props) {
   const [modeIsLoading, setModeIsLoading] = useState(true);
   const [champIsLoading, setChampIsLoading] = useState(true);
 
-  const { region, name } = useParams();
+  let { region, name } = useParams();
+  //if no region or name is provided, set to any
+  if (region === undefined || name === undefined) {
+    region = "any";
+    name = "any";
+  } else {
+  }
+
 
   useEffect(() => {
     setIsLoading(true);

@@ -11,6 +11,7 @@ import AddSummoner from "./views/partials/AddSummoner";
 import SummonerDetails from "./views/pages/SummonerDetails";
 import Login from "./views/partials/Login";
 import Register from "./views/partials/Register";
+import Matches from "./views/pages/Matches";
 //partial
 import Navigation from "./views/partials/Navigation";
 import Menu from "./views/partials/Menu";
@@ -30,6 +31,7 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/matches" element={< Matches/>} />
             <Route
               path="/summoner/:region/:name/:page"
               element={<SummonerDetails />}
