@@ -24,11 +24,13 @@
 
   /*success - failure colors*/
   --success: #67d1a0;
-  --failure: #ad4740;
+  --failure: #c84b42;
+  --neutral: #5E89EE;
   --success-transparent: rgba(103, 209, 160, 0.3);
   --failure-transparent: rgba(173, 71, 64, 0.3);
+  --neutral-transparent: rgba(94, 137, 238, 0.3);
   --warning: #e6b93b;
-
+  --warning-transparent: rgba(230, 185, 59, 0.3);
 }
 
 /* loading ring */
@@ -198,6 +200,16 @@ img {
   .challenge.card-container {
     flex-basis: calc(100%);
   }
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  padding: 5px;
+  font-size: 14px;
+  z-index: 1;
+  background-color: var(--deep-sea);
+  color: var(--text-main);
 }
 
 /* text */
@@ -1039,10 +1051,49 @@ section.summoner-nav {
   width: 100%;
   background-color: var(--primary-blue);
   border-radius: 5px;
+  container-type: inline-size;
+}
+
+.match-summary-team-section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+@container (max-width: 900px) {
+  .match-summary{
+    flex-direction: column;
+  }
+}
+
+.match-summary-head {
+    display: flex;
+    gap: 40px;
 }
 
 .match-summary-teams {
   display: flex;
+}
+
+.match-summary-team-list .kd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.kd .kills {
+  font-size: 20px;
+}
+
+.kills.victory {
+  color: var(--success);
+}
+
+.kills.defeat {
+  color: var(--failure);
 }
 
 .match-summary {
@@ -1056,6 +1107,37 @@ section.summoner-nav {
   display: flex;
   align-items: center;
 }
+
+/* kda styles */
+
+.kda-score .bad {
+  color: var(--failure);
+  font-weight: bold;
+}
+
+.kda-score .good {
+  color: var(--success);
+  font-weight: bold;
+}
+
+.player-kda {
+  display: flex;
+  flex-direction: column;
+  /* align-content: center; */
+  align-items: center;
+}
+
+.player-kda .kda {
+  font-size: 15px;
+}
+
+.player-kda .kda-score {
+  font-size: 12px;
+  display: flex;
+  gap: 3px;
+}
+
+/* end kda styles */
 
 .team-100 .player {
   flex-direction: row-reverse;
@@ -1129,6 +1211,12 @@ section.summoner-nav {
 
 .match-summary-focus {
   flex-grow: 1;
+  width: 100%;
+}
+
+.match-details .summoner-icon img {
+  width: 20px;
+  border-width: 2px;
 }
 
 .match-summary-team-list {
@@ -1160,8 +1248,86 @@ section.summoner-nav {
 .summoner-champ-wrapper {
   display: flex;
   gap: 5px;
-  width: 100%;
+  align-items: center;
 }
+
+.stats-wrapper>div {
+  min-width: 100px;
+}
+
+/* stat details section styles */
+
+.player-cs-and-gold {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.player-cs-and-gold div{
+  font-size: 12px;
+}
+
+.damage-to-champions {
+  font-size: 12px;
+}
+
+.kill-participation {
+  font-size: 15px;
+}
+
+.kill-participation.good {
+  color: var(--success);
+}
+
+.kill-participation.bad {
+  color: var(--failure);
+}
+
+.gold-earned:hover .tooltip{
+  display: block;
+}
+
+.player-cs:hover .tooltip {
+  display: block;
+}
+
+.wards-placed:hover .tooltip {
+  display: block;
+}
+
+
+/* end stat details section styles */
+
+/* items styles */
+
+.player-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  max-width: 80px;
+  justify-content: center;
+  justify-content: flex-end;
+}
+
+.player-items img {
+  max-width: 30px;
+  border: 1px solid var(--neutral);;
+}
+
+.item-dec {
+  display: none;
+  background-color: var(--deep-sea);
+  color: var(--text-main);
+  padding: 5px;
+  position: absolute;
+}
+
+.player-items img:hover+.item-dec {
+  display: block;
+}
+
+/* end items styles */
+
 
 .victory .match-details-head  {
   border-color: var(--success-transparent);
@@ -1173,15 +1339,15 @@ section.summoner-nav {
 
 .stats-wrapper {
   display: flex;
-}
-
-.stats-wrapper {
-  display: flex;
   gap: 10px;
+  justify-content: space-between;
+  align-items: center;  
+  flex-wrap: wrap;
 }
 
 .match-details-head {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   align-items: center;
   justify-content: space-between;

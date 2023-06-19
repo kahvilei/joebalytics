@@ -13,8 +13,6 @@ function ShowMatchList(props) {
   //const [loadMoreToggle, setLoadMoreToggle] = useState(props.loadMore? props.loadMore : true);
   const [infinteScroll, setInfiniteScroll] = useState(props.infiniteScroll? props.infiniteScroll : false);
   const [moretoLoad, setMoreToLoad] = useState(true);
-  const [eventListenerAdded, setEventListenerAdded] = useState(false);
-  const [page, setPage] = useState(1);
 
   let { region, name } = useParams();
 
@@ -58,8 +56,7 @@ function ShowMatchList(props) {
       )
       .then((res) => {
         setMatches(matches.concat(res.data));
-        setPage(prevPage => prevPage + 1);
-        if(res.data.length < 1){
+        if(res.data.length < 1 || !infinteScroll){
           setMoreToLoad(false);
           setInfiniteScroll(false);
         }
@@ -102,6 +99,7 @@ function ShowMatchList(props) {
         });
     }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [champ, limit, mode, name, region, role]);
 
   const handleScroll = () => {
@@ -116,6 +114,7 @@ function ShowMatchList(props) {
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
   //component that displays a load more button if there are more matches to load

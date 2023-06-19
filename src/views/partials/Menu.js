@@ -43,7 +43,7 @@ function Menu() {
       .catch((err) => {
         console.log('Error from ShowSummonerList');
       });
-  }, []);
+  }, [setIsLoading]);
 
   const summonerList =
     summoners.length === 0
@@ -65,6 +65,7 @@ function Menu() {
           <div className="menuHeadArrow">&#9662;</div>
         </div>
         <div className="subMenu">
+          {isLoading ? <div className="loading">Loading...</div> : ''}
           {summonerList}
         </div>
       </div>
