@@ -107,8 +107,26 @@ body{
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
   margin: 0;
   background-color: var( --midnight);
-  color: var(--text-main)
+  color: var(--text-main);
 }
+
+/* scroll bar styles */
+
+::-webkit-scrollbar-track {
+  padding: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  padding: 2px;
+  background-color: var(--evening-blue);
+}
+
+/* end scroll bar styles */
 
 .page {
   display: flex;
@@ -202,15 +220,15 @@ a:hover {
   color: var(--evening-blue);
 }
 
-a.button , button{
-  background-color: var(--gold);
-  color: var(--text-main);
-  border-radius: 5px;
-  padding: 8px;
-  margin: 0px 5px;
-  outline: none;
-  border: none;
-  cursor: pointer;
+a.button, button {
+    background-color: #00000000;
+    border: 2px solid var(--success);
+    color: var(--success);
+    border-radius: 5px;
+    padding: 8px;
+    margin: 0px 5px;
+    outline: none;
+    cursor: pointer;
 }
 
 .info-blue {
@@ -221,11 +239,11 @@ a.button , button{
 
 button.btn-outline-danger {
   background: none;
-  color: var(--grandmaster);
+  color: var(--failure);
 }
 
-a.button:hover , button {
-  background-color: var(--hover-gold);
+a.button:hover , button:hover {
+  background-color: var(--success-transparent);
 }
 .dot-spacer {
   margin: 5px 7px;
@@ -387,14 +405,6 @@ a.button:hover , button {
 
 .nav a {
   margin-left: 5px;
-}
-.nav a.button {
-  background-color: var(--gold);
-  color: var(--text-main);
-}
-
-.nav a.button:hover {
-  background-color: var(--hover-gold);
 }
 
 .nav .checkbox {
@@ -563,6 +573,14 @@ a.button:hover , button {
   flex-wrap: wrap;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.summoner.card-container {
+  border: 2px solid var(--primary-blue);
+}
+
+.summoner.card-container:hover {
+  border-color: var(--success);
 }
 
 .name-and-rank {
@@ -1085,17 +1103,21 @@ section.summoner-nav {
   padding: 20px;
   margin: 10px 0px;
   border-radius: 5px;
-  border: 1px solid var(--lake);
-  border-radius: 0px 5px 5px 0px;
+  border: 2px solid var(--lake);
+  border-radius: 5px;
   gap: 10px;
 }
 
 .victory.focused-match-summary {
   border-color: var(--success-transparent);
+  /* make background color a gradient between transparent and --success-transparent, transparent side on the right*/
+  background: linear-gradient(to right, var(--success-transparent), transparent);
 }
 
 .defeat.focused-match-summary {
   border-color: var(--failure-transparent);
+  /* make background color a gradient between transparent and --failure-transparent, transparent side on the right*/
+  background: linear-gradient(to right, var(--failure-transparent), transparent);
 } 
 
 .match-details {

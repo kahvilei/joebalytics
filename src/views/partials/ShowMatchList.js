@@ -10,6 +10,11 @@ function ShowMatchList(props) {
   const limit = props.count ? props.count : 10;
   const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState([]);
+  //const [loadMoreToggle, setLoadMoreToggle] = useState(props.loadMore? props.loadMore : true);
+  const [infinteScroll, setInfiniteScroll] = useState(props.infiniteScroll? props.infiniteScroll : false);
+  const [moretoLoad, setMoreToLoad] = useState(true);
+  const [eventListenerAdded, setEventListenerAdded] = useState(false);
+  const [page, setPage] = useState(1);
 
   let { region, name } = useParams();
 
@@ -21,38 +26,55 @@ function ShowMatchList(props) {
   } else {
   }
 
-  const [searchParams, setSearchParams] = useSearchParams({});
+  const [searchParams] = useSearchParams({});
 
-  const [mode, setMode] = useState(
+  const [mode] = useState(
     searchParams.get("mode") ? searchParams.get("mode") : "any"
   );
 
-  const [role, setRole] = useState(
+  const [role] = useState(
     searchParams.get("role") ? searchParams.get("role") : "any"
   );
 
-  const [champ, setChamp] = useState(
+  const [champ] = useState(
     parseInt(searchParams.get("champ"))
       ? parseInt(searchParams.get("champ"))
       : "any"
   );
-
-  useEffect(() => {
+   
+  const loadMore = async () =>{
+    if(moretoLoad){ 
+      let earliestTimestamp;
+      if(matches.length === 0){
+        earliestTimestamp = Date.now();
+      }else{
+        earliestTimestamp = matches[matches.length-1].info.gameStartTimestamp;
+      }
     setIsLoading(true);
-    //gets list of matches to display in match list
     axios
       .get(
         rootAddress[process.env.NODE_ENV] +
-          `/api/matches/recent/${limit}/populate/${region}/${name}/${champ}/${role}/${mode}`
+          `/api/matches/recent/${earliestTimestamp}/${limit}/populate/${region}/${name}/${champ}/${role}/${mode}`
       )
       .then((res) => {
-
-        setMatches(res.data);
+        setMatches(matches.concat(res.data));
+        setPage(prevPage => prevPage + 1);
+        if(res.data.length < 1){
+          setMoreToLoad(false);
+          setInfiniteScroll(false);
+        }
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log("Error from match list");
       });
-    //gets list of focused summoer puuids to display in focus on each card, if this is an unfiltered list than this will be all summoners tracked on the site, otherwise, it will just be one.
+    }
+  }
+
+  useEffect(() => {
+
+    loadMore();
+    
     if (region === "any" && name === "any") {
       axios
         .get(rootAddress[process.env.NODE_ENV] + `/api/summoners/`)
@@ -60,7 +82,7 @@ function ShowMatchList(props) {
           //extracts puuids from summoner objects
           const puuids = res.data.map((summoner) => summoner.puuid);
           setFocusedSummoners(puuids);
-          setIsLoading(false);
+          
         })
         .catch((err) => {
           console.log("Error from set focused summoners");
@@ -73,29 +95,31 @@ function ShowMatchList(props) {
         .then((res) => {
           //extracts puuid from single summoner object in response
           setFocusedSummoners([res.data.puuid]);
-          setIsLoading(false);
+          
         })
         .catch((err) => {
           console.log("Error from set focused summoners");
         });
     }
-  }, [champ, mode, name, region, role]);
 
-  //load more function, that loads 10 more matches after the earliest timestamp in the current list.
-  function loadMore(){
-    const earliestTimestamp = matches[matches.length-1].info.gameStartTimestamp;
-    axios
-      .get(
-        rootAddress[process.env.NODE_ENV] +
-          `/api/matches/recent/${earliestTimestamp}/10/populate/${region}/${name}/${champ}/${role}/${mode}`
-      )
-      .then((res) => {
-        setMatches(matches.concat(res.data));
-      })
-      .catch((err) => {
-        console.log("Error from match list");
-      });
-  }
+  }, [champ, limit, mode, name, region, role]);
+
+  const handleScroll = () => {
+    let scroll = window.innerHeight + document.documentElement.scrollTop;
+    let height = document.documentElement.offsetHeight
+    if (scroll+2 <= height || isLoading) {
+      return;
+    }
+    loadMore();
+  };
+  
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLoading]);
+
+  //component that displays a load more button if there are more matches to load
+  // const loadMoreButton = moretoLoad && loadMoreToggle && !infinteScroll ? <div className="load-more"><button onClick = {loadMore}>Load More</button></div> : <div></div>
 
   const matchList =
     matches.length === 0
@@ -108,24 +132,14 @@ function ShowMatchList(props) {
           />
         ));
 
-  if (isLoading) {
-    return (
-      <div className="match-list">
-        <LoadingCircle color={"dark"} aspectRatio={"rectangle"} />
-      </div>
-    );
-  } else {
     return (
       <div className="match-list-wrapper">
         <div className="match-list">
           <div className="list">{matchList}</div>
         </div>
-        <div className="load-more">
-          <button onClick = {loadMore}>Load More</button>
-        </div>
+        {isLoading && <LoadingCircle color={'gold'} size = {'small'}/>}
       </div>
     );
-  }
 }
 
 export default ShowMatchList;

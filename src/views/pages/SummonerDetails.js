@@ -30,7 +30,7 @@ function SummonerDetails(props) {
         return(
         <section>
           <h2>Match History</h2>
-          <ShowMatchList champ = {champ} mode = {mode} role = {role}/>
+          <ShowMatchList infiniteScroll={true} champ = {champ} mode = {mode} role = {role}/>
         </section>
         );
       }
