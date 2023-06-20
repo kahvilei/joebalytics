@@ -7,6 +7,10 @@ import {
   getSummonerIcon,
   getItemIcon,
   getItemName,
+  getPerkStyleIcon,
+  getPerkStyleName,
+  getSummonerSpellIcon,
+  getSummonerSpellName,
 } from "../../utils/riotCDN";
 
 const MatchCard = (props) => {
@@ -205,12 +209,16 @@ const MatchCard = (props) => {
           </div>
           <div className="gold-earned">
             {summoner.goldEarnedSumm} ({goldPerMinute}) Gold
-            <div className="tooltip gold-tooltip">Total Gold (Gold per minute)</div>
+            <div className="tooltip gold-tooltip">
+              Total Gold (Gold per minute)
+            </div>
           </div>
           <div className="wards-placed">
             {summoner.wardsPlaced} ({wardsPlacedPerMinute}) /{" "}
             {summoner.wardsKilled}
-            <div className="tooltip ward-tooltip">Total wards places (Wards per minute) / Wards destroyed</div>
+            <div className="tooltip ward-tooltip">
+              Total wards places (Wards per minute) / Wards destroyed
+            </div>
           </div>
         </div>
       );
@@ -245,8 +253,9 @@ const MatchCard = (props) => {
     function PlayerItems(props) {
       const summoner = props.summoner;
       const itemIcons = [];
+      const trinketIcon = [];
       const itemNumber = summoner.itemNumber;
-      for (let i = 0; i <= 6; i++) {
+      for (let i = 0; i <= 5; i++) {
         if (summoner[`item${i}`] !== undefined && summoner[`item${i}`] !== 0) {
           itemIcons.push(
             <div className={"item-icon " + summoner[`item${i}`]} key={i}>
@@ -255,7 +264,7 @@ const MatchCard = (props) => {
                 alt={summoner[`item${i}`]}
               />
               <div
-                className="item-dec"
+                className="tooltip"
                 dangerouslySetInnerHTML={{
                   __html: getItemName(summoner[`item${i}`]),
                 }}
@@ -263,18 +272,76 @@ const MatchCard = (props) => {
             </div>
           );
         } else {
-          itemIcons.push(<div className={"item-icon " + summoner[`item${i}`]} key={i}>
-          <div
-            alt={'blank icon'}
-            className="blank-icon"
-          />
-          <div
-            className="item-dec"
-          ></div>
-        </div>);
+          itemIcons.push(
+            <div className={"item-icon " + summoner[`item${i}`]} key={i}>
+              <div alt={"blank icon"} className="blank-icon" />
+              <div className="item-dec"></div>
+            </div>
+          );
         }
       }
-      return <div className="player-items">{itemIcons}</div>;
+      if (summoner[`item6`] !== undefined && summoner[`item6`] !== 0) {
+        trinketIcon.push(
+          <div className={"item-icon " + summoner[`item6`]} key={6}>
+            <img src={getItemIcon(summoner[`item6`])} alt={summoner[`item6`]} />
+            <div
+              className="tooltip"
+              dangerouslySetInnerHTML={{
+                __html: getItemName(summoner[`item6`]),
+              }}
+            ></div>
+          </div>
+        );
+      } else {
+        trinketIcon.push(
+          <div className={"item-icon " + summoner[`item6`]} key={6}>
+            <div alt={"blank icon"} className="blank-icon" />
+            <div className="tooltip"></div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="player-equipped">
+          <div className="player-items">{itemIcons}</div>
+          <div className="player-trinket">{trinketIcon}</div>
+        </div>
+      );
+    }
+
+    //react component that displays a 2*2 grid of the summoner's summoner spell icons, and perk style icons
+    function PlayerSpellsAndRunes(props) {
+      const summoner = props.summoner;
+      const spellIcons = [];
+      const runeIcons = [];
+      for (let i = 1; i <= 2; i++) {
+        spellIcons.push(
+          <div className={"spell-icon " + summoner[`summoner${i}Id`]} key={i}>
+            <img
+              src={getSummonerSpellIcon(summoner[`summoner${i}Id`])}
+              alt={getSummonerSpellName(summoner[`summoner${i}`])}
+            />
+            <div className="tooltip">{getSummonerSpellName(summoner[`summoner${i}`])}</div>
+          </div>
+        );
+      }
+      for (let i = 0; i <= 1; i++) {
+        runeIcons.push(
+          <div className={"rune-icon " + summoner.perks.styles[i].style} key={i}>
+            <img
+              src={getPerkStyleIcon(summoner.perks.styles[i].style)}
+              alt={getPerkStyleName(summoner.perks.styles[i].style)}
+            />
+            <div className="tooltip">{getPerkStyleName(summoner.perks.styles[i].style)}</div>
+          </div>
+        );
+      }
+      return (
+        <div className="player-spells-and-runes">     
+          <div className="player-runes">{runeIcons}</div>
+          <div className="player-spells">{spellIcons}</div>
+        </div>
+      );
     }
 
     return (
@@ -283,8 +350,9 @@ const MatchCard = (props) => {
           "focused-match-summary " + (summonerData.win ? "victory" : "defeat")
         }
       >
-        <div className="champion-icon">
+        <div className="champion-icon-and-spells">
           <img
+            className="champion-icon"
             src={getChampIcon(summonerData.championId)}
             alt={summonerData.championName}
           />
@@ -318,9 +386,10 @@ const MatchCard = (props) => {
             <PlayerKda summoner={summonerData} />
             <PlayerDamageAndKillParticipation summoner={summonerData} />
             <PlayerCsGoldVs summoner={summonerData} />
-            <PlayerItems summoner={summonerData} />
           </div>
         </div>
+        <PlayerSpellsAndRunes summoner={summonerData} />
+          <PlayerItems summoner={summonerData} />
       </div>
     );
   }
@@ -333,15 +402,20 @@ const MatchCard = (props) => {
   return (
     <div className="match-card">
       <div className="match-card-header">
-        <div className="queue-name">{matchMode}</div>
-        <div className="match-card-header-date">
-          {date.toLocaleDateString()}
+        <div>
+          <div className="queue-name">{matchMode}</div>
+          <div className="match-card-header-duration">
+            <div className="label">Duration</div>
+            <div>
+              {Math.floor(match.info.gameDuration / 60)}:
+              {match.info.gameDuration % 60 < 10
+                ? "0" + (match.info.gameDuration % 60)
+                : match.info.gameDuration % 60}
+            </div>
+          </div>
         </div>
-        <div className="match-card-header-duration">
-          {Math.floor(match.info.gameDuration / 60)}:
-          {match.info.gameDuration % 60 < 10
-            ? "0" + (match.info.gameDuration % 60)
-            : match.info.gameDuration % 60}
+        <div>
+          <div className="match-card-header-date">{date.toLocaleString()}</div>
         </div>
       </div>
       <div className="match-summary">
