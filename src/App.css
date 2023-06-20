@@ -1111,12 +1111,12 @@ section.summoner-nav {
 
 /* kda styles */
 
-.kda-score .bad {
+.kda .bad {
   color: var(--failure);
   font-weight: bold;
 }
 
-.kda-score .good {
+.kda .good {
   color: var(--success);
   font-weight: bold;
 }
@@ -1279,7 +1279,7 @@ section.summoner-nav {
 }
 
 .stats-wrapper>div {
-  min-width: 100px;
+  min-width: 80px;
 }
 
 /* stat details section styles */
@@ -1288,6 +1288,7 @@ section.summoner-nav {
     display: flex;
     flex-direction: column;
     gap: 3px;
+    align-items: flex-end;
 }
 
 .player-cs-and-gold div{

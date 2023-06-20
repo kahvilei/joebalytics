@@ -171,11 +171,11 @@ const MatchCard = (props) => {
       return (
         <div className="player-kda">
           <div className="kda">
-            {summoner.kills} / {summoner.deaths} / {summoner.assists}
+            <span className={kdaTag}>{score} </span>
+             KDA
           </div>
           <div className="kda-score">
-            <span className={kdaTag}>{score}</span>
-            KDA
+            {summoner.kills} / {summoner.deaths} / {summoner.assists}
           </div>
         </div>
       );
