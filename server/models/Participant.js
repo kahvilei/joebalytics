@@ -165,6 +165,7 @@ const ParticipantSchema = new Schema({
   inhibitorTakedowns: Number,
   inhibitorsLost: Number,
   itemNumber: Number,
+  item0: Number,
   item1: Number,
   item2: Number,
   item3: Number,

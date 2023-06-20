@@ -245,7 +245,8 @@ const MatchCard = (props) => {
     function PlayerItems(props) {
       const summoner = props.summoner;
       const itemIcons = [];
-      for (let i = 0; i < 6; i++) {
+      const itemNumber = summoner.itemNumber;
+      for (let i = 0; i <= 6; i++) {
         if (summoner[`item${i}`] !== undefined && summoner[`item${i}`] !== 0) {
           itemIcons.push(
             <div className={"item-icon " + summoner[`item${i}`]} key={i}>
@@ -262,7 +263,15 @@ const MatchCard = (props) => {
             </div>
           );
         } else {
-          itemIcons.push("");
+          itemIcons.push(<div className={"item-icon " + summoner[`item${i}`]} key={i}>
+          <div
+            alt={'blank icon'}
+            className="blank-icon"
+          />
+          <div
+            className="item-dec"
+          ></div>
+        </div>);
         }
       }
       return <div className="player-items">{itemIcons}</div>;

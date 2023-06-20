@@ -1326,6 +1326,13 @@ section.summoner-nav {
   display: block;
 }
 
+.blank-icon {
+  width: 30px;
+  background-color: var(--deep-sea);
+  height: 30px;
+  border: 1px solid var(--neutral);
+}
+
 /* end items styles */
 
 
