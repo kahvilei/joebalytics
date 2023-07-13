@@ -2,15 +2,44 @@
 
 :root {
    /*main colors*/
-  --midnight: #0C0C21;
-  --deep-sea: #091531;
-  --primary-blue: #121E3A;
-  --lake: #1D2D54;
-  --evening-blue: #5E89EE;
+  --midnight: #17192b;
+  --deep-sea: #050c1c;
+  --primary-blue: #1f243b;
+  --lake: #2a3654;
+  --evening-blue: #6064dd;
   --dull-blue: #737e99;
   --gold: #C99A54;
   --hover-gold: #b1751b;
+  
+  /*contextual color defs*/
   --text-main: #f1f5fd;
+  --heading-main: #f1f5fd;
+  --text-secondary: var(--dull-blue);
+  --heading-secondary: var(--dull-blue);
+  --text-accent: var(--evening-blue);
+  --heading-accent: var(--evening-blue);
+  --links-main: var(--gold);
+  --links-hover: var(--evening-blue);
+  --text-failure: var(--failure);
+  --text-success: var(--success);
+  --text-warning: var(--warning);
+
+  --button-primary: var(--success);
+  --button-secondary: var(--lake);
+  --button-failure: var(--failure);
+  --button-accent: var(--warning);
+
+  --borders-main: var(--gold);
+  --borders-secondary: var(--dull-blue);
+  --borders-accent: var(--evening-blue);
+  --borders-failure: var(--failure);
+  --borders-success: var(--success);
+  --borders-dark: var(--deep-sea);
+
+  --background-primary: var(--midnight);
+  --background-secondary: var(--deep-sea);
+  --foreground-primary: var(--primary-blue);
+  --foreground-secondary: var(--lake);
 
   /*rank colors*/
   --iron: #484443;
@@ -23,11 +52,11 @@
   --challenger:#dfc154;
 
   /*success - failure colors*/
-  --success: #67d1a0;
-  --failure: #c84b42;
+  --success: #52e58b;
+  --failure: #d3263c;
   --neutral: #5E89EE;
-  --success-transparent: rgba(103, 209, 160, 0.3);
-  --failure-transparent: rgba(173, 71, 64, 0.3);
+  --success-transparent: #52e58a4a;
+  --failure-transparent: #d3263d67;
   --neutral-transparent: rgba(94, 137, 238, 0.3);
   --warning: #e6b93b;
   --warning-transparent: rgba(230, 185, 59, 0.3);
@@ -80,7 +109,7 @@
   width: 1em;
 }
 .lds-ring.gold div {
-  border-top-color: var(--gold);
+  border-top-color: var(--borders-main);
 }
 .lds-ring.small div {
   border-width: 0.2em;
@@ -108,7 +137,7 @@
 body{
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
   margin: 0;
-  background-color: var( --midnight);
+  background-color: var(--background-primary);
   color: var(--text-main);
 }
 
@@ -125,7 +154,7 @@ body{
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   padding: 2px;
-  background-color: var(--evening-blue);
+  background-color: var(--borders-accent);
 }
 
 /* end scroll bar styles */
@@ -148,7 +177,7 @@ body{
 .content {
   width: 100%;
   box-sizing: border-box;
-  padding: 55px 0px 10px 230px;
+  padding: 55px 0px 10px 0px;
   display: flex;
   justify-content: center;
 }
@@ -208,7 +237,7 @@ img {
   padding: 5px;
   font-size: 14px;
   z-index: 1;
-  background-color: var(--deep-sea);
+  background-color: var(--background-secondary);
   color: var(--text-main);
 }
 
@@ -217,7 +246,7 @@ img {
 h2 {
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--gold);
+  color: var(--heading-main);
 }
 
 a,p,div,table,ul,ol{
@@ -226,16 +255,16 @@ a,p,div,table,ul,ol{
 
 a{
   text-decoration: none;
-  color: var(--gold);
+  color: var(--links-main);
 }
 a:hover {
-  color: var(--evening-blue);
+  color: var(--links-hover);
 }
 
 a.button, button {
     background-color: #00000000;
-    border: 2px solid var(--success);
-    color: var(--success);
+    border: 2px solid var(--button-primary);
+    color: var(--button-primary);
     border-radius: 5px;
     padding: 8px;
     margin: 0px 5px;
@@ -245,13 +274,13 @@ a.button, button {
 
 .info-blue, .label {
   font-size: 12px;
-  color: var(--evening-blue);
+  color: var(--text-accent);
   font-style: italic;
 }
 
 button.btn-outline-danger {
   background: none;
-  color: var(--failure);
+  color: var(--button-failure);
 }
 
 a.button:hover , button:hover {
@@ -272,13 +301,13 @@ a.button:hover , button:hover {
 }
 
 .dropDown-wrap.loading {
-  color: var(--dull-blue);
+  color: var(--text-secondary);
 }
 
 .dropDown {
   box-sizing: border-box;
   margin-top: 5px;
-  background-color: var(--lake);
+  background-color: var(--foreground-secondary);
   position: relative;
   cursor: pointer;
   user-select: none;
@@ -287,7 +316,7 @@ a.button:hover , button:hover {
 .dropDown .list {
   display: none;
   position: absolute;
-  background-color: var(--lake);
+  background-color: var(--foreground-secondary);
   width: max-content;
   overflow: auto;
   max-height: 400px;
@@ -304,7 +333,7 @@ a.button:hover , button:hover {
 .dropDown .list::-webkit-scrollbar-thumb {
   border-radius: 10px;
   padding: 2px;
-  background-color: var(--evening-blue);
+  background-color: var(--text-accent);
 }
 
 .dropDown .current {
@@ -334,7 +363,7 @@ a.button:hover , button:hover {
 }
 
 .list .item:hover, .list .item.cursor {
-  background-color: var(--deep-sea);
+  background-color: var(--background-secondary);
 }
 
 .not-list .arrow {
@@ -405,8 +434,8 @@ a.button:hover , button:hover {
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: var(--primary-blue);
-  border-bottom: 1px solid var(--primary-blue);
+  background-color: var(--background-primary);
+  border-bottom: 1px solid var(--foreground-secondary);
   position: fixed;
   width: 100vw;
   justify-content: space-between;
@@ -448,7 +477,7 @@ a.button:hover , button:hover {
   height: 3px;
   width: 100%;
   border-radius: 0px;
-  background: var(--gold);
+  background: var(--borders-main);
 }
 
 .nav .hamburger-lines .line1 {
@@ -484,12 +513,9 @@ a.button:hover , button:hover {
 }
 
 .menu {
-  width: 230px;
-  background: var(--primary-blue);
-  height: calc(100vh - 55px);
-  position: fixed;
-  top: 55px;
-  z-index: 1;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
 }
 
 .menu a, .menu .menuHead .menuHeadText{
@@ -497,7 +523,7 @@ a.button:hover , button:hover {
   display: block;
   padding: 20px;
   box-sizing: border-box;
-  color: var(--gold);
+  color: var(--heading-main);
   text-transform: uppercase;
   text-decoration: none;
 }
@@ -506,7 +532,7 @@ a.button:hover , button:hover {
   width: 60px;
   font-size: 25px;
   display: flex;
-    color: var(--gold);
+    color: var(--heading-main);
     text-decoration: none;
     align-items: center;
     justify-content: center;
@@ -515,16 +541,19 @@ a.button:hover , button:hover {
 }
 
 .menu a:hover, .menu .menuHead:hover {
-  background-color: var(--lake);
+  background-color: var(--foreground-secondary);
 }
 
 .subMenu {
-  padding-left: 30px;
+  padding-left: 0px;
   display: none;
+  background-color: var(--background-secondary);
 }
 
 .subMenu.active{
   display: block;
+  position: absolute;
+  top: 55px;
 }
 
 .menuHead.active .menuHeadArrow{
@@ -534,7 +563,7 @@ a.button:hover , button:hover {
 .subMenu a {
   text-transform: none;
   padding: 10px;
-  color: white;
+  color: var(--heading-secondary);
 }
 
 .menuHead {
@@ -544,7 +573,19 @@ a.button:hover , button:hover {
 
 @media (max-width: 900px) {
   .menu {
+    width: 230px;
+    background: var(--background-primary);
     left: -235px;
+    height: calc(100vh - 55px);
+    position: fixed;
+    top: 55px;
+    z-index: 1;
+    flex-direction: column;
+  }
+  .subMenu.active{
+    padding-left: 30px;
+    display: block;
+    position: relative;
   }
   .menu.active {
     left: 0px;
@@ -566,7 +607,7 @@ a.button:hover , button:hover {
 .summoner-icon img {
   width: 50px;
   border-radius: 50%;
-  border: 3px solid var(--gold);
+  border: 3px solid var(--borders-main);
 }
 
 .card-container .summoner-icon {
@@ -579,7 +620,7 @@ a.button:hover , button:hover {
   border-radius: 5px;
   padding: 30px;
   display: flex;
-  background-color: var(--primary-blue);
+  background-color: var(--foreground-primary);
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
@@ -588,18 +629,18 @@ a.button:hover , button:hover {
 }
 
 .summoner.card-container {
-  border: 2px solid var(--primary-blue);
+  border: 2px solid var(--foreground-primary);
 }
 
 .summoner.card-container:hover {
-  border-color: var(--success);
+  border-color: var(--borders-accent);
 }
 
 .name-and-rank {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--lake);
+  border-bottom: 1px solid var(--foreground-secondary);
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
@@ -621,7 +662,7 @@ a.button:hover , button:hover {
 .circle {
   width: 15px;
   height: 15px;
-  background-color: var(--midnight);
+  background-color: var(--background-secondary);
   border-radius: 50%;
   margin-right: 3px;
 }
@@ -711,7 +752,7 @@ a.button:hover , button:hover {
   padding: 10px;
   margin: 5px;
   color: var(--main-text);
-  background-color: var(--lake);
+  background-color: var(--foreground-secondary);
   border: none;
 }
 
@@ -730,7 +771,7 @@ select.limit-filter {
 div.reset-filter {
   min-width: 100px;
   font-style: italic;
-  color: var(--gold);
+  color: var(--links-main);
   cursor: pointer;
   margin-left: 10px;
   margin-top: 20px;
@@ -753,13 +794,13 @@ div.reset-filter {
 
 .summoner-stat-card .title {
   font-size: 12px;
-  color: #7a859e;
+  color: var(--text-secondary);
 } 
 
 .summoner-stat-card {
   min-width: 100px;
   min-height: 100px;
-  background-color: var(--midnight);
+  background-color: var(--background-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -770,7 +811,7 @@ div.reset-filter {
 
 .summoner-header {
   padding: 50px;
-  background-color: var(--deep-sea);
+  background-color: var(--background-secondary);
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -818,7 +859,7 @@ h1.summoner-name {
 
 .pre-text {
   font-size: 12px;
-  color: var(--evening-blue);
+  color: var(--text-accent);
   font-style: italic;
 }
 
@@ -830,7 +871,7 @@ h1.summoner-name {
 }
 
 .summoner-header .summoner-level {
-  color: var(--evening-blue);
+  color: var(--text-accent);
   font-style: italic;
 }
 
@@ -838,7 +879,7 @@ section.summoner-nav {
   padding: 0px;
   display: flex;
   justify-content: center;
-  background-color: var(--deep-sea);
+  background-color: var(--background-secondary);
   max-width: 100%;
 }
 
@@ -848,23 +889,23 @@ section.summoner-nav {
 }
 
 .summoner-nav a:hover {
-  background-color: var(--primary-blue);
+  background-color: var(--foreground-primary);
 }
 
 .summoner-nav a:active {
-  background-color: var(--midnight);
+  background-color: var(--background-primary);
 }
 
 .undefined a#matches {
-  background-color: var(--midnight);
+  background-color: var(--background-primary);
 }
 
 .challenges a#challenges {
-  background-color: var(--midnight);
+  background-color: var(--background-primary);
 }
 
 .mastery a#mastery {
-  background-color: var(--midnight);
+  background-color: var(--background-primary);
 }
 
 /* challenges */
@@ -902,14 +943,14 @@ section.summoner-nav {
 }
 .challenge .percentile {
   font-size: 12px;
-  color: var(--evening-blue);
+  color: var(--text-accent);
   font-style: italic;
 }
 .challenge .details {
   width: 90px;
 }
 .challenge.rank {
-  color: var(--gold);
+  color: var(--text-main);
   font-size: 30px;
   font-weight: 600;
   width: 35px;
@@ -922,7 +963,7 @@ section.summoner-nav {
 
 .listing .challenge.card-container {
   width: 100%;
-  border-bottom: 1px solid var(--gold);
+  border-bottom: 1px solid var(--text-main);
   border-radius: 0;
   justify-content: space-between;
 }
@@ -989,12 +1030,12 @@ section.summoner-nav {
 .icon img{
   width: 70px;
   border-radius: 50%;
-  border: 3px solid var(--gold);
+  border: 3px solid var(--borders-main);
 }
 
 .mastery .champion-name {
   font-size: 18px;
-  color: var(--gold);
+  color: var(--heading-main);
 }
 
 .mastery .summoner-name {
@@ -1003,7 +1044,7 @@ section.summoner-nav {
 
 .mastery .details {
   display: flex;
-  color: var(--evening-blue);
+  color: var(--text-accent);
   align-items: center;
   font-size: 12px;
 }
@@ -1049,7 +1090,7 @@ section.summoner-nav {
   box-sizing: border-box;
   margin-bottom: 20px;
   width: 100%;
-  background-color: var(--primary-blue);
+  background-color: var(--foreground-primary);
   border-radius: 5px;
   container-type: inline-size;
   overflow: hidden ;
@@ -1090,11 +1131,11 @@ section.summoner-nav {
 }
 
 .kills.victory {
-  color: var(--success);
+  color: var(--text-success);
 }
 
 .kills.defeat {
-  color: var(--failure);
+  color: var(--text-failure);
 }
 
 .match-summary {
@@ -1112,12 +1153,12 @@ section.summoner-nav {
 /* kda styles */
 
 .kda .bad {
-  color: var(--failure);
+  color: var(--text-success);
   font-weight: bold;
 }
 
 .kda .good {
-  color: var(--success);
+  color: var(--text-failure);
   font-weight: bold;
 }
 
@@ -1146,7 +1187,7 @@ section.summoner-nav {
 
 .match-summary .player img {
   max-width: 25px;
-  border: 2px solid var(--gold);
+  border: 2px solid var(--borders-main);
   border-radius: 25px;
 }
 
@@ -1168,7 +1209,7 @@ section.summoner-nav {
 }
 
 .team-list .summoner-name {
-  color: var(--dull-blue);
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -1231,7 +1272,7 @@ section.summoner-nav {
   gap: 10px;
   padding: 15px 20px 5px 20px;
   margin: -15px -15px 10px -15px;
-  border-bottom: 2px solid var(--lake);
+  border-bottom: 2px solid var(--foreground-secondary);
   align-items: center;
 }
 
@@ -1265,11 +1306,11 @@ section.summoner-nav {
 }
 
 .defeat .champion-icon {
-  border-color: var(--failure);
+  border-color: var(--borders-failure);
 }
 
 .victory .champion-icon {
-  border-color: var(--success);
+  border-color: var(--borders-success);
 }
 
 .summoner-champ-wrapper {
@@ -1304,11 +1345,11 @@ section.summoner-nav {
 }
 
 .kill-participation.good {
-  color: var(--success);
+  color: var(--text-success);
 }
 
 .kill-participation.bad {
-  color: var(--failure);
+  color: var(--text-failure);
 }
 
 .gold-earned:hover .tooltip{
@@ -1339,7 +1380,7 @@ section.summoner-nav {
 
 .player-items img, .player-trinket img, .spell-icon{
   width: 30px;
-  border: 1px solid var(--deep-sea);;
+  border: 1px solid var(--borders-dark);
 }
 
 .player-runes {
@@ -1364,9 +1405,9 @@ section.summoner-nav {
 
 .blank-icon {
   width: 30px;
-  background-color: var(--deep-sea);
+  background-color: var(--background-secondary);
   height: 30px;
-  border: 1px solid var(--deep-sea);
+  border: 1px solid var(--background-secondary);
 }
 
 .player-equipped {
@@ -1419,10 +1460,10 @@ section.summoner-nav {
 }
 
 .victory .match-details-head .win{
-  color: var(--success);
+  color: var(--text-success);
 }
 
 .defeat .match-details-head .win {
-  color: var(--failure);
+  color: var(--text-failure);
 }
 

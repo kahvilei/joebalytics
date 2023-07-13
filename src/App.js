@@ -14,7 +14,6 @@ import Register from "./views/partials/Register";
 import Matches from "./views/pages/Matches";
 //partial
 import Navigation from "./views/partials/Navigation";
-import Menu from "./views/partials/Menu";
 //auth
 import { RequireAuth, AuthProvider } from "./auth/auth";
 
@@ -24,8 +23,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Navigation></Navigation>
-        <div className="main">
-          <Menu></Menu>
+        <div className="main">  
           <div className="content">
           <Routes>
             <Route exact path="/" element={<Home />} />

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../auth/auth";
+import Menu from "./Menu";
 
 function Navigation() {
   let auth = useAuth();
@@ -57,6 +58,7 @@ function Navigation() {
             <span className="line line3"></span>
           </div>
         </div>
+        <Menu />
       <UserTools />
     </div>
   );
