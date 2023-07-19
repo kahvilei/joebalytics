@@ -350,46 +350,50 @@ const MatchCard = (props) => {
           "focused-match-summary " + (summonerData.win ? "victory" : "defeat")
         }
       >
-        <div className="champion-icon-and-spells">
-          <img
-            className="champion-icon"
-            src={getChampIcon(summonerData.championId)}
-            alt={summonerData.championName}
-          />
-        </div>
-        <div className="match-details">
-          <div className="match-details-head">
-            <div className="summoner-champ-wrapper">
-              <div className="summoner-icon">
-                <img
-                  src={getSummonerIcon(summonerData.profileIcon)}
-                  alt={summonerData.summonerName}
-                />
+        <div className="info-wrap">
+          <div className="champion-icon-and-spells">
+            <img
+              className="champion-icon"
+              src={getChampIcon(summonerData.championId)}
+              alt={summonerData.championName}
+            />
+          </div>
+          <div className="match-details">
+            <div className="match-details-head">
+              <div className="summoner-champ-wrapper">
+                <div className="summoner-icon">
+                  <img
+                    src={getSummonerIcon(summonerData.profileIcon)}
+                    alt={summonerData.summonerName}
+                  />
+                </div>
+                <div className="summoner-name">{summonerData.summonerName}</div>
+                <div>•</div>
+                <div className="champion-name">{summonerData.championName}</div>
+                <div>
+                  {getRoleName(summonerData.teamPosition) === "unnamed"
+                    ? ""
+                    : "•"}
+                </div>
+                <div className="team-position">
+                  {getRoleName(summonerData.teamPosition) === "unnamed"
+                    ? ""
+                    : getRoleName(summonerData.teamPosition)}
+                </div>
               </div>
-              <div className="summoner-name">{summonerData.summonerName}</div>
-              <div>•</div>
-              <div className="champion-name">{summonerData.championName}</div>
-              <div>
-                {getRoleName(summonerData.teamPosition) === "unnamed"
-                  ? ""
-                  : "•"}
-              </div>
-              <div className="team-position">
-                {getRoleName(summonerData.teamPosition) === "unnamed"
-                  ? ""
-                  : getRoleName(summonerData.teamPosition)}
-              </div>
+              <div className="win">{summonerData.win ? "Victory" : "Defeat"}</div>
             </div>
-            <div className="win">{summonerData.win ? "Victory" : "Defeat"}</div>
-          </div>
-          <div className="stats-wrapper">
-            <PlayerKda summoner={summonerData} />
-            <PlayerDamageAndKillParticipation summoner={summonerData} />
-            <PlayerCsGoldVs summoner={summonerData} />
+            <div className="stats-wrapper">
+              <PlayerKda summoner={summonerData} />
+              <PlayerDamageAndKillParticipation summoner={summonerData} />
+              <PlayerCsGoldVs summoner={summonerData} />
+            </div>
           </div>
         </div>
-        <PlayerSpellsAndRunes summoner={summonerData} />
+        <div className="items-spells-wrap">
+          <PlayerSpellsAndRunes summoner={summonerData} />
           <PlayerItems summoner={summonerData} />
+        </div> 
       </div>
     );
   }

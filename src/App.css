@@ -2,11 +2,11 @@
 
 :root {
    /*main colors*/
-  --midnight: #17192b;
-  --deep-sea: #050c1c;
-  --primary-blue: #1f243b;
-  --lake: #2a3654;
-  --evening-blue: #6064dd;
+  --midnight: #0c0c21;
+  --deep-sea: #091531;
+  --primary-blue: #121e3a;
+  --lake: #1d2d54;
+  --evening-blue: #5e89ee;
   --dull-blue: #737e99;
   --gold: #C99A54;
   --hover-gold: #b1751b;
@@ -177,7 +177,7 @@ body{
 .content {
   width: 100%;
   box-sizing: border-box;
-  padding: 55px 0px 10px 0px;
+  padding: 55px 0px 0px 250px;
   display: flex;
   justify-content: center;
 }
@@ -434,8 +434,8 @@ a.button:hover , button:hover {
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: var(--background-primary);
-  border-bottom: 1px solid var(--foreground-secondary);
+  background-color: var(--foreground-primary);
+  border-bottom: 1px solid var(--foreground-primary);
   position: fixed;
   width: 100vw;
   justify-content: space-between;
@@ -513,14 +513,22 @@ a.button:hover , button:hover {
 }
 
 .menu {
-  position: relative;
+  position: fixed;
   display: flex;
+  top: 55px;
+  width: 250px;
+  left: 0;
+  border-right: 2px solid var(--foreground-primary);
   align-items: flex-start;
+  flex-direction: column;
+  background-color: var(--midnight);
+  height: calc(100vw - 55px);
 }
 
 .menu a, .menu .menuHead .menuHeadText{
   width: 100%;
   display: block;
+  margin: 0px;
   padding: 20px;
   box-sizing: border-box;
   color: var(--heading-main);
@@ -550,10 +558,9 @@ a.button:hover , button:hover {
   background-color: var(--background-secondary);
 }
 
-.subMenu.active{
+.subMenu.active {
   display: block;
-  position: absolute;
-  top: 55px;
+  position: relative;
 }
 
 .menuHead.active .menuHeadArrow{
@@ -563,6 +570,7 @@ a.button:hover , button:hover {
 .subMenu a {
   text-transform: none;
   padding: 10px;
+  padding-left: 30px;
   color: var(--heading-secondary);
 }
 
@@ -571,6 +579,9 @@ a.button:hover , button:hover {
   align-items: center;
 }
 
+.menuItem {
+  width: 100%;
+}
 @media (max-width: 900px) {
   .menu {
     width: 230px;
@@ -781,6 +792,10 @@ div.reset-filter {
   margin-top: 20px;
 }
 
+.summoner-stats {
+  z-index: 1;
+  position: relative;
+}
 
 .stats {
   display: flex;
@@ -1225,10 +1240,12 @@ section.summoner-nav {
   display: flex;
   align-items: center;
   padding: 20px;
+  flex-wrap: wrap;
   margin: 10px 0px;
   border-radius: 5px;
   border-radius: 5px;
   gap: 25px;
+  container-type:inline-size;
 }
 
 .victory.focused-match-summary {
@@ -1242,6 +1259,28 @@ section.summoner-nav {
   /* make background color a gradient between transparent and --failure-transparent, transparent side on the right*/
   background: linear-gradient(to right, var(--failure-transparent), transparent);
 } 
+
+.info-wrap {
+  display: flex;
+  flex-grow: 1;
+  gap: 10px;
+}
+
+@container (max-width: 420px) {
+  .info-wrap {
+    flex-direction: column;
+  }
+
+  .info-wrap .player-cs-and-gold {
+    align-items: flex-start;
+  }
+}
+
+.items-spells-wrap {
+  display: flex;
+  flex-grow: 1;
+  gap: 10px;
+}
 
 .match-details {
   display: flex;
