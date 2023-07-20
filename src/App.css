@@ -21,7 +21,9 @@
   --links-main: var(--gold);
   --links-hover: var(--evening-blue);
   --text-failure: var(--failure);
+  --text-failure-light: var(--failure-light);
   --text-success: var(--success);
+  --text-success-light: var(--success-light);
   --text-warning: var(--warning);
 
   --button-primary: var(--success);
@@ -53,7 +55,9 @@
 
   /*success - failure colors*/
   --success: #52e58b;
+  --success-light: #c5dbcb;
   --failure: #d3263c;
+  --failure-light: #dfc8cf;;
   --neutral: #5E89EE;
   --success-transparent: #52e58a4a;
   --failure-transparent: #d3263d67;
@@ -228,6 +232,9 @@ img {
 @media (max-width: 515px) {
   .challenge.card-container {
     flex-basis: calc(100%);
+  }
+  section {
+    padding: 10px;
   }
 }
 
@@ -857,6 +864,12 @@ div.reset-filter {
   }
 }
 
+@media screen and (max-width: 900px) {
+  .summoner-header {
+    padding: 15px;
+  }
+}
+
 h1.summoner-name {
   margin: 0px 10px 0px 0px;
 }
@@ -1261,18 +1274,96 @@ section.summoner-nav {
 } 
 
 .info-wrap {
-  display: flex;
+  display: grid;
   flex-grow: 1;
   gap: 10px;
+  grid-template-columns: 100px auto;
 }
 
 @container (max-width: 420px) {
   .info-wrap {
     flex-direction: column;
+    grid-template-columns: 70px auto;
   }
 
   .info-wrap .player-cs-and-gold {
     align-items: flex-start;
+    display: flex;
+    gap: 3px;
+    width: 100%;
+    align-items: flex-end;
+    flex-direction: row;
+    justify-content: space-between;
+
+  }
+
+  .info-wrap .player-damage-and-kill-participation {
+    text-align: end;
+  }
+
+  .info-wrap .match-details-head{
+    align-items: flex-end;
+  }
+
+  .info-wrap .summoner-champ-wrapper div:nth-child(3){
+    display: none;
+  }
+
+  .info-wrap .summoner-champ-wrapper {
+    flex-wrap: wrap;
+}
+  .info-wrap .summoner-name {
+  flex-basis: calc(100% - 30px);
+  }
+  .info-wrap .champion-icon {
+    max-width: 60px;
+    border: 2px solid;   
+  }
+  .info-wrap .champion-icon-and-spells{
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .info-wrap .stats-wrapper {
+      grid-column-start: 1;
+      grid-column-end: 3;
+      grid-row-start: 2;
+  }
+  .info-wrap .champion-name, .info-wrap .team-position {
+    font-size: 12px;
+  }
+  
+}
+@container (max-width: 670px) {
+  .items-spells-wrap .player-items {
+    max-width: 250px;
+    gap: 4px;
+  }
+  .items-spells-wrap{
+    justify-content: space-between;
+  }
+  .items-spells-wrap .player-spells,  .items-spells-wrap .player-runes{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+}
+
+@container (max-width: 460px) {
+
+  .items-spells-wrap .player-items, .player-trinket {
+    max-width: 100px;
+    gap: 2px;
+  }
+}
+
+@container (max-width: 360px) {
+
+  .items-spells-wrap .player-spells,  .items-spells-wrap .player-runes{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
   }
 }
 
@@ -1294,7 +1385,7 @@ section.summoner-nav {
   width: 100%;
 }
 
-.match-details .summoner-icon img {
+.match-details-head .summoner-icon img {
   width: 20px;
   border-width: 2px;
 }
@@ -1331,6 +1422,16 @@ section.summoner-nav {
   display: flex;
   align-items: center;
   gap: 10px;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+
+@media (max-width: 900px) {
+  .match-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .player-spells-and-runes {
@@ -1480,11 +1581,19 @@ section.summoner-nav {
   justify-content: space-between;
   align-items: center;  
   flex-wrap: wrap;
+  grid-column-start: 2;
+}
+
+.victory .stats-wrapper {
+  color: var(--text-success-light);
+}
+
+.defeat .stats-wrapper {
+  color: var(--text-failure-light);
 }
 
 .match-details-head {
   display: flex;
-  flex-wrap: wrap;
   width: 100%;
   align-items: center;
   justify-content: space-between;
@@ -1505,4 +1614,5 @@ section.summoner-nav {
 .defeat .match-details-head .win {
   color: var(--text-failure);
 }
+
 

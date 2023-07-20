@@ -358,7 +358,7 @@ const MatchCard = (props) => {
               alt={summonerData.championName}
             />
           </div>
-          <div className="match-details">
+          
             <div className="match-details-head">
               <div className="summoner-champ-wrapper">
                 <div className="summoner-icon">
@@ -388,7 +388,7 @@ const MatchCard = (props) => {
               <PlayerDamageAndKillParticipation summoner={summonerData} />
               <PlayerCsGoldVs summoner={summonerData} />
             </div>
-          </div>
+          
         </div>
         <div className="items-spells-wrap">
           <PlayerSpellsAndRunes summoner={summonerData} />
