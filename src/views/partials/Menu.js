@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from "../../auth/auth";
 
 import {rootAddress} from '../../config/config';
 
@@ -31,6 +32,18 @@ function Menu() {
       menuHead.className = "menuHead";
     }
   }
+  //creates a link to add a summoner page if the user is an admin
+  const AddSummoner = () => {
+    const auth = useAuth();
+    if (auth.user && auth.admin) {
+      return (
+        <Link to={`/add-summoner`}>Add Summoner</Link>
+      );
+    }
+    return '';
+  }
+
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -70,6 +83,7 @@ function Menu() {
         </div>
       </div>
       <Link to={`/matches`}>Matches</Link>
+      <AddSummoner></AddSummoner>
     </div>
   );
 }

@@ -57,9 +57,10 @@ const authProviderAPI = {
         },
       });
       const username = res.data.username;
-      if(username){
+      const admin = res.data.admin;
+      if(username && admin){
         authProviderAPI.isAuthenticated = true;
-        callback(username);
+        callback(username, admin);
       }
     } catch (err) {
       authProviderAPI.isAuthenticated = false;
@@ -76,23 +77,27 @@ let AuthContext = React.createContext(null);
 
 function AuthProvider({ children }) {
   let [user, setUser] = React.useState(null);
+  let [admin, setAdmin] = React.useState(null);
 
   let signin = (newUser, callback) => {
     return authProviderAPI.signin(newUser, () => {
       setUser(newUser.username);
+      setAdmin(newUser.admin);
       callback();
     });
   };
   let signup = (newUser, callback) => {
     return authProviderAPI.signup(newUser, () => {
       setUser(newUser.username);
+      setAdmin(newUser.admin);
       callback();
     });
   };
 
   let checksignin = (callback) => {
-    return authProviderAPI.checksignin((username) => {
+    return authProviderAPI.checksignin((username, admin) => {
       setUser(username);
+      setAdmin(admin);
       callback();
     });
   };
@@ -101,11 +106,12 @@ function AuthProvider({ children }) {
   let signout = (callback) => {
     return authProviderAPI.signout(() => {
       setUser(null);
+      setAdmin(false);
       callback();
     });
   };
 
-  let value = { user, signin, signup, signout, checksignin };
+  let value = { user, admin, signin, signup, signout, checksignin };
   
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -114,7 +120,7 @@ function useAuth() {
   return React.useContext(AuthContext);
 }
 
-function RequireAuth({ children }) {
+async function RequireAuth({ children }) {
   let auth = useAuth();
   let location = useLocation();
 
@@ -129,4 +135,23 @@ function RequireAuth({ children }) {
   return children;
 }
 
-export { AuthProvider, RequireAuth, useAuth };
+// checks to see if the user is an admin
+function RequireAdmin({ children }) {
+  let auth = useAuth();
+  let location = useLocation();
+
+  if (!auth.user) {
+    // Redirect them to the /login page, but save the current location they were
+    // trying to go to when they were redirected. This allows us to send them
+    // along to that page after they login, which is a nicer user experience
+    // than dropping them off on the home page.
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }else if(!auth.admin){
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
+  return children;
+}
+
+
+export { AuthProvider, RequireAuth, RequireAdmin, useAuth };

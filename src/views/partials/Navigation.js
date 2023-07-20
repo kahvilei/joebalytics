@@ -59,6 +59,7 @@ function Navigation() {
           </div>
         </div>
         <Menu />
+        <h3>Joebalytics</h3>
       <UserTools />
     </div>
   );
