@@ -285,10 +285,6 @@ a.button, button {
   font-style: italic;
 }
 
-.error-text{
-  color: var(--text-failure);
-}
-
 button.btn-outline-danger {
   background: none;
   color: var(--button-failure);
@@ -1395,7 +1391,7 @@ section.summoner-nav {
 }
 
 .match-summary-team-list {
-  min-width: 399px;
+  min-width: 400px;
   display: flex;
   justify-content: center;
 }
@@ -1619,42 +1615,4 @@ section.summoner-nav {
   color: var(--text-failure);
 }
 
-/* end match history */
 
-/* login and register page */
-
-.login-page {
-  width: 100%;
-  height: calc(100vh - 55px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-form.login-form {
-  background: var(--foreground-secondary);
-  display: flex;
-  padding: 48px;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-
-input.form-control {
-  background-color: var(--foreground-primary) !important;
-  color: var(--text-main) !important;
-  border: none;
-  padding: 10px;
-}
-
-.register-disclaimer {
-  text-align: center;
-  width: 300px;
-  padding: 20px;
-  color: var(--text-secondary);
-}
-
-/** end login and register page **/

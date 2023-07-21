@@ -34,9 +34,10 @@ function Login() {
   }
 
   return (
-    <div className="login-page">
-      <h2>Login</h2>
-      <form className="login-form" onSubmit={handleSubmit}>
+    <div>
+      <p>You must log in to view the page at {from}</p>
+      <ValidationError message = {errorMessage}></ValidationError>
+      <form onSubmit={handleSubmit}>
       <input
           type="text"
           placeholder="Username"
@@ -50,9 +51,7 @@ function Login() {
           className="form-control"
         />{" "}
         <button type="submit">Login</button>
-        <ValidationError message = {errorMessage}></ValidationError>
       </form>
-      <a href="/register">I don't have an account</a>
     </div>
   );
 }

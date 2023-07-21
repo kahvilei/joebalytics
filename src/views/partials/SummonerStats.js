@@ -414,13 +414,13 @@ function SummonerStats(props) {
 function StatCard(props) {
   const [stat, setStat] = useState("no stats found");
   const statProp = props.stat;
-  const aggregation = props.aggr?props.aggr:'sum';
-  const champ = props.champ?props.champ:'any';
-  const role = props.role?props.role:'any';
-  const mode = props.mode?props.mode:'any';
-  const limit = props.limit?props.limit:10;
-  const region = props.region?props.region:'na';
-  const name = props.name?props.name:'any';
+  const aggregation = props.aggr;
+  const champ = props.champ;
+  const role = props.role;
+  const mode = props.mode;
+  const limit = props.limit;
+  const region = props.region;
+  const name = props.name;
   const [isLoading, setIsLoading] = useState([]);
   useEffect(() => {
     setIsLoading(true);
@@ -430,16 +430,7 @@ function StatCard(props) {
           `/api/matches/stats/${champ}/${role}/${mode}/${statProp}/${limit}/${aggregation}/${region}/${name}`
       )
       .then((res) => {
-        let stat = res.data;
-        if (stat === null) {
-          stat = "incompatible data";
-        }else{
-          stat = stat.toFixed(2);
-        }
-        if (props.display === "percentage") {
-          stat = (stat * 100).toFixed(2) + "%";
-        }
-        setStat(stat);
+        setStat(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -461,7 +452,7 @@ function StatCard(props) {
     return (
       <div className="summoner-stat-card">
         <div className="title">{props.title}</div>
-        <div className="stat">{stat}</div>
+        <div className="stat">{stat.toFixed(2)}</div>
       </div>
     );
   }

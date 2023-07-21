@@ -35,9 +35,9 @@ const Register = () => {
   });
 
   return (
-    <div className="login-page register">
-      <h2>Register</h2>
-      <form className="login-form" noValidate onSubmit={(event) => onRegister(event)}>
+    <div className="login-form">
+      <ValidationError message = {errorMessage}></ValidationError>
+      <form noValidate onSubmit={(event) => onRegister(event)}>
         <input
           type="text"
           placeholder="Username"
@@ -50,22 +50,12 @@ const Register = () => {
           name="password"
           className="form-control"
         />
-        <button
+        <input
           type="submit"
-        >Register</button>
-
-        <ValidationError message = {errorMessage}></ValidationError>
+          value="Register"
+          className="btn btn-outline-warning btn-block mt-4"
+        />
       </form>
-      <a href="/login">I already have an account</a>
-      <div className="register-disclaimer">
-        <h3>What does registering allow me to do?</h3>
-        <p> 
-          Not much! Unless personally granted an admin account, registering will only allow you to refresh individual summoner data.
-        </p>
-        <h3>How do I get an admin account?</h3>
-        <p>Not here :)</p>
-      </div>
-      
     </div>
   );
 };
