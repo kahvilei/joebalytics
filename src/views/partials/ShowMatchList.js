@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import MatchCard from "../components/MatchCard";
-import LoadingCircle from "../components/LoadingCircle";
+import SkeletonLoader from "../components/SkeletonLoader";  
 
 function ShowMatchList(props) {
   const limit = props.count ? props.count : 10;
@@ -136,7 +136,7 @@ function ShowMatchList(props) {
         <div className="match-list">
           <div className="list">{matchList}</div>
         </div>
-        {isLoading && <LoadingCircle color={'gold'} size = {'small'}/>}
+        {isLoading && <SkeletonLoader/>}
       </div>
     );
 }

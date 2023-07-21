@@ -138,6 +138,41 @@
 
 /* end load ring */
 
+/* skeleton styles */
+
+.match.skeleton-loader {
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  overflow: hidden;
+  padding: 15px;
+  width: 100%;
+  min-height: 237px;
+  background: linear-gradient(to right, var(--foreground-primary) 0%, var(--foreground-secondary) 50%, var(--foreground-primary) 100%);
+  animation: skeleton-loader 1s linear infinite;
+  -webkit-animation: skeleton-loader 1s linear infinite;
+}
+
+@keyframes skeleton-loader {
+  0% {
+    background-position: -32px;
+  }
+  40%, 100% {
+    background-position: 208px;
+  }
+} 
+
+@-webkit-keyframes skeleton-loader {
+  0% {
+    background-position: -32px;
+  }
+  40%, 100% {
+    background-position: 208px;
+  }
+} 
+
+/* general styles */
+
 body{
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
   margin: 0;
@@ -1694,3 +1729,6 @@ input.form-control {
   gap: 10px;
   align-items: center;
 }
+
+/* end summoner add page */
+
