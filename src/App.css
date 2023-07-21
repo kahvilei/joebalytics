@@ -1185,12 +1185,12 @@ section.summoner-nav {
 /* kda styles */
 
 .kda .bad {
-  color: var(--text-success);
+  color: var(--text-failure);
   font-weight: bold;
 }
 
 .kda .good {
-  color: var(--text-failure);
+  color: var(--text-success);
   font-weight: bold;
 }
 
@@ -1650,7 +1650,7 @@ input.form-control {
   padding: 10px;
 }
 
-.register-disclaimer {
+.form-disclaimer {
   text-align: center;
   width: 300px;
   padding: 20px;
@@ -1658,3 +1658,39 @@ input.form-control {
 }
 
 /** end login and register page **/
+
+/* summoner add page */
+
+.add-summoner-page {
+  width: 100%;
+  height: calc(100vh - 55px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.add-summoner-page .add-summoner-form {
+  background: var(--foreground-secondary);
+  display: flex;
+  padding: 48px;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  max-width: 300px;
+}
+
+.add-summoner-form input, .add-summoner-form select {
+  background-color: var(--foreground-primary) !important;
+  color: var(--text-main) !important;
+  border: none;
+  padding: 10px;
+}
+
+.add-summoner-form .form-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}

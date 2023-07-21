@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+//import loading circle
+import LoadingCircle from "../components/LoadingCircle";
+
 const AddSummoner = (props) => {
   // Define the state with useState hook
   const navigate = useNavigate();
@@ -13,7 +16,16 @@ const AddSummoner = (props) => {
   });
   const [status, setStatus] = useState({
     message: "",
+    type: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  function showLoading() {
+    // If isLoading is true, return the LoadingCircle component in small gold circle form. Otherwise, return null.
+    if (isLoading) {
+      return <LoadingCircle size = {"small"} color = {"gold"}/>;
+    }
+  }
 
   const onChange = (e) => {
     setSummoner({ ...summoner, [e.target.name]: e.target.value });
@@ -21,6 +33,11 @@ const AddSummoner = (props) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setStatus({
+      message: "",
+      type: "",
+    });
 
     try {
       let config = {
@@ -37,29 +54,25 @@ const AddSummoner = (props) => {
         regionDisplay: "NA",
         name: "",
       });
-      navigate("/");
+      setStatus({
+        message: "Summoner added successfully",
+        type: "success",
+      });
+      setIsLoading(false);
+
     } catch (err) {
       setStatus({
         message: err.response.data.msg,
+        type: "error",
       });
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="CreateBook">
-      <div className="container">
-        <div className="row">
-          <div className="col-md-8 m-auto">
-            <br />
-            <Link to="/" className="btn btn-outline-warning float-left">
-              Show Summoners
-            </Link>
-          </div>
-          <div className="col-md-8 m-auto">
-            <h1 className="display-4 text-center">Add summoner</h1>
-            <p className="lead text-center">Create new summoner</p>
-            <div>{status.message}</div>
-            <form noValidate onSubmit={onSubmit}>
+    <div className="add-summoner-page">
+            <h2>Add summoner</h2>
+            <form className='add-summoner-form'noValidate onSubmit={onSubmit}>
               <div className="form-group">
                 <label htmlFor="regionDisplay">Region:</label>
                 <select
@@ -73,10 +86,6 @@ const AddSummoner = (props) => {
                   <option value="KR">KR</option>
                   <option value="EUW">EUW</option>
                 </select>
-              </div>
-              <br />
-
-              <div className="form-group">
                 <input
                   type="text"
                   placeholder="Summoner Name"
@@ -86,16 +95,18 @@ const AddSummoner = (props) => {
                   onChange={onChange}
                 />
               </div>
-
-              <input
+              <button
                 type="submit"
                 className="btn btn-outline-warning btn-block mt-4"
-              />
+              >Create</button>
+              {showLoading()}
+              <div className={ status.type + '-text' }>{status.message}</div>
             </form>
-          </div>
+            <div className="form-disclaimer">
+              Adding a new summoner can take up to 5 minutes, depending on the amount of matches that need to be added to the database.
+              </div>
         </div>
-      </div>
-    </div>
+
   );
 };
 

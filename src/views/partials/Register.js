@@ -57,7 +57,7 @@ const Register = () => {
         <ValidationError message = {errorMessage}></ValidationError>
       </form>
       <a href="/login">I already have an account</a>
-      <div className="register-disclaimer">
+      <div className="form-disclaimer">
         <h3>What does registering allow me to do?</h3>
         <p> 
           Not much! Unless personally granted an admin account, registering will only allow you to refresh individual summoner data.

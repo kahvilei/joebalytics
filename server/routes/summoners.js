@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Load Book model
 const Summoner = require("../models/Summoner");
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn, isAdmin } = require("../middleware");
 
 // @route GET api/summoners/test
 // @description tests summoners route
@@ -120,7 +120,7 @@ router.get("/:region/:name", async (req, res) => {
 // @route GET api/summoners
 // @description add/save summoner
 // @access Public
-router.post("/", isLoggedIn, async (req, res) => {
+router.post("/", isAdmin, async (req, res) => {
   try {
     let exists = await Summoner.findOne({
       $and: [{ name: req.body.name }, { regionDisplay: req.body.region }],
@@ -146,7 +146,7 @@ router.post("/", isLoggedIn, async (req, res) => {
 
 // @route GET api/summoners/:id
 // @description Update summoner
-router.put("/:id", async (req, res) => {
+router.put("/:id", isLoggedIn, async (req, res) => {
   try {
     let summoner = await Summoner.findById(req.params.id);
     await summoner.save();
@@ -159,7 +159,7 @@ router.put("/:id", async (req, res) => {
 // @route GET api/summoners/:id
 // @description Delete summoner by id
 // @access Public
-router.delete("/:id", isLoggedIn, async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res) => {
   try {
     let summoner = await Summoner.findById(req.params.id);
     await summoner.deleteOne();
