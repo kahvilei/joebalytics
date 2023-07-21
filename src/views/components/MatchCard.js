@@ -227,9 +227,12 @@ const MatchCard = (props) => {
     //react component that displays kill participation and damage dealt to champions
     function PlayerDamageAndKillParticipation(props) {
       const summoner = props.summoner;
-      const killParticipation = (
-        summoner.challenges.killParticipation * 100
-      ).toFixed(0);
+      let killParticipation = 0;
+      if (summoner.challenges === undefined) {
+        killParticipation = "incompatible data"
+      }else{
+        killParticipation = (summoner.challenges.killParticipation * 100).toFixed(0);
+      }
       //tag kill participation as good if it is greater than 60%, bad if it is less than 40%, and neutral if it is between 40% and 60%
       const killParticipationTag =
         killParticipation < 40

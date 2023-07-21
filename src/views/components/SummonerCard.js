@@ -7,8 +7,16 @@ const SummonerCard = (props) => {
   let tier = "unranked";
   let rank = "";
   if (summoner.rankedData[0]) {
-    tier = summoner.rankedData[0].tier.toLowerCase();
-    rank = summoner.rankedData[0].rank;
+    if (summoner.rankedData[0].tier){
+      tier = summoner.rankedData[0].tier.toLowerCase();
+      rank = summoner.rankedData[0].rank;
+    }else if(summoner.rankedData[1]){
+      if(summoner.rankedData[1].tier){
+      tier = summoner.rankedData[1].tier.toLowerCase();
+      rank = summoner.rankedData[1].rank;
+    }
+  }
+    
   }
   return (
     <Link

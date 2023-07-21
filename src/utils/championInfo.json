@@ -4080,6 +4080,7 @@
                 "attackspeed": 0.625
             }
         },
+        "Naafiri":{"version":"13.14.1","id":"Naafiri","key":"950","name":"Naafiri","title":"the Hound of a Hundred Bites","blurb":"Across the sands of Shurima, a chorus of howls rings out. It is the call of the dune hounds, voracious predators who form packs and compete for the right to hunt in these barren lands. Among them, one pack stands above all, for they are driven not only...","info":{"attack":9,"defense":5,"magic":0,"difficulty":2},"image":{"full":"Naafiri.png","sprite":"champion2.png","group":"champion","x":96,"y":96,"w":48,"h":48},"tags":["Assassin"],"partype":"Mana","stats":{"hp":650,"hpperlevel":120,"mp":400,"mpperlevel":55,"movespeed":340,"armor":32,"armorperlevel":4.7,"spellblock":32,"spellblockperlevel":2.05,"attackrange":125,"hpregen":9,"hpregenperlevel":0.9,"mpregen":7.5,"mpregenperlevel":1,"crit":0,"critperlevel":0,"attackdamage":57,"attackdamageperlevel":2.1,"attackspeedperlevel":2.1,"attackspeed":0.688}},
         "Nami": {
             "version": "12.6.1",
             "id": "Nami",

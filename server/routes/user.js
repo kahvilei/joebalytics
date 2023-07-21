@@ -24,6 +24,7 @@ router.post("/register", async (req, res) => {
       const payload = {
         id: dbUser._id,
         username: dbUser.username,
+        admin: dbUser.admin,
       };
       jwt.sign(
         payload,
@@ -62,6 +63,7 @@ router.post("/login", async (req, res) => {
       const payload = {
         id: foundUser._id,
         username: foundUser.username,
+        admin: foundUser.admin,
       };
       jwt.sign(
         payload,
@@ -95,7 +97,7 @@ router.get("/isLoggedIn", async (req, res) => {
         req.user = {};
         req.user.id = decoded.id
         req.user.username = decoded.username
-        return res.json({ msg: "authorized", isLoggedIn: true, username: decoded.username});
+        return res.json({ msg: "authorized", isLoggedIn: true, admin: decoded.admin, username: decoded.username});
     });
   } else {
     res.json({ msg: "Incorrect token", isLoggedIn: false });

@@ -7,6 +7,7 @@ const router = express.Router();
 const Match = require('../models/Match');
 const Participant = require("../models/Participant");
 const Summoner = require("../models/Summoner");
+const acceptedQueues = { "metadata.queueId": { $in: ['2','4','6','7','76','900','700','325','400','410','420','430','440','450','720','1400'] }};
 
 // @route GET api/Matches/test
 // @description tests Matches route
@@ -17,7 +18,7 @@ router.get('/test', (req, res) => res.send('match route testing!'));
 // @description Get all Matches
 // @access Public
 router.get('/', (req, res) => {
-  Match.find()
+  Match.find(acceptedQueues)
     .then(Matches => res.json(Matches))
     .catch(err => res.status(404).json({ msg: 'No Matches found' }));
 });
@@ -25,7 +26,7 @@ router.get('/', (req, res) => {
 router.get('/recent', async (req, res) => {
 
   try {
-    let matches = await Match.find().sort({ gameStartTimestamp: 'desc' })
+    let matches = await Match.find(acceptedQueues).sort({ gameStartTimestamp: 'desc' })
     res.json(matches);
   } catch (e) {
     res.status(404).json({ msg: 'No matches found' })
@@ -35,7 +36,7 @@ router.get('/recent', async (req, res) => {
 router.get('/recent/populate', async (req, res) => {
 
   try {
-    let matches = await Match.find().sort({ gameStartTimestamp: 'desc' }).populate('info.participants')
+    let matches = await Match.find(acceptedQueues).sort({ gameStartTimestamp: 'desc' }).populate('info.participants')
     res.json(matches);
   } catch (e) {
     res.status(404).json({ msg: 'No matches found' })
@@ -45,7 +46,7 @@ router.get('/recent/populate', async (req, res) => {
 router.get('/recent/:limit/populate', async (req, res) => {
   let limit = req.params.limit;
   try {
-    let matches = await Match.find().sort({ gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
+    let matches = await Match.find({acceptedQueues}).sort({ gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
     res.json(matches);
   } catch (e) {
     res.status(404).json({ msg: 'No matches found' })
@@ -55,7 +56,7 @@ router.get('/recent/:limit/populate', async (req, res) => {
 router.get('/recent/:limit', async (req, res) => {
   let limit = req.params.limit;
   try {
-    let matches = await Match.find().sort({ gameStartTimestamp: 'desc' }).limit(limit)
+    let matches = await Match.find(acceptedQueues).sort({ gameStartTimestamp: 'desc' }).limit(limit)
     res.json(matches);
   } catch (e) {
     res.status(404).json({ msg: 'No matches found' })
@@ -72,7 +73,7 @@ router.get('/recent/:limit/populate/:region/:name', async (req, res) => {
       $and: [{ nameURL: name }, { regionURL: region }],
     });
     try {
-      let matches = await Match.find({ "metadata.participants": summoner.puuid, }).sort({ gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
+      let matches = await Match.find({ "metadata.participants": summoner.puuid, acceptedQueues}).sort({ gameStartTimestamp: 'desc' }).limit(limit).populate('info.participants')
       res.json(matches);
     } catch (e) {
       res.status(404).json({ msg: 'No matches found' })
@@ -92,7 +93,7 @@ router.get('/recent/:limit/:region/:name', async (req, res) => {
       $and: [{ nameURL: name }, { regionURL: region }],
     });
     try {
-      let matches = await Match.find({ "metadata.participants": summoner.puuid, }).sort({ gameStartTimestamp: 'desc' }).limit(limit)
+      let matches = await Match.find({ "metadata.participants": summoner.puuid, acceptedQueues}).sort({ gameStartTimestamp: 'desc' }).limit(limit)
       res.json(matches);
     } catch (e) {
       res.status(404).json({ msg: 'No matches found' })
@@ -125,7 +126,7 @@ router.get('/recent/:timestamp/:limit/populate/:region/:name/:champ/:role/:mode'
   }
   let mode = req.params.mode;
   if(mode === "any"){
-    mode = {$exists: true};
+    mode = { $in: ['2','4','6','7','76','900','700','325','400','410','420','430','440','450','720','1400'] };
   }
 
   try {
@@ -174,7 +175,7 @@ router.get('/recent/:limit/populate/:region/:name/:champ/:role/:mode', async (re
   }
   let mode = req.params.mode;
   if(mode === "any"){
-    mode = {$exists: true};
+    mode = { $in: ['2','4','6','7','76','900','700','325','400','410','420','430','440','450','720','1400'] };
   }
 
   try {
@@ -232,7 +233,7 @@ router.get('/stats/:champ/:role/:mode/:stat/:limit/:aggregation/:region/:name', 
   }
   let mode = req.params.mode;
   if(mode === "any"){
-    mode = {$exists: true};
+    mode = { $in: ['2','4','6','7','76','900','700','325','400','410','420','430','440','450','720','1400'] };
   }
   
   let aggregation = req.params.aggregation;
@@ -298,7 +299,7 @@ router.get('/stats/:champ/:role/:mode/:stat/:subStat/:limit/:aggregation/:region
   }
   let mode = req.params.mode;
   if(mode === "any"){
-    mode = {$exists: true};
+    mode = { $in: ['2','4','6','7','76','900','700','325','400','410','420','430','440','450','720','1400'] };
   }
 
   let aggregation = req.params.aggregation;
@@ -362,7 +363,7 @@ router.get('/stats/:champ/:role/:mode/:stat/:subStat/:limit/:aggregation/', asyn
   }
   let mode = req.params.mode;
   if(mode === "any"){
-    mode = {$exists: true};
+    mode = { $in: ['2','4','6','7','76','900','700','325','400','410','420','430','440','450','720','1400'] };
   }
 
   let aggregation = req.params.aggregation;
@@ -427,7 +428,7 @@ router.get('/stats/:champ/:role/:mode/:stat/:limit/:aggregation/', async (req, r
   }
   let mode = req.params.mode;
   if(mode === "any"){
-    mode = {$exists: true};
+    mode = { $in: ['2','4','6','7','76','900','700','325','400','410','420','430','440','450','720','1400'] };
   }
 
   let aggregation = req.params.aggregation;

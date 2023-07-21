@@ -15,7 +15,7 @@ import Matches from "./views/pages/Matches";
 //partial
 import Navigation from "./views/partials/Navigation";
 //auth
-import { RequireAuth, AuthProvider } from "./auth/auth";
+import { RequireAuth, AuthProvider, RequireAdmin } from "./auth/auth";
 
 
 function App() {
@@ -41,9 +41,9 @@ function App() {
             <Route
               path="/add-summoner"
               element={
-                <RequireAuth>
+                <RequireAdmin>
                   <AddSummoner />
-                </RequireAuth>
+                </RequireAdmin>
               }
             />
           </Routes>
