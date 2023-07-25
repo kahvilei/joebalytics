@@ -8,7 +8,7 @@ const itemData = require('./itemInfo.json');
 const items = itemData;
 
 const getSummonerIcon = (id) => {
-    return `https://ddragon.leagueoflegends.com/cdn/13.6.1/img/profileicon/${id}.png`
+    return `https://raw.communitydragon.org/latest/game/assets/ux/summonericons/profileicon${id}.png`
 }
 
 const getChallengeIcon = (id, rank) =>{
