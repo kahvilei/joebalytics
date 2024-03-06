@@ -322,9 +322,9 @@ const MatchCard = (props) => {
           <div className={"spell-icon " + summoner[`summoner${i}Id`]} key={i}>
             <img
               src={getSummonerSpellIcon(summoner[`summoner${i}Id`])}
-              alt={getSummonerSpellName(summoner[`summoner${i}`])}
+              alt={getSummonerSpellName(summoner[`summoner${i}Id`])}
             />
-            <div className="tooltip">{getSummonerSpellName(summoner[`summoner${i}`])}</div>
+            <div className="tooltip">{getSummonerSpellName(summoner[`summoner${i}Id`])}</div>
           </div>
         );
       }

@@ -11,6 +11,7 @@ const matches = require('./routes/matches');
 const masteries = require('./routes/masteries');
 const challenges = require('./routes/challenges');
 const user = require('./routes/user');
+const data = require('./routes/data');
 
 // Connect Database
 const db = process.env.MONGO_CONNECT;
@@ -27,6 +28,7 @@ app.use('/api/matches', matches);
 app.use('/api/masteries', masteries);
 app.use('/api/challenges', challenges);
 app.use('/api/user', user);
+app.use('/api/data', data);
 
 app.use(express.static(path.join(__dirname, "../build")));
 

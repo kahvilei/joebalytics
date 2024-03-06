@@ -1,12 +1,14 @@
-const champtionData = require('./championInfo.json');
-const champions = champtionData.data;
+import axios from 'axios';
+import {rootAddress} from '../config/config';
 
-const queueData = require('./queueInfo.json');
-const queues = queueData.data;
+const championsData = await axios.get(rootAddress[process.env.NODE_ENV] + '/api/data/champions');
+const queuesData = await axios.get(rootAddress[process.env.NODE_ENV] + '/api/data/queueTypes');
+const itemsData = await axios.get(rootAddress[process.env.NODE_ENV] + '/api/data/items');
 
-const itemData = require('./itemInfo.json');
-const items = itemData;
-
+const champions = championsData.data.data;
+const queues = queuesData.data;
+const items = itemsData.data;
+        // Rest of your code...
 const getSummonerIcon = (id) => {
     return `https://raw.communitydragon.org/latest/game/assets/ux/summonericons/profileicon${id}.png`
 }
@@ -192,7 +194,6 @@ const getSummonerSpellFileName = (id) =>{
     return "unnamed";
 }
 const getSummonerSpellName = (id) =>{
-
     //convert id to summoner spell name
     if(id === 1){
         return "Cleanse";
