@@ -43,8 +43,6 @@ function Menu() {
     return '';
   }
 
-
-
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -83,6 +81,7 @@ function Menu() {
         </div>
       </div>
       <Link to={`/matches`}>Matches</Link>
+      <Link to={`/champions`}>Champions</Link>
       <AddSummoner></AddSummoner>
     </div>
   );

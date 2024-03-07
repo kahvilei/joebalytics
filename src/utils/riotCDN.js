@@ -21,6 +21,10 @@ const getChampIcon = (id) =>{
     return `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id}.png`
 }
 
+const getChampSplash = (id) =>{
+    return `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/${id}/${id}000.jpg`
+}
+
 const getChampName = (id) =>{
     for (let champion in champions){
         if(parseInt(champions[champion].key) === id){
@@ -28,6 +32,22 @@ const getChampName = (id) =>{
         }
     }
     return "unnamed";
+}
+
+const getChampList = () =>{
+    return champions;
+}
+
+const getChampArray = () =>{
+    let champArray = [];
+    for (let champion in champions){
+        champArray.push(champions[champion]);
+    }
+    return champArray;
+}
+
+const getChampionDetails = (id) =>{
+    return champions[id];
 }
 
 const getRoleName = (id) =>{
@@ -274,4 +294,4 @@ const getRegionName = (id) =>{
 
 
 
-export { getRegionName, getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName, getRoleName, getRoleIcon, getItemIcon, getSpellIcon, getRuneIcon, getItemName, getPerkStyleIcon, getPerkStyleName, getSummonerSpellIcon, getSummonerSpellName};
+export { getChampSplash, getChampionDetails, getChampArray, getChampList, getRegionName, getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName, getRoleName, getRoleIcon, getItemIcon, getSpellIcon, getRuneIcon, getItemName, getPerkStyleIcon, getPerkStyleName, getSummonerSpellIcon, getSummonerSpellName};

@@ -12,6 +12,8 @@ import SummonerDetails from "./views/pages/SummonerDetails";
 import Login from "./views/partials/Login";
 import Register from "./views/partials/Register";
 import Matches from "./views/pages/Matches";
+import Champions from "./views/pages/Champions";
+import ChampionDetails from "./views/pages/ChampionDetails";
 //partial
 import Navigation from "./views/partials/Navigation";
 //auth
@@ -30,6 +32,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/matches" element={< Matches/>} />
+            <Route path="/champions" element={<Champions />} />
+            <Route path="/champion/:id" element={<ChampionDetails />} />
             <Route
               path="/summoner/:region/:name/:page"
               element={<SummonerDetails />}

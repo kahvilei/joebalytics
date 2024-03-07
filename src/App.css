@@ -1754,3 +1754,21 @@ input.form-control {
 
 /* end summoner add page */
 
+/* champion listing page */
+a.ChampionDetailsCard {
+  background: var(--primary-blue);
+  display: flex;
+  margin-bottom: 20px;
+}
+
+a.ChampionDetailsCard .splash{
+  width:50%
+}
+
+a.ChampionDetailsCard .details{
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: beginning;
+}
+

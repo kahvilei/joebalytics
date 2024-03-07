@@ -34,6 +34,16 @@ router.get('/by-champ', async (req, res) => {
     }
 })
 
+router.get('/champion/:id', async (req, res) => {
+    let id = req.params.id;
+    try{
+        let mastery = await Mastery.find({championId: id}).sort({championPoints: 'desc', championLevel:'desc'});
+        res.json(mastery);
+    }catch(e){
+        res.status(404).json({ msg: 'No Mastery found' })
+    }
+})
+
 router.get('/top', async (req, res) => {
     
     try{
