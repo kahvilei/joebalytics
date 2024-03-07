@@ -84,6 +84,7 @@ const collectMatchDataFromArray = async (region, list) => {
           participant.gameMode = matchData.info.gameMode;
           participant.queueId = matchData.info.queueId;
           participant.gameStartTimestamp = matchData.info.gameStartTimestamp;
+          participant.uniqueId = matchData.metadata.matchId + participant.puuid;
           let newParticipant = await Participant.create(participant)
           newParticipantList.push(newParticipant);
         }
