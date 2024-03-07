@@ -13,13 +13,16 @@ function Home() {
           <ShowMatchList infiniteScroll={false} count = {5}/>
           <Link className="button" to={`/matches`}>See all matches</Link>
         </section>
-        <section>
+        <section className="row">
+          <div className="challenges column-50">
           <h2>Challenges Ranking</h2>
           <ShowChallengeRanking count = {12}/>
-        </section>
-        <section>
+          </div>
+
+          <div className="masteries column-50">
           <h2>Champion Masteries</h2>
-          <ShowMasteryRanking count = {8}/>
+          <ShowMasteryRanking count = {6}/>
+          </div>
         </section>
         
       </div>

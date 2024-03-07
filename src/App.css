@@ -222,10 +222,15 @@ body{
 }
 .main-column {
   width: 70%;
+  container-type: inline-size;
 }
 
 .side-column {
   width: 25%;
+}
+
+.column-50{
+  width: 50%;
 }
 
 section {
@@ -233,6 +238,7 @@ section {
   box-sizing: border-box;
   width: 100%;
   max-width: 1500px;
+  container-type: inline-size;
 }
 
 section.full-width {
@@ -240,6 +246,12 @@ section.full-width {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
+}
+
+section.row{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
 }
 
 img {
@@ -270,6 +282,16 @@ img {
   }
   section {
     padding: 10px;
+  }
+}
+
+@container (max-width: 1000px) {
+  .column-50{
+    width: 100%;
+  }
+  section.row{
+    flex-wrap: wrap;
+    flex-direction: column;
   }
 }
 

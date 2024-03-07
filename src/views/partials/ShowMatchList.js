@@ -7,7 +7,7 @@ import MatchCard from "../components/MatchCard";
 import SkeletonLoader from "../components/SkeletonLoader";  
 
 function ShowMatchList(props) {
-  const limit = props.count ? props.count : 10;
+  const limit = props.count ? props.count : 30;
   const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState([]);
   //const [loadMoreToggle, setLoadMoreToggle] = useState(props.loadMore? props.loadMore : true);

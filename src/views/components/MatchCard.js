@@ -11,10 +11,12 @@ import {
   getPerkStyleName,
   getSummonerSpellIcon,
   getSummonerSpellName,
+  getRegionName,
 } from "../../utils/riotCDN";
 
 const MatchCard = (props) => {
   const match = props.match;
+  const region = getRegionName(match.info.platformId);
   //get match name from match data, remove final s from name if it exists
   //remove last character s from match mode name if it exists
   const matchMode =
@@ -370,7 +372,7 @@ const MatchCard = (props) => {
                     alt={summonerData.summonerName}
                   />
                 </div>
-                <div className="summoner-name">{summonerData.summonerName}</div>
+                <a href={"/summoner/" + region + "/" + summonerData.summonerName.toLowerCase()}><div className="summoner-name">{summonerData.summonerName}</div></a>
                 <div>•</div>
                 <div className="champion-name">{summonerData.championName}</div>
                 <div>

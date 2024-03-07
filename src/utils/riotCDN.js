@@ -238,5 +238,40 @@ const getSummonerSpellName = (id) =>{
     
 }
 
+const getRegionName = (id) =>{
+    if(id === "NA1"){
+        return "na";
+    }
+    if(id === "EUN1"){
+        return "eune";
+    }
+    if(id === "EUW1"){
+        return "euw";
+    }
+    if(id === "KR"){
+        return "kr";
+    }
+    if(id === "BR1"){
+        return "br";
+    }
+    if(id === "LA1"){
+        return "lan";
+    }
+    if(id === "LA2"){
+        return "las";
+    }
+    if(id === "OC1"){
+        return "oce";
+    }
+    if(id === "RU"){
+        return "ru";
+    }
+    if(id === "TR1"){
+        return "tr";
+    }
+    return "unnamed";
+}
 
-export { getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName, getRoleName, getRoleIcon, getItemIcon, getSpellIcon, getRuneIcon, getItemName, getPerkStyleIcon, getPerkStyleName, getSummonerSpellIcon, getSummonerSpellName};
+
+
+export { getRegionName, getChallengeIcon, getSummonerIcon, getChampIcon, getChampName, getQueueName, getRoleName, getRoleIcon, getItemIcon, getSpellIcon, getRuneIcon, getItemName, getPerkStyleIcon, getPerkStyleName, getSummonerSpellIcon, getSummonerSpellName};
