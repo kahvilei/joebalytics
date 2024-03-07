@@ -11,12 +11,12 @@ function ChampionDetailsCard(props) {
     const champIcon = getChampSplash(champion.key);
     return (
         <Link to={`/champion/${champion.id}`} className='ChampionDetailsCard'>
-            <div className='splash'>
-                <img src={champIcon} alt={champion.name} />
+            <div style = {{backgroundImage: "url(" + champIcon + ")"}} className='splash'>
+                <div className='overlay-gradient'></div>
             </div>
             <div className='details'>
-                <h3>{champion.name}</h3>
-                <p>{champion.title}</p>
+                <h2>{champion.name}</h2>
+                <h3>{champion.title}</h3>
                 <ChampMasteryRanking champion={champion}/>
             </div>
         </Link>

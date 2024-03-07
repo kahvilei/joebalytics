@@ -20,7 +20,7 @@ function Matches(props) {
   return (
     <div className="page">
       <section className={`${page}`}>
-        <h2>Match History</h2>
+        <h1>Match History</h1>
         <SummonerStats />
         <SubPage />
       </section>

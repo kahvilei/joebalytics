@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { rootAddress } from '../../config/config';
-import SkeletonLoader from '../components/SkeletonLoader';
+import LoadingCircle from './LoadingCircle';
+import { getSummonerIcon } from '../../utils/riotCDN';
 
 function ChampMasteryRanking(props) {
     const [masteryRanking, setMasteryRanking] = useState([]);
@@ -21,39 +22,40 @@ function ChampMasteryRanking(props) {
         });
     }, [id]);
 
+    // returns a numbers of div elements depending on the number of tokens the summoner has for the champion
+    const tokenDisplay = (tokens) => {
+        let tokenArray = [];
+        for(let i = 0; i < tokens; i++){
+            tokenArray.push(<div className="token" key={i}></div>);
+        }
+        return tokenArray;
+    }
+
     if(isLoading){
         return (  
         <div className='ChampMasteryRanking'>
-            <SkeletonLoader/>
+            <LoadingCircle/>
         </div>
         );
     }else{
         return (  
         <div className='ChampMasteryRanking'>
-            <h2>Champion Mastery Ranking for {champion.name}</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Summoner</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody>
                     {masteryRanking.map((summoner, index) => {
                         return (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{summoner.summonerName}</td>
-                                <td>{summoner.championPoints}</td>
-                            </tr>
+                            <div className="mastery-card summoner" key={index}>
+                                <img src={getSummonerIcon(summoner.profileIconId)} alt={summoner.summonerName} />
+                                <div>{summoner.summonerName}</div>
+                                <div className='tokens'>{tokenDisplay(summoner.tokensEarned)}</div>
+                                <div>Mastery {summoner.championLevel}</div>
+                                <div>{summoner.championPoints} points</div>
+                            </div>
                         );
                     })}
-                </tbody>
-            </table>
         </div>
         );
     }
+    
+    
 }
 
 export default ChampMasteryRanking;

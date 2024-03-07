@@ -308,7 +308,6 @@ img {
 /* text */
 
 h2 {
-  text-transform: uppercase;
   font-weight: 500;
   color: var(--heading-main);
 }
@@ -1759,16 +1758,71 @@ a.ChampionDetailsCard {
   background: var(--primary-blue);
   display: flex;
   margin-bottom: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  min-height: 310px;
+  color: var(--text-main);
 }
 
-a.ChampionDetailsCard .splash{
-  width:50%
+.ChampionDetailsCard .splash {
+  width: 40%;
+  background-position: 70% 10%;
+  background-size: 140%;
+  transition: .2s;
+}
+
+.ChampionDetailsCard:hover .splash {
+  background-position: 90% 10%;
+}
+
+.ChampionDetailsCard .splash .overlay-gradient {
+  background: linear-gradient(270deg, rgba(18, 30, 58, 1) 0%, rgba(0, 0, 0, 0) 100%);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
 a.ChampionDetailsCard .details{
-  padding: 20px;
+  padding: 30px 20px;
+  width: 60%;
   display: flex;
   flex-direction: column;
   justify-content: beginning;
+  margin-left: -20px;
 }
+
+a.ChampionDetailsCard .details h2{
+  margin: 0px;
+  font-size: 30px;
+}
+
+a.ChampionDetailsCard .details h3{
+  margin: 0px;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.mastery-card.summoner {
+  padding: 15px;
+  background-color: var(--lake);
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  width: 130px;
+}
+
+.mastery-card.summoner img{
+  border: 2px solid var(--borders-main);
+  border-radius: 50%;
+  max-width: 40px;
+  margin-bottom: 10px;
+}
+
+.ChampMasteryRanking {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0px;
+}
+
 
