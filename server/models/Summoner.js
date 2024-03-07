@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const {
-  getMasteryBySummId,
+  getMasteryByPuuid,
   getRankedDataBySummId,
   getSummonerDetails,
   getSummonerDetailsByPuuid,
@@ -156,8 +156,8 @@ const SummonerSchema = new Schema({
           try {
             this.masteryData = [];
             let masteryList = [];
-            let masteryData = await getMasteryBySummId(
-              this.id,
+            let masteryData = await getMasteryByPuuid(
+              this.puuid,
               this.regionServer
             );
             if (
@@ -170,8 +170,9 @@ const SummonerSchema = new Schema({
               for (let mastery of masteryData.data) {
                 try {
                   mastery.summonerName = this.name;
+                  mastery.summonerId = this.id;
                   mastery.profileIconId = this.profileIconId;
-                  mastery.uniqueId = this.puuid + mastery.championId;
+                  mastery.uniqueId = this.puuid + '-' + mastery.championId;
                   let pastGames = await Participant.find({
                     $and: [
                       { championId: mastery.championId },
@@ -186,11 +187,14 @@ const SummonerSchema = new Schema({
                     }
                     mastery.winRate = counter / pastGames.length;
                   }
+                  //check if a mastery item with the same uniqueId exists within masteryList, if so, update it, if not, continue to push onto the list
+                  let existingMastery = masteryList.find(m => m.uniqueId === mastery.uniqueId);
+                  if (existingMastery) {
+                    
+                  } else {
+                    masteryList.push(mastery);
+                  }
 
-                  masteryList.push(mastery);
-                  console.log(
-                    `Mastery creation complete for champ ${mastery.championId}`
-                  );
                 } catch (e) {
                   console.log(e);
                 }

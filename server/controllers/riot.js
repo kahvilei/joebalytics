@@ -34,9 +34,9 @@ const getRankedDataBySummId = async (id, region) => {
   );
 };
 
-const getMasteryBySummId = async (id, region) => {
+const getMasteryByPuuid = async (id, region) => {
   return await axios.get(
-    `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${id}?api_key=${key}`
+    `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${id}?api_key=${key}`
   );
 };
 
@@ -119,7 +119,7 @@ const removeDigits = (x, n) => {
 // };
 
 module.exports = {
-  getMasteryBySummId,
+  getMasteryByPuuid,
   getRankedDataBySummId,
   getChallengeDataByPuuid,
   getSummonerDetails,
