@@ -2005,3 +2005,63 @@ a.ChampionDetailsCard {
 }
 
 /* end scale styles */
+
+/* champion details page */
+
+.ChampionDetails {
+  width: 100%;
+}
+
+.ChampionDetails {
+  display: flex;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  min-height: 310px;
+  color: var(--text-main);
+  background-color: var(--foreground-primary);
+}
+
+.ChampionDetails .splash {
+  width: 40%;
+  background-position: 70% 10%;
+  background-size: cover;
+  transition: .2s;
+}
+
+.ChampionDetails:hover .splash {
+  background-position: 90% 10%;
+}
+
+.ChampionDetails .splash .overlay-gradient {
+  background: linear-gradient(270deg, rgba(18, 30, 58, 1) 0%, rgba(0, 0, 0, 0) 100%);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.ChampionDetails .details{
+  padding: 30px 20px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: beginning;
+  margin-left: -20px;
+}
+
+.ChampionDetails .details h2{
+  margin: 0px;
+  font-size: 30px;
+}
+
+.ChampionDetails .details h3{
+  margin: 0px;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.ChampionDetails .champ-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

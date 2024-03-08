@@ -3,11 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { getChampionDetails, getChampIcon, getChampSplash } from '../../utils/riotCDN';
+import ChampMasteryRanking  from '../components/ChampMasteryRanking';
+import RadarChart from '../components/RadarChart';
+import Scale from '../components/Scale';
 
 function ChampionDetails(props) {
     const { id } = useParams();
     const [champion, setChampion] = useState([]);
     const [isLoading, setIsLoading] = useState([]);
+    let champIcon = getChampSplash(champion.key);
+    const champPlayStyle = champion.length === 0 ? [] : [champion.info.attack, champion.info.defense, champion.info.magic];
+    const champPlayStyleLabels = ['Attack', 'Defense', 'Magic'];    
+
     
     useEffect(() => {
         setIsLoading(true);
@@ -25,9 +32,21 @@ function ChampionDetails(props) {
     }else{
         return (  
         <div className='ChampionDetails'>
-            <h2>{champion.name}</h2>
-            <img src={getChampSplash(champion.key)} alt={champion.name} />
-            <p>{champion.title}</p>
+            <div style = {{backgroundImage: "url(" + champIcon + ")"}} className='splash'>
+                <div className='overlay-gradient'></div>
+            </div>
+            <div className='details'>
+                <div className='champ-info'>
+                <div>
+                <h1>{champion.name}</h1>
+                <h3>{champion.title}</h3>
+                <div className='champ-stats'>
+                    <Scale max={10} value={champion.info.difficulty} label='Difficulty'/>
+                </div></div>
+                <RadarChart max={10} height={250} scores={champPlayStyle} labels={champPlayStyleLabels}/>
+                </div>
+                <ChampMasteryRanking champion={champion}/>
+            </div>
         </div>
         );
     }
