@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const Mastery = require("../models/Mastery");
 // route used to update json file containing information on champions, items, summoner spells, and queue types
 
 // @route GET api/data/update-all
@@ -92,6 +93,14 @@ router.get("/update-all", async (req, res) => {
     const champions = await axios.get(
       `http://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
     );
+    // for champions data, we will want to cache current mastery data for each champion for all summoners
+    // for this we will hit the /api/masteries/champion/:id endpoint for each champion, and then append the data to the champions.json file for each champion
+    for (let champion in champions.data.data) {
+      let champId = champions.data.data[champion].key;
+      let champName = champions.data.data[champion].id;
+      let mastery = await Mastery.find({championId: champId}).sort({championPoints: 'desc', championLevel:'desc'});
+      champions.data.data[champion].mastery = mastery;
+    }
     const items = await axios.get(
       `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/items.json`
     );

@@ -261,6 +261,13 @@ img {
   max-width: 100%;
 }
 
+input {
+  background-color: var(--foreground-primary) !important;
+  color: var(--text-main) !important;
+  border: none;
+  padding: 10px;
+}
+
 @media (max-width: 1400px) {
   .page.w-sidebar {
     flex-direction: column;
@@ -1769,7 +1776,7 @@ a.ChampionDetailsCard {
 .ChampionDetailsCard .splash {
   width: 40%;
   background-position: 70% 10%;
-  background-size: 140%;
+  background-size: cover;
   transition: .2s;
 }
 
@@ -1784,7 +1791,7 @@ a.ChampionDetailsCard {
   z-index: 1;
 }
 
-a.ChampionDetailsCard .details{
+.ChampionDetailsCard .details{
   padding: 30px 20px;
   width: 60%;
   display: flex;
@@ -1793,15 +1800,28 @@ a.ChampionDetailsCard .details{
   margin-left: -20px;
 }
 
-a.ChampionDetailsCard .details h2{
+.ChampionDetailsCard .details h2{
   margin: 0px;
   font-size: 30px;
 }
 
-a.ChampionDetailsCard .details h3{
+.ChampionDetailsCard .details h3{
   margin: 0px;
   font-weight: 300;
   font-style: italic;
+}
+
+.ChampionDetailsCard .champ-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.champ-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
 }
 
 .mastery-card.summoner {
@@ -1899,3 +1919,89 @@ a.ChampionDetailsCard .details h3{
 }
 
 
+/* end champion listing page */
+
+/* radar chart styles */
+
+.polygon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--primary-blue);
+  position: relative;
+}
+
+.polygon-scores {
+  width: 100%;
+  height: 100%;
+  background-color: var(--hover-gold);
+  mix-blend-mode: plus-lighter;
+}
+
+.inner-polygon {
+  position: absolute;
+  background-color: var(--lake);
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.inner-polygon .inner {
+  content: '';
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  background: var(--primary-blue);
+  position: absolute;
+  top: 5px;
+  left: 4px;
+}
+
+.label {
+  position: absolute;
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.champ-stats {
+  padding: 10px 0px;
+}
+
+/* end radar chart styles */
+
+/* begin scale styles */
+
+.scale-wrap .scale .block.null {
+  height: 10px;
+  width: 20px;
+  background-color: var(--background-secondary);
+}
+
+.scale-wrap .scale .block {
+  height: 10px;
+  width: 20px;
+  background-color: var(--evening-blue);
+}
+
+.scale-wrap .scale{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.scale-wrap .label{
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+  position: relative;
+}
+
+.scale-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* end scale styles */

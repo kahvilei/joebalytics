@@ -8,19 +8,9 @@ import LoadingCircle from './LoadingCircle';
 import { getSummonerIcon } from '../../utils/riotCDN';
 
 function ChampMasteryRanking(props) {
-    const [masteryRanking, setMasteryRanking] = useState([]);
-    const [isLoading, setIsLoading] = useState([]);
     const champion = props.champion;
     const id = champion.key;
-    
-    useEffect(() => {
-        setIsLoading(true);
-        axios.get(rootAddress[process.env.NODE_ENV] + `/api/masteries/champion/${id}`)
-        .then((res) => {
-            setMasteryRanking(res.data);
-            setIsLoading(false);
-        });
-    }, [id]);
+    const masteryRanking = champion.mastery;
 
     // returns a numbers of div elements depending on the number of tokens the summoner has for the champion
     const tokenDisplay = (tokens, masteryLevel, currentPoints) => {
@@ -61,30 +51,21 @@ function ChampMasteryRanking(props) {
         }
         return tokenArray;
     }
-
-    if(isLoading){
-        return (  
-        <div className='ChampMasteryRanking'>
-            <LoadingCircle aspectRatio="flat-rectangle"/>
-        </div>
-        );
-    }else{
-        return (  
-        <div className='ChampMasteryRanking'>
-                    {masteryRanking.map((summoner, index) => {
-                        return (
-                            <div className="mastery-card summoner" key={index}>
-                                <img src={getSummonerIcon(summoner.profileIconId)} alt={summoner.summonerName} />
-                                <div className = "summoner-name">{summoner.summonerName}</div>
-                                <div className='tokens'>{tokenDisplay(summoner.tokensEarned, summoner.championLevel, summoner.championPoints)}</div>
-                                <div className='mastery'>Mastery {summoner.championLevel}</div>
-                                <div className='points'>{summoner.championPoints} points</div>
-                            </div>
-                        );
-                    })}
-        </div>
-        );
-    }
+    return (  
+    <div className='ChampMasteryRanking'>
+                {masteryRanking.map((summoner, index) => {
+                    return (
+                        <div className="mastery-card summoner" key={summoner.summonerName}>
+                            <img src={getSummonerIcon(summoner.profileIconId)} alt={summoner.summonerName} />
+                            <div className = "summoner-name">{summoner.summonerName}</div>
+                            <div className='tokens'>{tokenDisplay(summoner.tokensEarned, summoner.championLevel, summoner.championPoints)}</div>
+                            <div className='mastery'>Mastery {summoner.championLevel}</div>
+                            <div className='points'>{summoner.championPoints} points</div>
+                        </div>
+                    );
+                })}
+    </div>
+    );
     
     
 }
