@@ -5,6 +5,12 @@ const fs = require("fs");
 const path = require("path");
 const Mastery = require("../models/Mastery");
 const e = require("cors");
+
+const bucketName = process.env.BUCKET_NAME;
+
+const { Storage } = require('@google-cloud/storage');
+const storage = new Storage();
+const bucket = storage.bucket(bucketName);
 // route used to update json file containing information on champions, items, summoner spells, and queue types
 
 // @route GET api/data/update-all
@@ -16,21 +22,21 @@ const e = require("cors");
 //then, the champions, items and summoner spells are loaded
 router.get("/", async (req, res) => {
   try {
-    const champions = fs.readFileSync(
-      path.join(__dirname, "../data/champions.json")
-    );
-    const items = fs.readFileSync(path.join(__dirname, "../data/items.json"));
-    const summonerSpells = fs.readFileSync(
-      path.join(__dirname, "../data/summonerSpells.json")
-    );
-    const queueTypes = fs.readFileSync(
-      path.join(__dirname, "../data/queueTypes.json")
-    );
+    const championsFile = bucket.file("data/champions.json");
+    const itemsFile = bucket.file("data/items.json");
+    const summonerSpellsFile = bucket.file("data/summonerSpells.json");
+    const queueTypesFile = bucket.file("data/queueTypes.json");
+
+    const [championsData] = await championsFile.download();
+    const [itemsData] = await itemsFile.download();
+    const [summonerSpellsData] = await summonerSpellsFile.download();
+    const [queueTypesData] = await queueTypesFile.download();
+
     res.json({
-      champions: JSON.parse(champions),
-      items: JSON.parse(items),
-      summonerSpells: JSON.parse(summonerSpells),
-      queueTypes: JSON.parse(queueTypes),
+      champions: JSON.parse(championsData.toString()),
+      items: JSON.parse(itemsData.toString()),
+      summonerSpells: JSON.parse(summonerSpellsData.toString()),
+      queueTypes: JSON.parse(queueTypesData.toString()),
     });
   } catch {
     res.status(404).json({ msg: "No data found" });
@@ -40,10 +46,9 @@ router.get("/", async (req, res) => {
 // get champion data
 router.get("/champions", async (req, res) => {
   try {
-    const champions = fs.readFileSync(
-      path.join(__dirname, "../data/champions.json")
-    );
-    res.json(JSON.parse(champions));
+    const championsFile = bucket.file("data/champions.json");
+    const [championsData] = await championsFile.download();
+    res.json(JSON.parse(championsData.toString()));
   } catch {
     res.status(404).json({ msg: "No data found" });
   }
@@ -52,8 +57,9 @@ router.get("/champions", async (req, res) => {
 // get item data
 router.get("/items", async (req, res) => {
   try {
-    const items = fs.readFileSync(path.join(__dirname, "../data/items.json"));
-    res.json(JSON.parse(items));
+    const itemsFile = bucket.file("data/items.json");
+    const [itemsData] = await itemsFile.download();
+    res.json(JSON.parse(itemsData.toString()));
   } catch {
     res.status(404).json({ msg: "No data found" });
   }
@@ -62,10 +68,9 @@ router.get("/items", async (req, res) => {
 // get summoner spell data
 router.get("/summonerSpells", async (req, res) => {
   try {
-    const summonerSpells = fs.readFileSync(
-      path.join(__dirname, "../data/summonerSpells.json")
-    );
-    res.json(JSON.parse(summonerSpells));
+    const summonerSpellsFile = bucket.file("data/summonerSpells.json");
+    const [summonerSpellsData] = await summonerSpellsFile.download();
+    res.json(JSON.parse(summonerSpellsData.toString()));
   } catch {
     res.status(404).json({ msg: "No data found" });
   }
@@ -74,16 +79,13 @@ router.get("/summonerSpells", async (req, res) => {
 // get queue type data
 router.get("/queueTypes", async (req, res) => {
   try {
-    const queueTypes = fs.readFileSync(
-      path.join(__dirname, "../data/queueTypes.json")
-    );
-    res.json(JSON.parse(queueTypes));
+    const queueTypesFile = bucket.file("data/queueTypes.json");
+    const [queueTypesData] = await queueTypesFile.download();
+    res.json(JSON.parse(queueTypesData.toString()));
   } catch {
     res.status(404).json({ msg: "No data found" });
   }
 });
-
-
 
 router.get("/update-all", async (req, res) => {
   try {
@@ -111,25 +113,19 @@ router.get("/update-all", async (req, res) => {
     const queueTypes = await axios.get(
       `https://static.developer.riotgames.com/docs/lol/queues.json`
     );
-    fs.writeFileSync(
-      path.join(__dirname, "../data/champions.json"),
-      JSON.stringify(champions.data)
-    );
-    fs.writeFileSync(
-      path.join(__dirname, "../data/items.json"),
-      JSON.stringify(items.data)
-    );
-    fs.writeFileSync(
-      path.join(__dirname, "../data/summonerSpells.json"),
-      JSON.stringify(summonerSpells.data)
-    );
-    fs.writeFileSync(
-      path.join(__dirname, "../data/queueTypes.json"),
-      JSON.stringify(queueTypes.data)
-    );
+
+    const saveFileToBucket = async (fileName, data) => {
+      const file = bucket.file(`data/${fileName}`);
+      await file.save(data);
+    };
+
+    await saveFileToBucket("champions.json", JSON.stringify(champions.data));
+    await saveFileToBucket("items.json", JSON.stringify(items.data));
+    await saveFileToBucket("summonerSpells.json", JSON.stringify(summonerSpells.data));
+    await saveFileToBucket("queueTypes.json", JSON.stringify(queueTypes.data));
     res.json({ msg: "Updated successfully" });
-  } catch {
-    res.status(404).json({ msg: err });
+  } catch (e){
+    res.status(404).json({ msg: e });
   }
 });
 
