@@ -1848,6 +1848,10 @@ a.ChampionDetailsCard {
   flex-wrap: wrap;
 }
 
+.mastery-card.summoner.mastered {
+  border: 2px solid var(--gold);
+}
+
 .mastery-card.summoner .token {
   width: 7px;
   height: 7px;
@@ -1922,6 +1926,18 @@ a.ChampionDetailsCard {
 /* end champion listing page */
 
 /* radar chart styles */
+
+.RadarChart {
+  position: relative;
+  margin: 20px;
+  box-sizing: content-box;
+}
+.RadarChart .label {
+  position: absolute;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
 
 .polygon {
   width: 50px;

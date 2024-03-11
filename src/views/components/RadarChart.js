@@ -21,6 +21,18 @@ function RadarChart(props) {
     const lengthFromBaseToCenter = Math.abs(radius * Math.sin(angle/2));
     const yValueOffset = ((radius - lengthFromBaseToCenter) * modNumVertices)/2;
 
+    //calculate position of labels
+    const labelPositions = Array.from({length: numVertices}, (_, i) => {
+        const y = -radius * Math.cos((angle * i * Math.PI) / 180) + yValueOffset;
+        const x = radius * Math.sin((angle * i * Math.PI) / 180);
+        return {x, y};
+    });
+    //generate labels
+    const labelElements = labelPositions.map((position, i) => {
+        return (
+            <div className='label' style={{top: `calc(50% + ${position.y}%)`, left: `calc(50% + ${position.x}%)`}} key={i}>{labels[i]}</div>
+        );
+    });
 
     //calculate vertices for polygon, calculating from the midpoint of the div. No values should be negative or the clipPath will not work
     const vertices = Array.from({length: numVertices}, (_, i) => {
@@ -56,6 +68,7 @@ function RadarChart(props) {
                 <div className='polygon-scores' style={{clipPath: `polygon(${verticesScores})`}}></div>
                 {innerShapes}
             </div>
+            {labelElements}
         </div>
     );
 }

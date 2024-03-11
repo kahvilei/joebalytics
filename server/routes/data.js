@@ -4,6 +4,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const Mastery = require("../models/Mastery");
+const e = require("cors");
 // route used to update json file containing information on champions, items, summoner spells, and queue types
 
 // @route GET api/data/update-all
@@ -128,7 +129,7 @@ router.get("/update-all", async (req, res) => {
     );
     res.json({ msg: "Updated successfully" });
   } catch {
-    res.status(404).json({ msg: "No data found" });
+    res.status(404).json({ msg: err });
   }
 });
 
