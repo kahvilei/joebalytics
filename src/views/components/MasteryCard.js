@@ -4,7 +4,7 @@ import {getChampIcon,getChampName} from '../../utils/riotCDN';
 const MasteryCard = (props) => {
   const mastery = props.mastery;
   return (
-    <a href = {"/champion/" + getChampName(mastery.championId)} className='mastery card-container'>
+    <a href = {"/champion/" + mastery.championId} className='mastery card-container'>
       <div className='mastery icon'><img alt = {mastery.championName + " icon"} src = {getChampIcon(mastery.championId)}></img></div>
       <div className = "champion-name">{getChampName(mastery.championId)}</div>
       <div className = "summoner-name">{mastery.summonerName}</div>

@@ -14,7 +14,7 @@ function ChampionDetailsCard(props) {
     const champPlayStyle = [champion.info.attack, champion.info.defense, champion.info.magic];
     const champPlayStyleLabels = ['Attack', 'Defense', 'Magic'];
     return (
-        <Link to={`/champion/${champion.id}`} className='ChampionDetailsCard'>
+        <Link to={`/champion/${champion.key}`} className='ChampionDetailsCard'>
             <div style = {{backgroundImage: "url(" + champIcon + ")"}} className='splash'>
                 <div className='overlay-gradient'></div>
             </div>

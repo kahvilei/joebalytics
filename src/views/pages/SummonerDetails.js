@@ -40,7 +40,7 @@ function SummonerDetails(props) {
  
   return (
     <div className="summoner page">
-      <section className="full-width">
+      <section className="full-width header">
         <SummonerHeader name={name} region={region} />
       </section>
       <section className={`summoner-nav ${page}`}>

@@ -129,7 +129,7 @@ function SummonerHeader(props) {
   }
 
   function Delete() {
-    if (auth.user) {
+    if (auth.user.admin) {
       return (
         <div className="delete-update-butt">
           <div className="delete">
@@ -173,6 +173,7 @@ function SummonerHeader(props) {
                 </div>
               </div>
               <Update />
+              <Delete />
             </div>
             <SummonerStats/> 
           </div>

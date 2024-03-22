@@ -62,7 +62,7 @@ function ChampMasteryRanking(props) {
     <div className='ChampMasteryRanking'>
                 {masteryRanking.map((summoner, index) => {
                     return (
-                        <div className={"mastery-card summoner " + isMastered(summoner.championLevel)} key={summoner.summonerName}>
+                        <div className={"mastery-card summoner " + isMastered(summoner.championLevel)} key={index}>
                             <img src={getSummonerIcon(summoner.profileIconId)} alt={summoner.summonerName} />
                             <div className = "summoner-name">{summoner.summonerName}</div>
                             <div className='tokens'>{tokenDisplay(summoner.tokensEarned, summoner.championLevel, summoner.championPoints)}</div>

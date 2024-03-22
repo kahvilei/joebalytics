@@ -13,6 +13,26 @@ import {
 import LoadingCircle from "../components/LoadingCircle";
 import DropDown from "../components/DropDown";
 
+const generateHeaders = (name, region, champ, role, mode, limit, stat, aggregation) => ({
+  'X-Champ': champ,
+  'X-Role': role,
+  'X-Mode': mode,
+  'X-Limit': limit,
+  'X-Stats': JSON.stringify([{ stat, aggregation }]),
+  'X-Region': region,
+  'X-Name': name
+});
+
+const generateHeadersPreJson = (name, region, champ, role, mode, limit, stat) => ({
+  'X-Champ': champ,
+  'X-Role': role,
+  'X-Mode': mode,
+  'X-Limit': limit,
+  'X-Stats': JSON.stringify(stat),
+  'X-Region': region,
+  'X-Name': name
+});
+
 function SummonerStats(props) {
   const [stats, setStats] = useState("no stats found");
 
@@ -46,20 +66,26 @@ function SummonerStats(props) {
     name = "any";
   } else {
   }
-
-
+  
   useEffect(() => {
     setIsLoading(true);
     setLimitIsLoading(true);
-    //get number of games that fit current selection
+    setModeIsLoading(true);
+    setRoleIsLoading(true);
+    setChampIsLoading(true);
+  
+    const stats = [
+      { stat: "matchId", aggregation: "any" },
+      { stat: "queueId", aggregation: "unique" },
+      { stat: "teamPosition", aggregation: "unique" },
+      { stat: "championId", aggregation: "unique" },
+    ];
+  
     axios
-      .get(
-        rootAddress[process.env.NODE_ENV] +
-          `/api/matches/stats/${champ}/${role}/${mode}/queueId/10000/any/${region}/${name}`
-      )
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats`, { headers: generateHeadersPreJson(name, region, champ, role, mode, '10000', stats) })
       .then((res) => {
         let limits = [];
-        let hardLimit = res.data.length;
+        let hardLimit = res.data["matchId"].length;
         if (hardLimit > 4 && hardLimit < 10) {
           limits.push(5);
         }
@@ -76,74 +102,29 @@ function SummonerStats(props) {
           limits.push(hardLimit);
         }
         setLimitList(limits);
+        setModeList(res.data["queueId"]);
+        setRoleList(res.data["teamPosition"]);
+        setChampList(res.data["championId"]);
+  
         setIsLoading(false);
         setLimitIsLoading(false);
-      })
-      .catch((err) => {
-        setLimitList([0]);
-        setIsLoading(false);
-        console.log("Error from SummonerDetails");
-      });
-  }, [champ, role, mode, region, name]);
-
-  useEffect(() => {
-    //get list of modes played, returns queue IDs
-    setModeIsLoading(true);
-    axios
-      .get(
-        rootAddress[process.env.NODE_ENV] +
-          `/api/matches/stats/${champ}/${role}/any/queueId/${limit}/unique/${region}/${name}`
-      )
-      .then((res) => {
-        res.data.push("any");
-        setModeList(res.data);
         setModeIsLoading(false);
-      })
-      .catch((err) => {
-        setModeList(["any"]);
-
-        console.log("Error from SummonerDetails");
-      });
-  }, [champ, role, limit, region, name]);
-
-  useEffect(() => {
-    //get list of roles played, returns role IDs
-    setRoleIsLoading(true);
-    axios
-      .get(
-        rootAddress[process.env.NODE_ENV] +
-          `/api/matches/stats/${champ}/any/${mode}/teamPosition/${limit}/unique/${region}/${name}`
-      )
-      .then((res) => {
-        res.data.push("any");
-        setRoleList(res.data);
         setRoleIsLoading(false);
-      })
-      .catch((err) => {
-        setRoleList(["any"]);
-        console.log("Error from SummonerDetails");
-      });
-  }, [champ, mode, limit, region, name]);
-
-  useEffect(() => {
-    //get list of champs played, returns champ IDs
-    setChampIsLoading(true);
-    axios
-      .get(
-        rootAddress[process.env.NODE_ENV] +
-          `/api/matches/stats/any/${role}/${mode}/championId/${limit}/unique/${region}/${name}`
-      )
-      .then((res) => {
-        res.data.push("any");
-        setChampList(res.data);
         setChampIsLoading(false);
       })
       .catch((err) => {
-        setChampList(["any"]);
-
-        console.log("Error from SummonerDetails");
+        setLimitList([0]);
+        setModeList([]);
+        setRoleList([]);
+        setChampList([]);
+  
+        setIsLoading(false);
+        setLimitIsLoading(false);
+        setModeIsLoading(false);
+        setRoleIsLoading(false);
+        setChampIsLoading(false);
       });
-  }, [role, mode, limit, region, name]);
+  }, [champ, role, mode, limit, region, name]);
 
   const onLimitUpdate = (value) => {
     setLimit(value);
@@ -196,6 +177,11 @@ function SummonerStats(props) {
   function PositionFilter() {
     let options = {};
     let key = 0;
+    options[0] = (
+      <div key={key++} value={'any'}>
+        All roles
+      </div>
+    );
     for (let roleId of roleList) {
       if (roleId !== "") {
         if (roleId === "any") {
@@ -237,22 +223,23 @@ function SummonerStats(props) {
   function ChampFilter() {
     let options = {};
     let key = 0;
+
+    options[0] = (
+      <div key={key++} value={'any'}>
+        All champions
+      </div>
+    );
+    
     for (let champId of champList) {
       if (champId !== "") {
-        if (champId === "any") {
-          options[0] = (
-            <div key={key++} value={champId}>
-              All champions
-            </div>
-          );
-        } else {
+        
           options[getChampName(champId)] = (
             <div className="champ-listing" key={key++} value={champId}>
                <div className='icon'><img alt = {getChampName(champId) + " icon"} src = {getChampIcon(champId)}></img></div>
               <div>{getChampName(champId)}</div>
             </div>
           );
-        }
+        
       }
     }
 
@@ -283,20 +270,21 @@ function SummonerStats(props) {
   function ModeFilter() {
     let options = {};
     let key = 0;
+
+    options[0] = (
+      <div key={key++} value={'any'}>
+        All game modes
+      </div>
+    );
+
     for (let modeId of modeList) {
-      if (modeId === "any") {
-        options[0] = (
-          <div key={key++} value={modeId}>
-            All game modes
-          </div>
-        );
-      } else {
+
         options[modeId] = (
           <div key={key++} value={modeId}>
             {getQueueName(modeId)}
           </div>
         );
-      }
+  
     }
 
     let defaultMode = options[mode] ? options[mode] : options[0];
@@ -425,12 +413,11 @@ function StatCard(props) {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(
-        rootAddress[process.env.NODE_ENV] +
-          `/api/matches/stats/${champ}/${role}/${mode}/${statProp}/${limit}/${aggregation}/${region}/${name}`
-      )
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats`, { 
+        headers: generateHeaders(name, region, champ, role, mode, limit, statProp, aggregation) 
+      })
       .then((res) => {
-        let stat = res.data;
+        let stat = res.data[statProp];
         if (stat === null) {
           stat = "incompatible data";
         }else{

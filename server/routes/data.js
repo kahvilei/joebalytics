@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const fs = require("fs");
-const path = require("path");
 const Mastery = require("../models/Mastery");
-const e = require("cors");
 
 const bucketName = process.env.BUCKET_NAME;
 
@@ -17,7 +14,7 @@ const bucket = storage.bucket(bucketName);
 // @description Update all data
 // @access Public
 
-//jsons are loaded from riot api and saved to the server
+//json files are loaded from riot api and saved to the server
 //first, the versions json is loaded to get the current version of the game
 //then, the champions, items and summoner spells are loaded
 router.get("/", async (req, res) => {

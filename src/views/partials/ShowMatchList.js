@@ -7,7 +7,7 @@ import MatchCard from "../components/MatchCard";
 import SkeletonLoader from "../components/SkeletonLoader";  
 
 function ShowMatchList(props) {
-  const limit = props.count ? props.count : 30;
+  const limit = props.count ? props.count : 10;
   const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState([]);
   //const [loadMoreToggle, setLoadMoreToggle] = useState(props.loadMore? props.loadMore : true);
@@ -34,39 +34,47 @@ function ShowMatchList(props) {
     searchParams.get("role") ? searchParams.get("role") : "any"
   );
 
+
   const [champ] = useState(
     parseInt(searchParams.get("champ"))
       ? parseInt(searchParams.get("champ"))
-      : "any"
+      : props.champ ? props.champ : "any"
   );
    
-  const loadMore = async () =>{
-    if(moretoLoad){ 
+  const loadMore = async () => {
+    if (moretoLoad) {
       let earliestTimestamp;
-      if(matches.length === 0){
+      if (matches.length === 0) {
         earliestTimestamp = Date.now();
-      }else{
-        earliestTimestamp = matches[matches.length-1].info.gameStartTimestamp;
+      } else {
+        earliestTimestamp = matches[matches.length - 1].info.gameStartTimestamp;
       }
-    setIsLoading(true);
-    axios
-      .get(
-        rootAddress[process.env.NODE_ENV] +
-          `/api/matches/recent/${earliestTimestamp}/${limit}/populate/${region}/${name}/${champ}/${role}/${mode}`
-      )
-      .then((res) => {
-        setMatches(matches.concat(res.data));
-        if(res.data.length < 1 || !infinteScroll){
-          setMoreToLoad(false);
-          setInfiniteScroll(false);
-        }
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log("Error from match list");
-      });
+      setIsLoading(true);
+      axios
+        .get(rootAddress[process.env.NODE_ENV] + `/api/matches`, {
+          headers: {
+            'X-Champ': champ,
+            'X-Role': role,
+            'X-Mode': mode,
+            'X-Limit': limit,
+            'X-Timestamp': earliestTimestamp,
+            'X-Region': region,
+            'X-Name': name,
+          },
+        })
+        .then((res) => {
+          setMatches(matches.concat(res.data));
+          if (res.data.length < 1 || !infinteScroll) {
+            setMoreToLoad(false);
+            setInfiniteScroll(false);
+          }
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.log("Error from match list");
+        });
     }
-  }
+  };
 
   useEffect(() => {
 

@@ -2,23 +2,24 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import { getChampionDetails, getChampIcon, getChampSplash } from '../../utils/riotCDN';
+import { getChampionDetails, getChampName, getChampIcon, getChampSplash } from '../../utils/riotCDN';
 import ChampMasteryRanking  from '../components/ChampMasteryRanking';
 import RadarChart from '../components/RadarChart';
 import Scale from '../components/Scale';
+import ShowMatchList from '../partials/ShowMatchList';
 
 function ChampionDetails(props) {
     const { id } = useParams();
     const [champion, setChampion] = useState([]);
     const [isLoading, setIsLoading] = useState([]);
-    let champIcon = getChampSplash(champion.key);
+    let champIcon = getChampSplash(id);
     const champPlayStyle = champion.length === 0 ? [] : [champion.info.attack, champion.info.defense, champion.info.magic];
     const champPlayStyleLabels = ['Attack', 'Defense', 'Magic'];    
 
-    
     useEffect(() => {
         setIsLoading(true);
-        let champDetails = getChampionDetails(id);
+        let champName = getChampName(id);
+        let champDetails = getChampionDetails(champName);
         setChampion(champDetails);
         setIsLoading(false);
     }, [id]);
@@ -31,6 +32,7 @@ function ChampionDetails(props) {
         );
     }else{
         return (  
+            <section className='full-width'>
         <div className='ChampionDetails'>
             <div style = {{backgroundImage: "url(" + champIcon + ")"}} className='splash'>
                 <div className='overlay-gradient'></div>
@@ -48,6 +50,11 @@ function ChampionDetails(props) {
                 <ChampMasteryRanking champion={champion}/>
             </div>
         </div>
+        <section>
+            <h2>Recent Matches</h2>
+            <ShowMatchList infiniteScroll={true} champ = {champion.key} mode = {'any'} role = {'any'}/>
+        </section>
+        </section>
         );
     }
 }

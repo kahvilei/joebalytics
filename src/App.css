@@ -250,6 +250,9 @@ section.full-width {
   width: 100%;
   max-width: 100%;
 }
+section.full-width.header {
+  z-index: 1;
+}
 
 section.row{
   display: flex;
@@ -1932,12 +1935,6 @@ a.ChampionDetailsCard {
   margin: 20px;
   box-sizing: content-box;
 }
-.RadarChart .label {
-  position: absolute;
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 500;
-}
 
 .polygon {
   width: 50px;
@@ -1972,7 +1969,7 @@ a.ChampionDetailsCard {
   left: 4px;
 }
 
-.label {
+.RadarChart .label {
   position: absolute;
   color: var(--text-main);
   font-size: 12px;

@@ -26,9 +26,10 @@ const getChampSplash = (id) =>{
 }
 
 const getChampName = (id) =>{
-    for (let champion in champions){
-        if(parseInt(champions[champion].key) === id){
-            return champions[champion].name;
+    let championArray = Object.values(champions);
+    for (let champion of championArray){
+        if(parseInt(champion.key) === parseInt(id)){
+            return champion.name;
         }
     }
     return "unnamed";
