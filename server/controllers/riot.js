@@ -18,6 +18,12 @@ const getSummonerDetailsByPuuid = async (puuid, region) => {
   );
 };
 
+const getSummonerTaglineByPuuid = async (puuid, region) => {
+  return axios.get(
+    `https://${region}.api.riotgames.com/riot/account/v1/accounts/by-puuid/${puuid}?api_key=${key}`
+  );
+};
+
 const getChallengeDataByPuuid = async (puuid, region) => {
   return await axios.get(
     `https://${region}.api.riotgames.com/lol/challenges/v1/player-data/${puuid}?api_key=${key}`
@@ -127,4 +133,5 @@ module.exports = {
   recordRecentMatches,
   getSummonerDetailsByPuuid,
   getChallengeConfig,
+  getSummonerTaglineByPuuid,
 };

@@ -76,8 +76,13 @@ function SummonerHeader(props) {
   };
   const onUpdateClick = (id) => {
     setIsUpdating(true);
+    let token = localStorage.getItem("token");
     axios
-      .put(rootAddress[process.env.NODE_ENV] + `/api/summoners/${summoner._id}`)
+      .put(rootAddress[process.env.NODE_ENV] + `/api/summoners/${summoner._id}`, {}, {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
         axios
           .get(rootAddress[process.env.NODE_ENV] + `/api/summoners/${summoner._id}`)
@@ -90,7 +95,7 @@ function SummonerHeader(props) {
           });
       })
       .catch((err) => {
-        console.log("Error in UpdateSummonerInfo!");
+        console.log(err);
       });
   };
 

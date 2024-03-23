@@ -8,6 +8,7 @@ const {
   recordRecentMatches,
   getChallengeDataByPuuid,
   getChallengeConfig,
+  getSummonerTaglineByPuuid,
 } = require("../controllers/riot");
 const { regionMapping } = require("../config/regionMapping");
 // Load Mastery model
@@ -24,6 +25,7 @@ const SummonerSchema = new Schema({
   regionGeo: String,
   regionURL: String,
   nameURL: String,
+  tagline: String,
   id: String,
   accountId: String,
   puuid: {
@@ -48,13 +50,14 @@ const SummonerSchema = new Schema({
             this.puuid,
             this.regionServer
           );
+          tagline = await getSummonerTaglineByPuuid(this.puuid, this.regionGeo);
         } else {
           //if not, we will find user info using the region and summoner name
           init = true;
           response = await getSummonerDetails(this.name, this.regionServer);
         }
 
-        if (response.status !== 200) {
+        if (response.status !== 200 || tagline.status !== 200) {
           console.log("unable to find summoner based on values provided");
           return "unable to find summoner based on values provided";
         } else {
@@ -63,12 +66,15 @@ const SummonerSchema = new Schema({
           this.accountId = response.data.accountId;
           this.puuid = response.data.puuid;
           this.name = response.data.name;
+          this.tagline = tagline.data.tagLine;
           this.profileIconId = response.data.profileIconId;
           this.revisionDate = response.data.revisionDate;
           this.summonerLevel = response.data.summonerLevel;
 
+          let nameURLdebug = this.name.toLowerCase().replaceAll(" ", "-") + "-" + this.tagline.toLowerCase();
+
           this.regionURL = this.regionDisplay.toLowerCase();
-          this.nameURL = this.name.toLowerCase().replaceAll(" ", "-");
+          this.nameURL = nameURLdebug;
 
           //update update time to now
           let currentDate = new Date();
