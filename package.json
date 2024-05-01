@@ -36,7 +36,7 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "dev-serv": "nodemon ./server/server.js",
-    "deploy": "gcloud app deploy",
+    "deploy": "react-scripts build && gcloud app deploy",
     "gAuth": "gcloud auth application-default login"
   },
   "devDependencies": {

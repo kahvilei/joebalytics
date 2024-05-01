@@ -134,22 +134,24 @@ function SummonerHeader(props) {
   }
 
   function Delete() {
-    if (auth.user.admin) {
-      return (
-        <div className="delete-update-butt">
-          <div className="delete">
-            <button
-              type="button"
-              className="btn btn-outline-danger"
-              onClick={() => {
-                onDeleteClick(summoner._id);
-              }}
-            >
-              Delete
-            </button>
+    if (auth.user) {
+      if (auth.user.admin) {
+        return (
+          <div className="delete-update-butt">
+            <div className="delete">
+              <button
+                type="button"
+                className="btn btn-outline-danger"
+                onClick={() => {
+                  onDeleteClick(summoner._id);
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
   }
 

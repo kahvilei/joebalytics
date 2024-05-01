@@ -82,7 +82,7 @@ function SummonerStats(props) {
     ];
   
     axios
-      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats`, { headers: generateHeadersPreJson(name, region, champ, role, mode, '10000', stats) })
+      .get(rootAddress[process.env.NODE_ENV] + `/api/matches/stats`, { headers: generateHeadersPreJson(name, region, champ, role, mode, '1000', stats) })
       .then((res) => {
         let limits = [];
         let hardLimit = res.data["matchId"].length;
@@ -97,6 +97,12 @@ function SummonerStats(props) {
         }
         if (hardLimit > 105) {
           limits.push(100);
+        }
+        if (hardLimit > 205) {
+          limits.push(200);
+        }
+        if (hardLimit > 505) {
+          limits.push(500);
         }
         if (hardLimit > 0) {
           limits.push(hardLimit);

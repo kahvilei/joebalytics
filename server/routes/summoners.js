@@ -31,8 +31,8 @@ router.get("/update-all", async (req, res) => {
       await summoner.save();   
     }
     res.json({ msg: "Updated successfully" });
-  } catch {
-    res.status(404).json({ msg: "No Summoners found" });
+  } catch (e){
+    res.status(404).json({ msg: e });
   }
 });
 

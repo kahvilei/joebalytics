@@ -48,6 +48,14 @@ const getChampArray = () =>{
 }
 
 const getChampionDetails = (id) =>{
+    //replace any spaces in the name with nothing
+    id = id.replace(/\s/g, '');
+    //replace any ' with nothing
+    id = id.replace(/'/g, '');
+    //belveth gets a special case because for some reason they lowercase the v in her name
+    if(id === "BelVeth"){
+        id = "Belveth";
+    }
     return champions[id];
 }
 
