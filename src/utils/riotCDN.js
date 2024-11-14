@@ -10,7 +10,8 @@ const queues = queuesData.data;
 const items = itemsData.data;
         // Rest of your code...
 const getSummonerIcon = (id) => {
-    return `https://raw.communitydragon.org/latest/game/assets/ux/summonericons/profileicon${id}.png`
+    //https://cdn.communitydragon.org/:patch/profile-icon/:profileIconId
+    return `https://cdn.communitydragon.org/latest/profile-icon/${id}`;
 }
 
 const getChallengeIcon = (id, rank) =>{
@@ -18,11 +19,13 @@ const getChallengeIcon = (id, rank) =>{
 }
 
 const getChampIcon = (id) =>{
-    return `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id}.png`
+    //https://cdn.communitydragon.org/:patch/champion/:championId/square
+    return `https://cdn.communitydragon.org/latest/champion/${id}/square`;
 }
 
 const getChampSplash = (id) =>{
-    return `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/${id}/${id}000.jpg`
+    //https://cdn.communitydragon.org/:patch/champion/:championId/splash-art/centered/skin/:skinId
+    return `https://cdn.communitydragon.org/latest/champion/${id}/splash-art/centered/skin/0`;
 }
 
 const getChampName = (id) =>{
@@ -79,7 +82,7 @@ const getRoleName = (id) =>{
 }
 
 const getRoleIcon = (id) =>{
-    return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-career-stats/global/default/images/position_${id}.png`
+    return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${id}.svg`
 }
 
 const getQueueName = (id) =>{

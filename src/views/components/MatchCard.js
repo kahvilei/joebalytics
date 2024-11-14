@@ -94,9 +94,9 @@ const MatchCard = (props) => {
       <div className="position-icons">
         <img src={getRoleIcon("top")} alt="top" />
         <img src={getRoleIcon("jungle")} alt="jungle" />
-        <img src={getRoleIcon("mid")} alt="mid" />
+        <img src={getRoleIcon("middle")} alt="mid" />
         <img src={getRoleIcon("bottom")} alt="bottom" />
-        <img src={getRoleIcon("support")} alt="support" />
+        <img src={getRoleIcon("utility")} alt="support" />
       </div>
     );
 
