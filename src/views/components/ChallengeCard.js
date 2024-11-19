@@ -1,7 +1,8 @@
 import React from "react";
-import { getChallengeIcon } from "../../utils/riotCDN";
+import { useGameData } from "../../context/DataContext";
 
 const ChallengeCard = (props) => {
+  const { getChallengeIcon } = useGameData();
   const challenge = props.challenge;
   const rank = props.rank;
   const mode = props.mode;

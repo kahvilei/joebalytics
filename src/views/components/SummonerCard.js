@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {getSummonerIcon} from "../../utils/riotCDN";
+import { useGameData } from "../../context/DataContext";
 
 const SummonerCard = (props) => {
+  const { getSummonerIcon } = useGameData();
   const summoner = props.summoner;
   let tier = "unranked";
   let rank = "";

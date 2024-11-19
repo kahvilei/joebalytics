@@ -46,9 +46,11 @@ export function DataProvider({ children }) {
     }
   }, [data]);
 
-  if (loading || !champions || !items || !queues) {
+  if (loading) {
     return <div>Loading game data...</div>;
-  }
+  } else if (!champions || !items || !queues) {
+    return <div>no data</div>;
+    }
 
   if (error) {
     return <div>Error loading game data</div>;

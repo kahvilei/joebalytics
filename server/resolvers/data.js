@@ -18,11 +18,16 @@ const dataResolvers = {
         const [summonerSpellsData] = await bucket.file("data/summonerSpells.json").download();
         const [queueTypesData] = await bucket.file("data/queueTypes.json").download();
 
+        const championsDataJSON = JSON.parse(championsData.toString());
+        const itemsDataJSON = JSON.parse(itemsData.toString());
+        const summonerSpellsDataJSON = JSON.parse(summonerSpellsData.toString());
+        const queueTypesDataJSON = JSON.parse(queueTypesData.toString());
+
         return {
-          champions: JSON.parse(championsData.toString()),
-          items: JSON.parse(itemsData.toString()),
-          summonerSpells: JSON.parse(summonerSpellsData.toString()),
-          queueTypes: JSON.parse(queueTypesData.toString())
+          champions: championsDataJSON,
+          items: [...itemsDataJSON],
+          summonerSpells: summonerSpellsDataJSON,
+          queueTypes: queueTypesDataJSON
         };
       } catch (error) {
         throw new Error('Failed to fetch game data');

@@ -1,7 +1,8 @@
 import React from 'react';
-import {getChampIcon,getChampName} from '../../utils/riotCDN';
+import { useGameData } from '../../context/DataContext';
 
 const MasteryCard = (props) => {
+  const {getChampIcon,getChampName} = useGameData();
   const mastery = props.mastery;
   return (
     <a href = {"/champion/" + mastery.championId} className='mastery card-container'>

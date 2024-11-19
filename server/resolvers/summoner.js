@@ -12,6 +12,21 @@ const {
 } = require('../controllers/riot');
 
 const summonerResolvers = {
+  Query: {
+    summoner: async (_, { region, name }, { models }) => {
+      const summoner = await models.Summoner.findOne({
+        nameURL: name.toLowerCase(),
+        regionURL: region.toLowerCase()
+      }).populate('masteryData challengeData.challenges');
+      if (!summoner) throw new Error('Summoner not found');
+      return summoner;
+    },
+    summoners: async (_, __, { models }) => {
+      return await models.Summoner.find().populate('masteryData challengeData.challenges');
+    },
+  
+  },
+  
   Mutation: {
     updateSummoner: async (_, { puuid }, { models, user }) => {
       if (!user?.admin) {

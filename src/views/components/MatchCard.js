@@ -1,20 +1,21 @@
 import React from "react";
-import {
-  getRoleIcon,
-  getChampIcon,
-  getRoleName,
-  getQueueName,
-  getSummonerIcon,
-  getItemIcon,
-  getItemName,
-  getPerkStyleIcon,
-  getPerkStyleName,
-  getSummonerSpellIcon,
-  getSummonerSpellName,
-  getRegionName,
-} from "../../utils/riotCDN";
+import { useGameData } from "../../context/DataContext";
 
 const MatchCard = (props) => {
+  const {
+    getRoleIcon,
+    getChampIcon,
+    getRoleName,
+    getQueueName,
+    getSummonerIcon,
+    getItemIcon,
+    getItemName,
+    getPerkStyleIcon,
+    getPerkStyleName,
+    getSummonerSpellIcon,
+    getSummonerSpellName,
+    getRegionName,
+  } = useGameData();
   const match = props.match;
   const region = getRegionName(match.info.platformId);
   //get match name from match data, remove final s from name if it exists
@@ -143,20 +144,21 @@ const MatchCard = (props) => {
     }
 
     //turn minion kills into localized number format
-    summonerData.totalMinionsKilled =
+    const totalMinionsKilled =
       summonerData.totalMinionsKilled.toLocaleString();
 
     //turn gold earned into string, ex: 12345 -> 12.3k, 123 -> 123, 123456 -> 123k
+    let goldEarnedSumm = summonerData.goldEarned;
 
     if (summonerData.goldEarned >= 1000000) {
-      summonerData.goldEarnedSumm =
+      goldEarnedSumm =
         Math.floor(summonerData.goldEarned / 1000000) + "m";
     } else if (summonerData.goldEarned >= 1000) {
       //keep 1 decimal place
-      summonerData.goldEarnedSumm =
+      goldEarnedSumm =
         Math.floor(summonerData.goldEarned / 100) / 10 + "k";
     } else {
-      summonerData.goldEarnedSumm = summonerData.goldEarned.toLocaleString();
+      goldEarnedSumm = summonerData.goldEarned.toLocaleString();
     }
 
     //react component that displays a players k/d/a and their kda score (kills + assists / deaths)
@@ -189,7 +191,7 @@ const MatchCard = (props) => {
 
       //total cs = minions killed + neutral minions killed
       const totalCs =
-        parseInt(summoner.totalMinionsKilled) +
+        parseInt(totalMinionsKilled) +
         parseInt(summoner.neutralMinionsKilled);
       const csPerMinute = (totalCs / (match.info.gameDuration / 60)).toFixed(1);
       const wardsPlacedPerMinute = (
@@ -210,7 +212,7 @@ const MatchCard = (props) => {
             <div className="tooltip cs-tooltip">Total CS (CS per minute)</div>
           </div>
           <div className="gold-earned">
-            {summoner.goldEarnedSumm} ({goldPerMinute}) Gold
+            {goldEarnedSumm} ({goldPerMinute}) Gold
             <div className="tooltip gold-tooltip">
               Total Gold (Gold per minute)
             </div>

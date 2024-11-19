@@ -433,7 +433,7 @@ type Challenges {
   kTurretsDestroyedBeforePlatesFall: Int
   kda: Int
   killAfterHiddenWithAlly: Int
-  killParticipation: Int
+  killParticipation: Float
   killedChampTookFullTeamDamageSurvived: Int
   killsNearEnemyTurret: Int
   killsOnOtherLanesEarlyJungleAsLaner: Int
@@ -515,7 +515,7 @@ type Mutation {
 
 type GameData {
   champions: ChampionData!
-  items: ItemData!
+  items: [ItemData!]!
   summonerSpells: SummonerSpellData!
   queueTypes: [QueueType!]!
 }
@@ -539,6 +539,7 @@ type ItemData {
   price: Int
   priceTotal: Int
   specialRecipe: Int
+  iconPath: String
 }
 
 type SummonerSpellData {
