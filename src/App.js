@@ -12,7 +12,7 @@ import Home from "./views/pages/Home"
 // import SummonerDetails from "./views/pages/SummonerDetails";
 import Login from "./views/partials/Login";
 import Register from "./views/partials/Register";
-// import Matches from "./views/pages/Matches";
+import Matches from "./views/pages/Matches";
 // import Champions from "./views/pages/Champions";
 // import ChampionDetails from "./views/pages/ChampionDetails";
 //partial
@@ -35,8 +35,8 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            {/*<Route path="/matches" element={< Matches/>} />
-            <Route path="/champions" element={<Champions />} />
+            <Route path="/matches" element={< Matches/>} />
+            {/*<Route path="/champions" element={<Champions />} />
             <Route path="/champion/:id" element={<ChampionDetails />} />
             <Route
               path="/summoner/:region/:name/:page"
