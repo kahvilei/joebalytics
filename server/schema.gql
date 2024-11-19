@@ -580,7 +580,7 @@ type User {
 type AuthResponse {
   token: String!
   message: String!
-  user: User!
+  user: User
 }
 
 # Extended User Types for Auth

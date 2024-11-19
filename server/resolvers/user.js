@@ -29,7 +29,7 @@ const userResolvers = {
         { expiresIn: '24h' }
       );
 
-      return { token: `Bearer ${token}`, message: 'Registration successful' };
+      return { token: `Bearer ${token}`, message: 'Registration successful', user };
     },
 
     login: async (_, { username, password }, { models }) => {
@@ -47,7 +47,7 @@ const userResolvers = {
         { expiresIn: '24h' }
       );
 
-      return { token: `Bearer ${token}`, message: 'Login successful' };
+      return { token: `Bearer ${token}`, message: 'Login successful', user };
     }
   }
 };

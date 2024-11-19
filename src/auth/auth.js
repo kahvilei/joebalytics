@@ -1,157 +1,163 @@
+import { createContext, useContext, useState } from "react";
+import { useLocation, Navigate } from "react-router-dom";
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { gql } from "@apollo/client";
 import {rootAddress} from '../config/config';
 
-import * as React from "react";
-import { useLocation, Navigate } from "react-router-dom";
-import axios from "axios";
+const httpLink = createHttpLink({
+  uri: `${rootAddress[process.env.NODE_ENV]}/graphql`,
+});
 
-const authProviderAPI = {
-  isAuthenticated: false,
-  async signin(user, callback) {
-    try {
-      const res = await axios.post(
-        rootAddress[process.env.NODE_ENV] + "/api/user/login",
-        user,
-        {
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      );
-      const data = res.data;
-      localStorage.setItem("token", data.token);
-      authProviderAPI.isAuthenticated = true;
-      callback();
-      return data.msg;
-    } catch (err) {
-      authProviderAPI.isAuthenticated = false;
-      const data = err.response.data;
-      return data.msg;
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? token : "",
+    },
+  };
+});
+
+export const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+const LOGIN_MUTATION = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      token
+      message
+      user {
+        username
+        admin
+      }
     }
-  },
-  async signup(user, callback) {
-    try {
-      const res = await axios.post(
-        rootAddress[process.env.NODE_ENV] + "/api/user/register",
-        user,
-        {
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      );
-      const data = await res.data;
-      localStorage.setItem("token", data.token);
-      authProviderAPI.isAuthenticated = true;
-      callback();
-      return data.msg;
-    } catch (err) {
-      authProviderAPI.isAuthenticated = false;
-      return err.response.data.msg;
+  }
+`;
+
+const REGISTER_MUTATION = gql`
+  mutation Register($username: String!, $password: String!) {
+    register(username: $username, password: $password) {
+      token
+      message
+      user {
+        username
+        admin
+      }
     }
-  },
-  async checksignin(callback) {
+  }
+`;
+
+const ME_QUERY = gql`
+  query Me {
+    me {
+      username
+      admin
+    }
+  }
+`;
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
+
+  const signin = async (userData, callback) => {
     try {
-      let res = await axios.get(rootAddress[process.env.NODE_ENV] + "/api/user/isLoggedIn", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
+      const { data } = await client.mutate({
+        mutation: LOGIN_MUTATION,
+        variables: userData,
       });
-      const username = res.data.username;
-      const admin = res.data.admin;
-      if(username && admin){
-        authProviderAPI.isAuthenticated = true;
-        callback(username, admin);
+      
+      localStorage.setItem("token", data.login.token);
+      setUser(data.login.user.username);
+      setAdmin(data.login.user.admin);
+      callback();
+      return data.login.message;
+    } catch (err) {
+      return err.message;
+    }
+  };
+
+  const signup = async (userData, callback) => {
+    try {
+      const { data } = await client.mutate({
+        mutation: REGISTER_MUTATION,
+        variables: userData,
+      });
+      
+      localStorage.setItem("token", data.register.token);
+      setUser(data.register.user.username);
+      setAdmin(data.register.user.admin);
+      callback();
+      return data.register.message;
+    } catch (err) {
+      return err.message;
+    }
+  };
+
+  const checksignin = async (callback = () => {}) => {
+    try {
+      const { data } = await client.query({
+        query: ME_QUERY,
+        fetchPolicy: "network-only",
+      });
+      
+      if (data.me) {
+        setUser(data.me.username);
+        setAdmin(data.me.admin);
+        callback(data.me.username, data.me.admin);
       }
     } catch (err) {
-      authProviderAPI.isAuthenticated = false;
-    }
-  },
-  signout(callback) {
-    localStorage.removeItem("token");
-    authProviderAPI.isAuthenticated = false;
-    callback();
-  },
-};
-
-let AuthContext = React.createContext(null);
-
-function AuthProvider({ children }) {
-  let [user, setUser] = React.useState(null);
-  let [admin, setAdmin] = React.useState(null);
-
-  let signin = (newUser, callback) => {
-    return authProviderAPI.signin(newUser, () => {
-      setUser(newUser.username);
-      setAdmin(newUser.admin);
-      callback();
-    });
-  };
-  let signup = (newUser, callback) => {
-    return authProviderAPI.signup(newUser, () => {
-      setUser(newUser.username);
-      setAdmin(newUser.admin);
-      callback();
-    });
-  };
-
-  let checksignin = (callback) => {
-    return authProviderAPI.checksignin((username, admin) => {
-      setUser(username);
-      setAdmin(admin);
-      callback();
-    });
-  };
-  checksignin();
-
-  let signout = (callback) => {
-    return authProviderAPI.signout(() => {
       setUser(null);
       setAdmin(false);
-      callback();
-    });
+    }
   };
 
-  let value = { user, admin, signin, signup, signout, checksignin };
-  
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const signout = (callback) => {
+    localStorage.removeItem("token");
+    setUser(null);
+    setAdmin(false);
+    client.resetStore();
+    callback();
+  };
+
+  checksignin();
+
+  return (
+    <AuthContext.Provider value={{ user, admin, signin, signup, signout, checksignin }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-function useAuth() {
-  return React.useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
 }
 
-async function RequireAuth({ children }) {
-  let auth = useAuth();
-  let location = useLocation();
+export function RequireAuth({ children }) {
+  const auth = useAuth();
+  const location = useLocation();
 
   if (!auth.user) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience
-    // than dropping them off on the home page.
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;
 }
 
-// checks to see if the user is an admin
-function RequireAdmin({ children }) {
-  let auth = useAuth();
-  let location = useLocation();
+export function RequireAdmin({ children }) {
+  const auth = useAuth();
+  const location = useLocation();
 
   if (!auth.user) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience
-    // than dropping them off on the home page.
     return <Navigate to="/login" state={{ from: location }} replace />;
-  }else if(!auth.admin){
+  } else if (!auth.admin) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   return children;
 }
-
-
-export { AuthProvider, RequireAuth, RequireAdmin, useAuth };

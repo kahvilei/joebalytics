@@ -6,14 +6,14 @@ import {
 import "./App.css";
 import React from 'react';
 //page
-import Home from "./views/pages/Home"
-import AddSummoner from "./views/partials/AddSummoner";
-import SummonerDetails from "./views/pages/SummonerDetails";
+//import Home from "./views/pages/Home"
+// import AddSummoner from "./views/partials/AddSummoner";
+// import SummonerDetails from "./views/pages/SummonerDetails";
 import Login from "./views/partials/Login";
 import Register from "./views/partials/Register";
-import Matches from "./views/pages/Matches";
-import Champions from "./views/pages/Champions";
-import ChampionDetails from "./views/pages/ChampionDetails";
+// import Matches from "./views/pages/Matches";
+// import Champions from "./views/pages/Champions";
+// import ChampionDetails from "./views/pages/ChampionDetails";
 //partial
 import Navigation from "./views/partials/Navigation";
 //auth
@@ -24,14 +24,14 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Navigation></Navigation>
+        <Navigation></Navigation> 
         <div className="main">  
           <div className="content">
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            {/* <Route exact path="/" element={<Home />} />*/} 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/matches" element={< Matches/>} />
+            {/*<Route path="/matches" element={< Matches/>} />
             <Route path="/champions" element={<Champions />} />
             <Route path="/champion/:id" element={<ChampionDetails />} />
             <Route
@@ -49,7 +49,7 @@ function App() {
                   <AddSummoner />
                 </RequireAdmin>
               }
-            />
+            /> */} 
           </Routes>
           </div>
         </div>
