@@ -25,10 +25,9 @@
 }
 
 type Mutation {
-  registerUser(username: String!, password: String!): AuthPayload!
-  loginUser(username: String!, password: String!): AuthPayload!
   addSummoner(region: String!, name: String!): Summoner!
   updateSummoner(id: ID!): Summoner!
+  updateAllSummoners: [Summoner!]!
   deleteSummoner(id: ID!): DeleteResponse!
   deleteOrphanMatches: DeleteResponse!
 }
@@ -500,4 +499,152 @@ type Challenges {
   wardTakedowns: Int
   wardTakedownsBefore2NumberM: Int
   wardsGuarded: Int
+}
+
+type Query {
+  gameData: GameData!
+  championData: ChampionData!
+  itemData: ItemData!
+  summonerSpellData: SummonerSpellData!
+  queueTypeData: [QueueType!]!
+}
+
+type Mutation {
+  updateGameData: UpdateResponse!
+}
+
+type GameData {
+  champions: ChampionData!
+  items: ItemData!
+  summonerSpells: SummonerSpellData!
+  queueTypes: [QueueType!]!
+}
+
+type ChampionData {
+  data: JSON!
+  version: String!
+  type: String!
+  format: String!
+}
+
+type ItemData {
+  id: ID!
+  name: String!
+  description: String
+  active: Boolean
+  inStore: Boolean
+  from: [String]
+  to: [String]
+  categories: [String]
+  price: Int
+  priceTotal: Int
+  specialRecipe: Int
+}
+
+type SummonerSpellData {
+  data: JSON!
+  version: String!
+  type: String!
+}
+
+type QueueType {
+  queueId: Int!
+  map: String!
+  description: String
+  notes: String
+}
+
+type UpdateResponse {
+  message: String!
+  success: Boolean!
+}
+
+scalar JSON
+
+# Basic User Types
+type Query {
+  me: User
+}
+
+type Mutation {
+  register(username: String!, password: String!): AuthResponse!
+  login(username: String!, password: String!): AuthResponse!
+}
+
+type User {
+  id: ID!
+  username: String!
+  admin: Boolean!
+}
+
+type AuthResponse {
+  token: String!
+  message: String!
+  user: User!
+}
+
+# Extended User Types for Auth
+input RegisterInput {
+  username: String!
+  password: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+# Shared Types
+type Error {
+  path: String!
+  message: String!
+}
+
+type ValidationError {
+  field: String!
+  message: String!
+}
+
+type SuccessResponse {
+  success: Boolean!
+  message: String
+}
+
+# Auth Directives
+directive @auth on FIELD_DEFINITION
+directive @admin on FIELD_DEFINITION
+
+# stats.graphql
+type Query {
+  stats(input: MatchStatsInput!): MatchStats!
+}
+
+input MatchStatsInput {
+  region: String
+  summonerName: String
+  role: String
+  championId: String
+  queueId: String
+  limit: Int
+  stats: [StatRequest!]!
+}
+
+input StatRequest {
+  path: String!
+  aggregation: AggregationType!
+}
+
+enum AggregationType {
+  AVG
+  MAX
+  MIN
+  MODE
+  SUM
+  UNIQUE
+  LIST
+}
+
+type MatchStats {
+  results: JSON!
+  matchCount: Int!
 }
