@@ -20,3 +20,5 @@ const masteryResolvers = {
       }
     }
   };
+
+module.exports = masteryResolvers;

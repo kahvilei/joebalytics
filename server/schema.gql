@@ -616,17 +616,14 @@ directive @admin on FIELD_DEFINITION
 
 # stats.graphql
 type Query {
-  stats(input: MatchStatsInput!): MatchStats!
-}
-
-input MatchStatsInput {
-  region: String
+  stats(region: String
   summonerName: String
   role: String
-  championId: String
+  championId: Int
   queueId: String
   limit: Int
   stats: [StatRequest!]!
+): MatchStats!
 }
 
 input StatRequest {

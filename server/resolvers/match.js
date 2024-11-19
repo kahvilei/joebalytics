@@ -55,3 +55,5 @@ const matchResolvers = {
       }
     }
   };
+
+module.exports = matchResolvers;

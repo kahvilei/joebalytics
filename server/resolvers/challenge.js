@@ -17,3 +17,5 @@ const challengeResolvers = {
       }
     }
   };
+
+module.exports = challengeResolvers;

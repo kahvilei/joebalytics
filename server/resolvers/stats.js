@@ -1,15 +1,14 @@
 const statsResolver = {
     Query: {
-      stats: async (_, { input }, { models }) => {
-        const { 
-          region, 
-          summonerName, 
-          role, 
-          championId, 
-          queueId, 
-          limit = 20,
-          stats 
-        } = input;
+      stats: async (_, {  
+        region, 
+        summonerName, 
+        role, 
+        championId, 
+        queueId, 
+        limit = 20,
+        stats  
+    }, { models }) => {
   
         // Build query
         const query = {};
