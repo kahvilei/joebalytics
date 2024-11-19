@@ -1,40 +1,44 @@
-const path = require('path');
 const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+const models = require('./models');
+const jwt = require('jsonwebtoken');
+const path = require('path');
 const connectDB = require('./config/db');
-const cors = require('cors');
-const app = express();
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 
-// routes
-const summoners = require('./routes/summoners');
-const matches = require('./routes/matches');
-const masteries = require('./routes/masteries');
-const challenges = require('./routes/challenges');
-const user = require('./routes/user');
-const data = require('./routes/data');
+async function startServer() {
+  // Connect Database
+  const db = process.env.MONGO_CONNECT;
+  connectDB(db);
+  
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: async ({ req }) => {
+      // Add auth context
+      const token = req.headers['authorization']?.split(' ')[1];
+      let user = null;
+      if (token) {
+        try {
+          user = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (e) {
+          console.error('Invalid token');
+        }
+      }
+      return { models, user };
+    }
+  });
 
-// Connect Database
-const db = process.env.MONGO_CONNECT;
-connectDB(db);
-// cors
-app.use(cors({ origin: true, credentials: true }));
+  await server.start();
+  
+  const app = express();
+  server.applyMiddleware({ app });
 
-// Init Middleware
-app.use(express.json({ extended: false }));
+  app.listen({ port: process.env.PORT }, () =>
+    console.log(`Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`)
+  );
+}
 
-// use Routes
-app.use('/api/summoners', summoners);
-app.use('/api/matches', matches);
-app.use('/api/masteries', masteries);
-app.use('/api/challenges', challenges);
-app.use('/api/user', user);
-app.use('/api/data', data);
-
-app.use(express.static(path.join(__dirname, "../build")));
-
-app.get('/*', (req, res) => {
-  res.sendFile('index.html', {root: 'build'});
- });
-
-
-app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
+startServer();

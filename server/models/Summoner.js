@@ -320,4 +320,7 @@ SummonerSchema.pre(
   }
 );
 
+SummonerSchema.index({ nameURL: 1, regionURL: 1 });
+SummonerSchema.index({ puuid: 1 });
+
 module.exports = mongoose.model("Summoner", SummonerSchema);

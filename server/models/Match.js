@@ -82,4 +82,8 @@ MatchSchema.pre(
     }
 );
 
+MatchSchema.index({ 'metadata.matchId': 1 });
+MatchSchema.index({ 'metadata.participants': 1 });
+MatchSchema.index({ 'info.gameStartTimestamp': -1 });
+
 module.exports = mongoose.model('Match', MatchSchema);

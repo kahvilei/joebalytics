@@ -1,0 +1,503 @@
+  type Query {
+  summoner(region: String!, name: String!): Summoner
+  summoners: [Summoner!]!
+  match(id: ID!): Match
+  matches(
+    limit: Int
+    timestamp: Float
+    region: String
+    summonerName: String
+    role: String
+    championId: Int
+    queueId: String
+  ): [Match!]!
+  mastery(id: ID!): Mastery
+  masteries(
+    limit: Int
+    championId: Int
+    sortBy: MasterySortInput
+  ): [Mastery!]!
+  challenge(id: ID!): Challenge
+  challenges(
+    limit: Int
+    sortBy: ChallengeSortInput
+  ): [Challenge!]!
+}
+
+type Mutation {
+  registerUser(username: String!, password: String!): AuthPayload!
+  loginUser(username: String!, password: String!): AuthPayload!
+  addSummoner(region: String!, name: String!): Summoner!
+  updateSummoner(id: ID!): Summoner!
+  deleteSummoner(id: ID!): DeleteResponse!
+  deleteOrphanMatches: DeleteResponse!
+}
+
+type Summoner {
+  id: ID!
+  regionDisplay: String!
+  regionServer: String!
+  regionGeo: String!
+  regionURL: String!
+  nameURL: String!
+  tagline: String!
+  accountId: String!
+  puuid: String!
+  name: String!
+  profileIconId: Int!
+  revisionDate: Float!
+  summonerLevel: Int!
+  lastUpdated: Float!
+  rankedData: [RankedData!]!
+  challengeData: ChallengeData!
+  masteryData: [Mastery!]!
+  matches(limit: Int, queueId: String): [Match!]!
+}
+
+type Match {
+  id: ID!
+  metadata: MatchMetadata!
+  info: MatchInfo!
+}
+
+type Mastery {
+  id: ID!
+  uniqueId: String!
+  championId: Int!
+  championLevel: Int!
+  championPoints: Int!
+  lastPlayTime: Float!
+  championPointsSinceLastLevel: Int!
+  championPointsUntilNextLevel: Int!
+  chestGranted: Boolean!
+  tokensEarned: Int!
+  summonerId: String!
+  puuid: String!
+  profileIconId: Int!
+  summonerName: String!
+  winRate: Float
+  gamesPlayed: Int!
+  summoner: Summoner!
+}
+
+type Challenge {
+  id: ID!
+  uniqueId: String!
+  puuid: String!
+  profileIconId: Int!
+  summonerName: String!
+  challengeId: Int!
+  challengeName: String!
+  shortDesc: String!
+  percentile: Float!
+  level: String!
+  value: Float!
+  achievedTime: Float!
+  summoner: Summoner!
+}
+
+type RankedData {
+  leagueId: String!
+  queueType: String!
+  tier: String!
+  rank: String!
+  summonerId: String!
+  summonerName: String!
+  leaguePoints: Int!
+  wins: Int!
+  losses: Int!
+  veteran: Boolean!
+  inactive: Boolean!
+  freshBlood: Boolean!
+  hotStreak: Boolean!
+}
+
+type ChallengeData {
+  totalPoints: ChallengePoints!
+  categoryPoints: CategoryPoints!
+  challenges: [Challenge!]!
+  preferences: ChallengePreferences!
+}
+
+type ChallengePoints {
+  level: String!
+  current: Int!
+  max: Int!
+  percentile: Float!
+}
+
+type CategoryPoints {
+  TEAMWORK: ChallengePoints!
+  EXPERTISE: ChallengePoints!
+  IMAGINATION: ChallengePoints!
+  COLLECTION: ChallengePoints!
+  VETERANCY: ChallengePoints!
+}
+
+type ChallengePreferences {
+  bannerAccent: String!
+  title: String!
+  challengeIds: [Int!]!
+}
+
+type AuthPayload {
+  token: String!
+  message: String!
+}
+
+type DeleteResponse {
+  message: String!
+  success: Boolean!
+}
+
+input MasterySortInput {
+  field: MasterySortField!
+  direction: SortDirection!
+}
+
+input ChallengeSortInput {
+  field: ChallengeSortField!
+  direction: SortDirection!
+}
+
+enum MasterySortField {
+  CHAMPION_POINTS
+  CHAMPION_LEVEL
+  LAST_PLAY_TIME
+  WIN_RATE
+}
+
+enum ChallengeSortField {
+  PERCENTILE
+  VALUE
+  ACHIEVED_TIME
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+type MatchMetadata {
+  dataVersion: String!
+  matchId: String!
+  participants: [String!]!
+  queueId: Int!
+  tftSetNumber: Int
+  gameLength: Float!
+  gameVariation: String!
+  gameVersion: String!
+  gameMode: String!
+  gameType: String!
+  gameQueueConfigId: Int!
+  mapId: Int!
+  platformId: String!
+  gameStartTime: Float!
+  gameEndTime: Float!
+  gameCreation: Float!
+}
+
+type MatchInfo {
+  gameCreation: Float!
+  gameDuration: Float!
+  gameId: Float!
+  gameMode: String!
+  gameName: String!
+  gameStartTimestamp: Float!
+  gameType: String!
+  gameVersion: String!
+  mapId: Float!
+  participants: [Participant!]!
+  platformId: String!
+  queueId: Float!
+  tftSetNumber: Float
+  teams: [Team!]!
+}
+
+type Team {
+  teamId: Int!
+  win: Boolean!
+  firstBlood: Boolean!
+  firstTower: Boolean!
+  firstInhibitor: Boolean!
+  firstBaron: Boolean!
+  firstDragon: Boolean!
+  firstRiftHerald: Boolean!
+  towerKills: Int!
+  inhibitorKills: Int!
+  baronKills: Int!
+  dragonKills: Int!
+  riftHeraldKills: Int!
+  dominionVictoryScore: Int!
+  bans: [Ban!]!
+}
+
+type Ban {
+  championId: Int!
+  pickTurn: Int!
+}
+
+type Participant {
+  uniqueId: String!
+  gameMode: String!
+  gameStartTimestamp: Float
+  matchId: String
+  allInPings: Int
+  assistMePings: Int
+  assists: Int!
+  baitPings: Int
+  baronKills: Int!
+  basicPings: Int
+  bountyLevel: Int!
+  queueId: Int
+  challenges: Challenges
+  champExperience: Int!
+  champLevel: Int!
+  championId: Int!
+  championName: String!
+  championTransform: Int!
+  commandPings: Int
+  consumablesPurchased: Int!
+  damageDealtToBuildings: Int!
+  damageDealtToObjectives: Int!
+  damageDealtToTurrets: Int!
+  damageSelfMitigated: Int!
+  dangerPings: Int
+  deaths: Int!
+  detectorWardsPlaced: Int!
+  doubleKills: Int!
+  dragonKills: Int!
+  eligibleForProgression: Boolean
+  enemyMissingPings: Int
+  enemyVisionPings: Int
+  firstBloodAssist: Boolean!
+  firstBloodKill: Boolean!
+  firstTowerAssist: Boolean!
+  firstTowerKill: Boolean!
+  gameEndedInEarlySurrender: Boolean!
+  gameEndedInSurrender: Boolean!
+  getBackPings: Int
+  goldEarned: Int!
+  goldSpent: Int!
+  holdPings: Int
+  individualPosition: String
+  inhibitorKills: Int
+  inhibitorTakedowns: Int
+  inhibitorsLost: Int
+  itemNumber: Int
+  item0: Int
+  item1: Int
+  item2: Int
+  item3: Int
+  item4: Int
+  item5: Int
+  item6: Int
+  itemsPurchased: Int
+  killingSprees: Int
+  kills: Int
+  lane: String
+  largestCriticalStrike: Int
+  largestKillingSpree: Int
+  largestMultiKill: Int
+  longestTimeSpentLiving: Int
+  magicDamageDealt: Int
+  magicDamageDealtToChampions: Int
+  magicDamageTaken: Int
+  needVisionPings: Int
+  neutralMinionsKilled: Int
+  nexusKills: Int
+  nexusLost: Int
+  nexusTakedowns: Int
+  objectivesStolen: Int
+  objectivesStolenAssists: Int
+  onMyWayPings: Int
+  participantId: Int
+  pentaKills: Int
+  perks: Perks
+  physicalDamageDealt: Int
+  physicalDamageDealtToChampions: Int
+  physicalDamageTaken: Int
+  profileIcon: Int
+  pushPings: Int
+  puuid: String
+  quadraKills: Int
+  riotIdName: String
+  riotIdTagline: String
+  role: String
+  sightWardsBoughtInGame: Int
+  spell1Casts: Int
+  spell2Casts: Int
+  spell3Casts: Int
+  spell4Casts: Int
+  summoner1Casts: Int
+  summoner1Id: Int
+  summoner2Casts: Int
+  summoner2Id: Int
+  summonerId: String
+  summonerLevel: Int
+  summonerName: String
+  teamEarlySurrendered: Boolean
+  teamId: Int
+  teamPosition: String
+  timeCCingOthers: Int
+  timePlayed: Int
+  totalDamageDealt: Int
+  totalDamageDealtToChampions: Int
+  totalDamageShieldedOnTeammates: Int
+  totalDamageTaken: Int
+  totalHeal: Int
+  totalHealsOnTeammates: Int
+  totalMinionsKilled: Int
+  totalTimeCCDealt: Int
+  totalTimeSpentDead: Int
+  totalUnitsHealed: Int
+  tripleKills: Int
+  trueDamageDealt: Int
+  trueDamageDealtToChampions: Int
+  trueDamageTaken: Int
+  turretKills: Int
+  turretTakedowns: Int
+  turretsLost: Int
+  unrealKills: Int
+  visionClearedPings: Int
+  visionScore: Int
+  visionWardsBoughtInGame: Int
+  wardsKilled: Int
+  wardsPlaced: Int
+  win: Boolean
+}
+
+type Perks {
+  statPerks: StatPerks
+  styles: [Style]
+}
+
+type StatPerks {
+  defense: Int
+  flex: Int
+  offense: Int
+}
+
+type Style {
+  description: String
+  selections: [Selection]
+  style: Int
+}
+
+type Selection {
+  perk: Int
+  var1: Int
+  var2: Int
+  var3: Int
+}
+
+type Challenges {
+  TwelveAssistStreakCount: Int
+  abilityUses: Int
+  acesBefore15Minutes: Int
+  alliedJungleMonsterKills: Int
+  baronTakedowns: Int
+  blastConeOppositeOpponentCount: Int
+  bountyGold: Int
+  buffsStolen: Int
+  completeSupportQuestInTime: Int
+  controlWardsPlaced: Int
+  damagePerMinute: Int
+  damageTakenOnTeamPercentage: Int
+  dancedWithRiftHerald: Int
+  deathsByEnemyChamps: Int
+  dodgeSkillShotsSmallWindow: Int
+  doubleAces: Int
+  dragonTakedowns: Int
+  earlyLaningPhaseGoldExpAdvantage: Int
+  effectiveHealAndShielding: Int
+  elderDragonKillsWithOpposingSoul: Int
+  elderDragonMultikills: Int
+  enemyChampionImmobilizations: Int
+  enemyJungleMonsterKills: Int
+  epicMonsterKillsNearEnemyJungler: Int
+  epicMonsterKillsWithin3NumberSecondsOfSpawn: Int
+  epicMonsterSteals: Int
+  epicMonsterStolenWithoutSmite: Int
+  firstTurretKilledTime: Int
+  flawlessAces: Int
+  fullTeamTakedown: Int
+  gameLength: Int
+  getTakedownsInAllLanesEarlyJungleAsLaner: Int
+  goldPerMinute: Int
+  hadOpenNexus: Int
+  immobilizeAndKillWithAlly: Int
+  initialBuffCount: Int
+  initialCrabCount: Int
+  jungleCsBefore1NumberMinutes: Int
+  junglerTakedownsNearDamagedEpicMonster: Int
+  kTurretsDestroyedBeforePlatesFall: Int
+  kda: Int
+  killAfterHiddenWithAlly: Int
+  killParticipation: Int
+  killedChampTookFullTeamDamageSurvived: Int
+  killsNearEnemyTurret: Int
+  killsOnOtherLanesEarlyJungleAsLaner: Int
+  killsOnRecentlyHealedByAramPack: Int
+  killsUnderOwnTurret: Int
+  killsWithHelpFromEpicMonster: Int
+  knockEnemyIntoTeamAndKill: Int
+  landSkillShotsEarlyGame: Int
+  laneMinionsFirst1NumberMinutes: Int
+  laningPhaseGoldExpAdvantage: Int
+  legendaryCount: Int
+  lostAnInhibitor: Int
+  maxCsAdvantageOnLaneOpponent: Int
+  maxKillDeficit: Int
+  maxLevelLeadLaneOpponent: Int
+  moreEnemyJungleThanOpponent: Int
+  multiKillOneSpell: Int
+  multiTurretRiftHeraldCount: Int
+  multikills: Int
+  multikillsAfterAggressiveFlash: Int
+  mythicItemUsed: Int
+  outerTurretExecutesBefore1NumberMinutes: Int
+  outnumberedKills: Int
+  outnumberedNexusKill: Int
+  perfectDragonSoulsTaken: Int
+  perfectGame: Int
+  pickKillWithAlly: Int
+  poroExplosions: Int
+  quickCleanse: Int
+  quickFirstTurret: Int
+  quickSoloKills: Int
+  riftHeraldTakedowns: Int
+  saveAllyFromDeath: Int
+  scuttleCrabKills: Int
+  skillshotsDodged: Int
+  skillshotsHit: Int
+  snowballsHit: Int
+  soloBaronKills: Int
+  soloKills: Int
+  stealthWardsPlaced: Int
+  survivedSingleDigitHpCount: Int
+  survivedThreeImmobilizesInFight: Int
+  takedownOnFirstTurret: Int
+  takedowns: Int
+  takedownsAfterGainingLevelAdvantage: Int
+  takedownsBeforeJungleMinionSpawn: Int
+  takedownsFirstXMinutes: Int
+  takedownsInAlcove: Int
+  takedownsInEnemyFountain: Int
+  teamBaronKills: Int
+  teamDamagePercentage: Int
+  teamElderDragonKills: Int
+  teamRiftHeraldKills: Int
+  threeWardsOneSweeperCount: Int
+  tookLargeDamageSurvived: Int
+  turretPlatesTaken: Int
+  turretTakedowns: Int
+  turretsTakenWithRiftHerald: Int
+  twentyMinionsIn3SecondsCount: Int
+  unseenRecalls: Int
+  visionScoreAdvantageLaneOpponent: Int
+  visionScorePerMinute: Int
+  wardTakedowns: Int
+  wardTakedownsBefore2NumberM: Int
+  wardsGuarded: Int
+}

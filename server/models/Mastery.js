@@ -22,4 +22,8 @@ const MasterySchema = new Schema({
     gamesPlayed: Number  
 });
 
+MasterySchema.index({ championId: 1 });
+MasterySchema.index({ puuid: 1 });
+MasterySchema.index({ championPoints: -1 });
+
 module.exports = mongoose.model('Mastery', MasterySchema);

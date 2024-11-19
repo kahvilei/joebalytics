@@ -303,4 +303,9 @@ const ParticipantSchema = new Schema({
   win: Boolean,
 });
 
+ParticipantSchema.index({ matchId: 1 });
+ParticipantSchema.index({ puuid: 1 });
+ParticipantSchema.index({ championId: 1 });
+ParticipantSchema.index({ gameStartTimestamp: -1 });
+
 module.exports = mongoose.model("Participant", ParticipantSchema);
