@@ -3,7 +3,6 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import "./App.css";
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 //page
@@ -20,23 +19,32 @@ import Navigation from "./views/partials/Navigation";
 //auth
 import { RequireAuth, AuthProvider, RequireAdmin, client } from "./auth/auth";
 import { DataProvider } from './context/DataContext';
+import { AppShell, MantineProvider, DEFAULT_THEME } from "@mantine/core";
+import '@mantine/core/styles.css';
 
 
 function App() {
+  const theme = {
+    ...DEFAULT_THEME,
+  };
   return (
     <ApolloProvider client={client}>
     <AuthProvider>
     <DataProvider>
+      <MantineProvider forceColorScheme="dark" theme={theme}>
       <Router>
-        <Navigation></Navigation> 
-        <div className="main">  
-          <div className="content">
+        <AppShell>
+          <AppShell.Header>
+          </AppShell.Header>
+          <AppShell.Navbar>
+          </AppShell.Navbar>
+          <AppShell.Main>
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/matches" element={< Matches/>} />
-            {/*<Route path="/champions" element={<Champions />} />
+            {/*<Route path="/matches" element={< Matches/>} />
+            <Route path="/champions" element={<Champions />} />
             <Route path="/champion/:id" element={<ChampionDetails />} />
             <Route
               path="/summoner/:region/:name/:page"
@@ -55,9 +63,10 @@ function App() {
               }
             /> */} 
           </Routes>
-          </div>
-        </div>
+          </AppShell.Main>
+         </AppShell>
     </Router>
+    </MantineProvider>
     </DataProvider>
     </AuthProvider> 
     </ApolloProvider>

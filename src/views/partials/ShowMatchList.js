@@ -1,7 +1,6 @@
-import MatchCard from "../components/MatchCard";
-import SkeletonLoader from "../components/SkeletonLoader";
 import { useEffect, useState } from "react";
-
+import { Container, Loader, ScrollArea } from '@mantine/core';
+import MatchCard from "../components/MatchCard";
 
 function ShowMatchList({ matches, onLoadMore, infiniteScroll, focusedSummoners }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,16 +26,14 @@ function ShowMatchList({ matches, onLoadMore, infiniteScroll, focusedSummoners }
   }, [infiniteScroll, isLoading, onLoadMore]);
 
   return (
-    <div className="match-list-wrapper">
-      <div className="match-list">
-        <div className="list">
-          {matches.map((match, k) => (
-            <MatchCard match={match} key={k} focusedSummoners={focusedSummoners} />
-          ))}
-        </div>
-      </div>
-      {isLoading && <SkeletonLoader />}
-    </div>
+    <Container>
+      <ScrollArea>
+        {matches.map((match, k) => (
+          <MatchCard match={match} key={k} focusedSummoners={focusedSummoners} />
+        ))}
+      </ScrollArea>
+      {isLoading && <Loader />}
+    </Container>
   );
 }
 

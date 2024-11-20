@@ -5,6 +5,7 @@ import ShowChallengeRanking from "../partials/ShowChallengeRanking";
 import ShowMasteryRanking from "../partials/ShowMasteryRanking";
 import ShowMatchList from "../partials/ShowMatchList";
 import LoadingCircle from "../components/LoadingCircle";
+import { Container, Group, Stack } from "@mantine/core";
 
 const HOME_PAGE_QUERY = gql`
   query HomePageData($matchLimit: Int!, $challengeLimit: Int!, $masteryLimit: Int!) {
@@ -120,34 +121,26 @@ function Home() {
   }
 
   return (
-    <div className="home page w-sidebar">
-      <div className="main-column">
-        <section>
+    <Container size="xl">
+      <Group wrap="nowrap" justify="space-between" align="start">
+        <Stack>
           <h2>Recent Matches</h2>
           <ShowMatchList 
             matches={data.matches}
             focusedSummoners={data.summoners.map(s => s.puuid)}
           />
-          <Link className="button" to={`/matches`}>See all matches</Link>
-        </section>
-        <section className="row">
-          <div className="challenges column-50">
-            <h2>Challenges Ranking</h2>
-            <ShowChallengeRanking challenges={data.challenges} />
-          </div>
-          <div className="masteries column-50">
-            <h2>Champion Masteries</h2>
-            <ShowMasteryRanking masteries={data.masteries} />
-          </div>
-        </section>
-      </div>
-      <div className="side-column">
-        <section>
+          <Link to={`/matches`}>See all matches</Link>
+          <h2>Challenges Ranking</h2>
+          <ShowChallengeRanking challenges={data.challenges} />
+          <h2>Champion Masteries</h2>
+          <ShowMasteryRanking masteries={data.masteries} />
+        </Stack>
+        <Stack>
           <h2>Summoners</h2>
           <ShowSummonerList summoners={data.summoners} />
-        </section>
-      </div>
-    </div>
+        </Stack>
+      </Group>
+    </Container>
   );
 }
 

@@ -6,15 +6,15 @@ import SummonerStats from "../partials/SummonerStats";
 import LoadingCircle from "../components/LoadingCircle";
 
 const MATCHES_PAGE_QUERY = gql`
-  query MatchesPageData(
-    $region: String!
-    $name: String!
+ query MatchesPageData(
+    $region: String
+    $name: String
     $role: String
     $championId: Int
     $queueId: String
-    $limit: Int!
+    $limit: Int
     $timestamp: Float
-    $statsLimit: Int!
+    $statsLimit: Int
     $stats: [StatRequest!]!
   ) {
     matches(
@@ -34,6 +34,10 @@ const MATCHES_PAGE_QUERY = gql`
       info {
         gameMode
         gameStartTimestamp
+        gameDuration
+        platformId
+        queueId
+        gameCreation
         participants {
           championId
           championName
@@ -42,9 +46,22 @@ const MATCHES_PAGE_QUERY = gql`
           assists
           win
           summonerName
+          profileIcon
           puuid
-          teamPosition
           teamId
+          totalMinionsKilled
+          neutralMinionsKilled
+          goldEarned
+          totalDamageDealtToChampions
+          perks {
+            styles {
+              style
+            }
+          }
+          challenges {
+            killParticipation
+          }
+          itemNumber
           item0
           item1
           item2
@@ -52,10 +69,12 @@ const MATCHES_PAGE_QUERY = gql`
           item4
           item5
           item6
-        }
-        teams {
-          teamId
-          win
+          sightWardsBoughtInGame
+          totalDamageDealt
+          wardsPlaced
+          wardsKilled
+          summoner1Id
+          summoner2Id
         }
       }
     }
@@ -117,13 +136,12 @@ function Matches() {
 
   const { loading, error, data, fetchMore } = useQuery(MATCHES_PAGE_QUERY, {
     variables: {
-      region,
-      name,
+      region: region === "any" ? null : region,
+      name: name === "any" ? null : name,
       role: role === "any" ? null : role,
       championId: championId === "any" ? null : championId,
       queueId: queueId === "any" ? null : queueId,
       limit,
-      timestamp: Date.now(),
       statsLimit: limit,
       stats: [
         { path: "win", aggregation: "AVG" },
@@ -173,7 +191,7 @@ function Matches() {
       <section>
         <h1>Match History</h1>
         <SummonerStats
-          stats={data.matchStats.results}
+          stats={data.stats.results}
           filterOptions={data.availableFilters.results}
           currentFilters={{
             role,

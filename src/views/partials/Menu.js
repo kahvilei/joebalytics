@@ -43,19 +43,6 @@ function Menu() {
     return '';
   }
 
-  useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(rootAddress[process.env.NODE_ENV] + '/api/summoners')
-      .then((res) => {
-        setSummoners(res.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log('Error from ShowSummonerList');
-      });
-  }, [setIsLoading]);
-
   const summonerList =
     summoners.length === 0
       ? ''
