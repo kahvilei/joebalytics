@@ -320,7 +320,7 @@ type Participant {
   pushPings: Int
   puuid: String
   quadraKills: Int
-  riotIdName: String
+  riotIdGameName: String
   riotIdTagline: String
   role: String
   sightWardsBoughtInGame: Int
@@ -401,15 +401,15 @@ type Challenges {
   buffsStolen: Int
   completeSupportQuestInTime: Int
   controlWardsPlaced: Int
-  damagePerMinute: Int
-  damageTakenOnTeamPercentage: Int
+  damagePerMinute: Float
+  damageTakenOnTeamPercentage: Float
   dancedWithRiftHerald: Int
   deathsByEnemyChamps: Int
   dodgeSkillShotsSmallWindow: Int
   doubleAces: Int
   dragonTakedowns: Int
   earlyLaningPhaseGoldExpAdvantage: Int
-  effectiveHealAndShielding: Int
+  effectiveHealAndShielding: Float
   elderDragonKillsWithOpposingSoul: Int
   elderDragonMultikills: Int
   enemyChampionImmobilizations: Int
@@ -421,9 +421,9 @@ type Challenges {
   firstTurretKilledTime: Int
   flawlessAces: Int
   fullTeamTakedown: Int
-  gameLength: Int
+  gameLength: Float
   getTakedownsInAllLanesEarlyJungleAsLaner: Int
-  goldPerMinute: Int
+  goldPerMinute: Float
   hadOpenNexus: Int
   immobilizeAndKillWithAlly: Int
   initialBuffCount: Int
@@ -431,7 +431,7 @@ type Challenges {
   jungleCsBefore1NumberMinutes: Int
   junglerTakedownsNearDamagedEpicMonster: Int
   kTurretsDestroyedBeforePlatesFall: Int
-  kda: Int
+  kda: Float
   killAfterHiddenWithAlly: Int
   killParticipation: Float
   killedChampTookFullTeamDamageSurvived: Int
@@ -446,7 +446,7 @@ type Challenges {
   laningPhaseGoldExpAdvantage: Int
   legendaryCount: Int
   lostAnInhibitor: Int
-  maxCsAdvantageOnLaneOpponent: Int
+  maxCsAdvantageOnLaneOpponent: Float
   maxKillDeficit: Int
   maxLevelLeadLaneOpponent: Int
   moreEnemyJungleThanOpponent: Int
@@ -484,7 +484,7 @@ type Challenges {
   takedownsInAlcove: Int
   takedownsInEnemyFountain: Int
   teamBaronKills: Int
-  teamDamagePercentage: Int
+  teamDamagePercentage: Float
   teamElderDragonKills: Int
   teamRiftHeraldKills: Int
   threeWardsOneSweeperCount: Int
@@ -494,8 +494,8 @@ type Challenges {
   turretsTakenWithRiftHerald: Int
   twentyMinionsIn3SecondsCount: Int
   unseenRecalls: Int
-  visionScoreAdvantageLaneOpponent: Int
-  visionScorePerMinute: Int
+  visionScoreAdvantageLaneOpponent: Float
+  visionScorePerMinute: Float
   wardTakedowns: Int
   wardTakedownsBefore2NumberM: Int
   wardsGuarded: Int

@@ -8,29 +8,52 @@ const matchResolvers = {
       matches: async (_, { 
         limit = 20, 
         timestamp = Date.now(), 
-        region, 
-        summonerName, 
-        role, 
-        championId, 
-        queueId 
+        region,
+        summonerName,
+        role,
+        championId,
+        queueId
       }, { models }) => {
-        const query = {};
-        if (region && summonerName) {
-          const summoner = await models.Summoner.findOne({
-            nameURL: summonerName.toLowerCase(),
-            regionURL: region.toLowerCase()
-          });
-          if (summoner) query['metadata.participants'] = summoner.puuid;
+
+        let summonerQuery = {}
+        if (region) {
+          summonerQuery.regionURL = region;
         }
-        if (role) query['info.participants.teamPosition'] = role;
-        if (championId) query['info.participants.championId'] = championId;
-        if (queueId) query['info.queueId'] = queueId;
-        query['info.gameStartTimestamp'] = { $lt: timestamp };
+        if (summonerName) {
+          summonerQuery.nameURL = summonerName;
+        }
+
+        let summoner = await models.Summoner.find({
+          $and: [ summonerQuery ]
+        });
+
+        let query  = {};
+
+        if (queueId) {
+          query.queueId = queueId;
+        }
+
+        if (championId) {
+          query.championId = championId;
+        }
+
+        if (role) {
+          query.teamPosition = role;
+        }
+
+        query.gameStartTimestamp = { $lt: timestamp };
+
+        let puuids = summoner.map((summoner) => summoner.puuid);
+
+        query.puuid = { $in: puuids };
+
+        let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+
+        let matchIds = participants.map((participant) => participant.matchId);
+
+        let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds }}).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants')
   
-        return await models.Match.find(query)
-          .sort({ 'info.gameStartTimestamp': -1 })
-          .limit(limit)
-          .populate('info.participants');
+        return matches;
       }
     },
   

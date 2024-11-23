@@ -19,14 +19,13 @@ import Navigation from "./views/partials/Navigation";
 //auth
 import { RequireAuth, AuthProvider, RequireAdmin, client } from "./auth/auth";
 import { DataProvider } from './context/DataContext';
-import { AppShell, MantineProvider, DEFAULT_THEME } from "@mantine/core";
+import { AppShell, MantineProvider, DEFAULT_THEME, createTheme } from "@mantine/core";
 import '@mantine/core/styles.css';
+import themeJSON from './summon-cloud.json';
 
 
 function App() {
-  const theme = {
-    ...DEFAULT_THEME,
-  };
+  const theme = createTheme(themeJSON);
   return (
     <ApolloProvider client={client}>
     <AuthProvider>
@@ -43,8 +42,8 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            {/*<Route path="/matches" element={< Matches/>} />
-            <Route path="/champions" element={<Champions />} />
+            <Route path="/matches" element={< Matches/>} />
+            {/*<Route path="/champions" element={<Champions />} />
             <Route path="/champion/:id" element={<ChampionDetails />} />
             <Route
               path="/summoner/:region/:name/:page"

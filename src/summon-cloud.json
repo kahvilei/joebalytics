@@ -1,0 +1,142 @@
+{
+  "scale": 1,
+  "fontSmoothing": true,
+  "focusRing": "auto",
+  "white": "#ffffff",
+  "black": "#1b1d87",
+  "colors": {
+    "dark": [
+      "#ffffff",
+      "#8db7fc",
+      "#698cc7",
+      "#2c5499",
+      "#1a3561",
+      "#183057",
+      "#0f294d",
+      "#0a203e",
+      "#04162c",
+      "#010b1a"
+    ],
+    "gray": [
+      "#ffffff",
+      "#f2f3f5",
+      "#e3e5e8",
+      "#d4d7dc",
+      "#c4c9ce",
+      "#b5bac1",
+      "#9ca3af",
+      "#8e9297",
+      "#72767d",
+      "#4f545c"
+    ],
+    "blurple": [
+      "#ddf3f4",
+      "#bfeff2",
+      "#a0ecf0",
+      "#80e8ed",
+      "#5ee4eb",
+      "#5ee4eb",
+      "#00d9e3",
+      "#0098a0",
+      "#00575c",
+      "#001718"
+    ],
+    "green": [
+      "#e8fff3",
+      "#d1ffe7",
+      "#bafedb",
+      "#a3fecf",
+      "#8cfdc3",
+      "#3ba55c",
+      "#2f8b49",
+      "#237136",
+      "#175724",
+      "#0b3d12"
+    ],
+    "yellow": [
+      "#fff8e6",
+      "#fff1cc",
+      "#ffeab3",
+      "#ffe499",
+      "#ffdd80",
+      "#faa61a",
+      "#d18701",
+      "#a86a00",
+      "#7f4e00",
+      "#553200"
+    ],
+    "red": [
+      "#feecee",
+      "#fed7dc",
+      "#fec2ca",
+      "#feadb8",
+      "#fe99a6",
+      "#ed4245",
+      "#c4292c",
+      "#9b1c1f",
+      "#720f11",
+      "#490204"
+    ],
+    "y55": [
+      "#ebcaca",
+      "#eaa7a7",
+      "#e88484",
+      "#e66160",
+      "#e33d3d",
+      "#e33d3d",
+      "#c51219",
+      "#8c0a10",
+      "#530507",
+      "#1c0000"
+    ]
+  },
+  "primaryShade": {
+    "light": 5,
+    "dark": 5
+  },
+  "primaryColor": "blurple",
+  "autoContrast": true,
+  "luminanceThreshold": 0.25,
+  "fontFamily": "'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+  "fontFamilyMonospace": "'Consolas', 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', 'Monaco', 'Courier New', Courier, monospace",
+  "headings": {
+    "fontFamily": "'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "fontWeight": "600"
+  },
+  "defaultRadius": "md",
+  "defaultGradient": {
+    "from": "blurple",
+    "to": "green",
+    "deg": 45
+  },
+  "isThemeDependentPrimaryShade": true,
+  "components": {
+    "Badge": {
+      "defaultProps": {
+        "variant": "filled",
+        "color": "pink"
+      },
+      "styles": {}
+    },
+    "Table": {
+      "defaultProps": {},
+      "styles": {
+        "tbody": {
+          "borderRadius": "0px"
+        }
+      }
+    },
+    "Card": {
+      "defaultProps": {
+        "padding": "lg"
+      },
+      "styles": {}
+    },
+    "ActionIcon": {
+      "defaultProps": {
+        "autoContrast": true
+      },
+      "styles": {}
+    }
+  }
+}

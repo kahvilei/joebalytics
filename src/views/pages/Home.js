@@ -5,25 +5,10 @@ import ShowChallengeRanking from "../partials/ShowChallengeRanking";
 import ShowMasteryRanking from "../partials/ShowMasteryRanking";
 import ShowMatchList from "../partials/ShowMatchList";
 import LoadingCircle from "../components/LoadingCircle";
-import { Container, Group, Stack } from "@mantine/core";
+import { Container, Group, Grid, Stack } from "@mantine/core";
 
 const HOME_PAGE_QUERY = gql`
   query HomePageData($matchLimit: Int!, $challengeLimit: Int!, $masteryLimit: Int!) {
-    summoners {
-      id
-      name
-      regionDisplay
-      regionURL
-      tagline
-      profileIconId
-      puuid
-      summonerLevel
-      rankedData {
-        tier
-        rank
-        leaguePoints
-      }
-    }
     matches(limit: $matchLimit) {
       id
       metadata {
@@ -38,6 +23,7 @@ const HOME_PAGE_QUERY = gql`
         queueId
         gameCreation
         participants {
+          teamPosition
           championId
           championName
           kills
@@ -59,6 +45,9 @@ const HOME_PAGE_QUERY = gql`
           }
           challenges {
             killParticipation
+            controlWardsPlaced
+            visionScorePerMinute
+            kda
           }
           itemNumber
           item0
@@ -74,6 +63,9 @@ const HOME_PAGE_QUERY = gql`
           wardsKilled
           summoner1Id
           summoner2Id
+          visionScore
+          gameEndedInEarlySurrender
+          gameEndedInSurrender
         }
       }
     }
@@ -122,24 +114,28 @@ function Home() {
 
   return (
     <Container size="xl">
-      <Group wrap="nowrap" justify="space-between" align="start">
-        <Stack>
-          <h2>Recent Matches</h2>
-          <ShowMatchList 
-            matches={data.matches}
-            focusedSummoners={data.summoners.map(s => s.puuid)}
-          />
-          <Link to={`/matches`}>See all matches</Link>
-          <h2>Challenges Ranking</h2>
-          <ShowChallengeRanking challenges={data.challenges} />
-          <h2>Champion Masteries</h2>
-          <ShowMasteryRanking masteries={data.masteries} />
-        </Stack>
+      <Grid gap="lg">
+        <Grid.Col span={9}>
+          <Stack>
+            <h2>Recent Matches</h2>
+            <ShowMatchList 
+              matches={data.matches}
+              focusedSummoners={data.summoners.map(s => s.puuid)}
+            />
+            <Link to={`/matches`}>See all matches</Link>
+            <h2>Challenges Ranking</h2>
+            <ShowChallengeRanking challenges={data.challenges} />
+            <h2>Champion Masteries</h2>
+            <ShowMasteryRanking masteries={data.masteries} />
+          </Stack>
+        </Grid.Col>
+        <Grid.Col span={3}>
         <Stack>
           <h2>Summoners</h2>
           <ShowSummonerList summoners={data.summoners} />
         </Stack>
-      </Group>
+        </Grid.Col>
+      </Grid>
     </Container>
   );
 }

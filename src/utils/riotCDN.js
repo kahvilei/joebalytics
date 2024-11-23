@@ -99,7 +99,8 @@ export function DataProvider({ children }) {
     },
 
     getRoleIcon: (id) => {
-      return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${id}.svg`;
+      if (id === undefined || id === "") return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-middle.svg`;
+      return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${id.toLowerCase()}.svg`;
     },
 
     getQueueName: (id) => {

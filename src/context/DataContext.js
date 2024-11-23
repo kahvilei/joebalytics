@@ -27,28 +27,45 @@ const GAME_DATA_QUERY = gql`
         description
       }
     }
+    summoners {
+      id
+      name
+      regionDisplay
+      regionURL
+      tagline
+      profileIconId
+      puuid
+      summonerLevel
+      rankedData {
+        tier
+        rank
+        leaguePoints
+      }
+    }
   }
 `;
 
-const DataContext = createContext(null);
+export const DataContext = createContext(null);
 
 export function DataProvider({ children }) {
   const { loading, error, data } = useQuery(GAME_DATA_QUERY);
   const [champions, setChampions] = useState(null);
   const [items, setItems] = useState(null);
   const [queues, setQueues] = useState(null);
+  const [summoners, setSummoners] = useState(null);
 
   useEffect(() => {
     if (data) {
       setChampions(data.gameData.champions.data);
       setItems(data.gameData.items);
       setQueues(data.gameData.queueTypes);
+      setSummoners(data.summoners);
     }
   }, [data]);
 
   if (loading) {
     return <div>Loading game data...</div>;
-  } else if (!champions || !items || !queues) {
+  } else if (!champions || !items || !queues || !summoners) {
     return <div>no data</div>;
     }
 
@@ -101,7 +118,8 @@ export function DataProvider({ children }) {
     },
 
     getRoleIcon: (id) => {
-      return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${id}.svg`;
+      if (id === undefined || id === "") return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-middle.svg`;
+      return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${id.toLowerCase()}.svg`;
     },
 
     getQueueName: (id) => {
@@ -220,7 +238,7 @@ export function DataProvider({ children }) {
   };
 
   return (
-    <DataContext.Provider value={utils}>
+    <DataContext.Provider value={{...utils, summoners, champions, items, queues}}>
       {children}
     </DataContext.Provider>
   );
