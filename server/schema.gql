@@ -2,7 +2,18 @@
   summoner(region: String!, name: String!): Summoner
   summoners: [Summoner!]!
   match(id: ID!): Match
+  participant(id: ID!): Participant
   matches(
+    limit: Int
+    timestamp: Float
+    region: String
+    summonerNames: [String!]
+    roles: [String!]
+    championIds: [Int!]
+    queueIds: [String!]
+    tags: [String!]
+  ): [Match!]!
+  participants(
     limit: Int
     timestamp: Float
     region: String
@@ -10,7 +21,8 @@
     role: String
     championId: Int
     queueId: String
-  ): [Match!]!
+    tags: [String!]
+  ): [Participant!]!
   mastery(id: ID!): Mastery
   masteries(
     limit: Int
@@ -30,6 +42,8 @@ type Mutation {
   updateAllSummoners: [Summoner!]!
   deleteSummoner(id: ID!): DeleteResponse!
   deleteOrphanMatches: DeleteResponse!
+  formatParticipant(id: ID!): Participant!
+  formatAllParticipants: [Participant!]!
 }
 
 type Summoner {
@@ -335,6 +349,7 @@ type Participant {
   summonerId: String
   summonerLevel: Int
   summonerName: String
+  tags: Tags
   teamEarlySurrendered: Boolean
   teamId: Int
   teamPosition: String
@@ -364,6 +379,96 @@ type Participant {
   wardsKilled: Int
   wardsPlaced: Int
   win: Boolean
+}
+
+type Tags {
+    blind: TagValueFloat,
+    worstOfTheWorst: TagValueFloat,
+    tagAlong: TagValueFloat,
+    poor: TagValueFloat,
+    coward: TagValueFloat,
+    atm: TagValueFloat,
+    honoraryCarry: TagValueFloat,
+    jungleFullOfLife: TagValueFloat,
+    jungleDiffCamps: TagValueFloat,
+    forgotYourButtons: TagValueFloat,
+    mapControl0: TagValueFloat,
+    aimWhereTheyreGoing: TagValueFloat,
+    allergicToDodging: TagValueFloat, 
+    throwsForContent: TagValueFloat,
+    lastHitTutorialNeeded: TagValueFloat,
+    struggling: TagValueFloat,
+    jackOfAllTrades: TagValueFloat,
+    dragonsHoard: TagValueFloat,
+    perfectlyBalanced: TagValueFloat,
+    iFeelFine: TagValueFloat,
+    afkFarmer: TagValueFloat,
+    pve: TagValueFloat,
+    paperTank: TagValueFloat,
+    walkingWard: TagValueFloat,
+    worksBetterAlone: TagValueFloat,
+    spongey: TagValueFloat,
+    objective: TagValueFloat,
+    yeahYeahOmw: TagValueFloat,
+    keyboardWarrior: TagValueFloat,
+    autoAttackOnly: TagValueFloat,
+    buffDeliveryService: TagValueFloat,
+    selfCare: TagValueFloat,
+    decorationEnthusiast: TagValueFloat,
+    flashGaming: TagValueFloat,
+    monsterTamer: TagValueFloat,
+    blastEm: TagValueFloat,
+    stopRightThere: TagValueFloat,
+    selfless: TagValueFloat,
+    alcoveClub: TagValueFloat,
+    minionEater: TagValueFloat,
+    hideAndSeekChampion: TagValueFloat,
+    shyHerald: TagValueFloat,
+    dancePartner: TagValueFloat,
+    snowball: TagValueFloat,
+    balancedDiet: TagValueFloat,
+    teamPlayer: TagValueFloat,
+    identityCrisis: TagValueFloat,
+    earlyBird: TagValueFloat,
+    mercenary: TagValueFloat,
+    surviveAtAllCosts: TagValueFloat,
+    arentYouForgettingSomeone: TagValueFloat,
+    scout: TagValueFloat,
+    youreWelcome: TagValueFloat,
+    midIsMyNewBestFriend: TagValueFloat,
+    imTheCarryNow: TagValueFloat,
+    stomper: TagValueFloat,
+    adequateJungler: TagValueFloat,
+    counterJungler: TagValueFloat,
+    betterTogether: TagValueFloat,
+    hatesArchitecture: TagValueFloat,
+    niceDiveIdiot: TagValueFloat,
+    coolTurret: TagValueFloat,
+    bountyHunter: TagValueFloat,
+    sneakyStealthy: TagValueFloat,
+    darkness: TagValueFloat,
+    laneKingdom: TagValueFloat,
+    quadraMaster: TagValueFloat,
+    flawlessVictory: TagValueFloat,
+    heGotANoNo: TagValueFloat,
+    pentakill: TagValueFloat,
+    dontEverSayItsOver: TagValueFloat,
+    legendary: TagValueFloat,
+    visionDomination: TagValueFloat,
+    simplyTheBest: TagValueFloat,
+    objectiveSupremacy: TagValueFloat,
+    csGod: TagValueFloat,
+    damageMaster: TagValueFloat,
+    carryingIsKindOfSupporting: TagValueFloat,
+    justDoinMyJob: TagValueFloat,
+    kingOfDaJungle: TagValueFloat,
+    notSoMiddling: TagValueFloat,
+    itsCalledTopForAReason: TagValueFloat
+  }
+
+type TagValueFloat {
+  isTriggered: Boolean
+  value: Float
 }
 
 type Perks {

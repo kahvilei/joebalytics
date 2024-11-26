@@ -3,6 +3,8 @@ const path = require("path");
 
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
+const { calculateTags } = require('../utils/calculateTags');
+
 const key = process.env.RIOT_KEY;
 
 // Load Match model
@@ -66,6 +68,14 @@ const recordRecentMatches = async (puuid, region, init) => {
   console.log(response);
 
   let matchList = await collectMatchDataFromArray(region, response.data);
+
+  //for each participant found in match.info.participants, run the util funnction to calculate tags and save to the participant
+  for (let match of matchList) {
+    for (let participant of match.info.participants) {
+      let tags = await calculateTags(participant, models);
+      participant.tags = tags;
+    }
+  }
 
   if (matchList.length > 0) {
     await Match.insertMany(matchList);

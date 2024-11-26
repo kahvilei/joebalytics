@@ -9,50 +9,72 @@ const matchResolvers = {
         limit = 20, 
         timestamp = Date.now(), 
         region,
-        summonerName,
-        role,
-        championId,
-        queueId
+        summonerNames = [],
+        roles = [],
+        championIds = [],
+        queueIds = [],
+        tags = []
       }, { models }) => {
 
-        let summonerQuery = {}
+        let summonerQuery = {};
         if (region) {
           summonerQuery.regionURL = region;
         }
-        if (summonerName) {
-          summonerQuery.nameURL = summonerName;
+        if (summonerNames.length > 0) {
+          summonerQuery.nameURL = { $in: summonerNames };
         }
 
-        let summoner = await models.Summoner.find({
-          $and: [ summonerQuery ]
-        });
-
-        let query  = {};
-
-        if (queueId) {
-          query.queueId = queueId;
+        let summoner = [];
+        if (Object.keys(summonerQuery).length > 0) {
+          summoner = await models.Summoner.find({
+            $and: [ summonerQuery ]
+          });
+        }else {
+          summoner = await models.Summoner.find();
         }
 
-        if (championId) {
-          query.championId = championId;
+        let query = {};
+        if (queueIds.length > 0) {
+          query.queueId = { $in: queueIds };
+        }
+        if (championIds.length > 0) {
+          query.championId = { $in: championIds };
+        }
+        if (roles.length > 0) {
+          query.teamPosition = { $in: roles };
+        }
+        if (tags.length > 0) {
+          tags.forEach(tag => {
+            query[`tags.${tag}.isTriggered`] = true;
+          });
         }
 
-        if (role) {
-          query.teamPosition = role;
+        let isParticipantSearch = summoner.length > 0 || Object.keys(query).length > 0;
+
+        let matchIds = [];
+        if (summoner.length > 0 || Object.keys(query).length > 0) {
+          query.gameStartTimestamp = { $lt: timestamp };
+          let puuids = summoner.map((summoner) => summoner.puuid);
+          if (puuids.length > 0) {
+            query.puuid = { $in: puuids };
+          }
+
+          let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+          matchIds = participants.map((participant) => participant.matchId);
         }
 
-        query.gameStartTimestamp = { $lt: timestamp };
+        let matchQuery = {};
+        if (isParticipantSearch) {
+          matchQuery["metadata.matchId"] = { $in: matchIds };
+          return await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).populate('info.participants');
+        }
+        if (queueIds.length > 0) {
+          matchQuery["info.queueId"] = { $in: queueIds };
+        }
+        matchQuery["info.gameStartTimestamp"] = { $lt: timestamp };
 
-        let puuids = summoner.map((summoner) => summoner.puuid);
+        let matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
 
-        query.puuid = { $in: puuids };
-
-        let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' }).limit(limit);
-
-        let matchIds = participants.map((participant) => participant.matchId);
-
-        let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds }}).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants')
-  
         return matches;
       }
     },

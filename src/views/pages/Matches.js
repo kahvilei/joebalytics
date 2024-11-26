@@ -1,32 +1,31 @@
-import React, { useContext } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery, gql } from "@apollo/client";
 import ShowMatchList from "../partials/ShowMatchList";
-import SummonerStats from "../partials/SummonerStats";
-import LoadingCircle from "../components/LoadingCircle";
-import { Container, Group, Select, Stack, Avatar, Text, Loader, ActionIcon, Tooltip} from "@mantine/core";
+import { Container, Group, MultiSelect, Stack, Avatar, Text, Loader, ActionIcon, Tooltip } from "@mantine/core";
 import { useGameData } from "../../context/DataContext";
-import { set } from "mongoose";
-import { IconRefresh, IconZoomReset } from "@tabler/icons-react";
-
+import { IconCheck, IconZoomReset } from "@tabler/icons-react";
 
 const MATCHES_PAGE_QUERY = gql`
  query MatchesPageData(
     $region: String
-    $name: String
-    $role: String
-    $championId: Int
-    $queueId: String
+    $names: [String!]
+    $roles: [String!]
+    $championIds: [Int!]
+    $queueIds: [String!]
     $limit: Int
     $timestamp: Float
+    $tags: [String!]
   ) {
-    matches( region: $region
-      summonerName: $name
-      role: $role
-      championId: $championId
-      queueId: $queueId
+    matches(
+      region: $region
+      summonerNames: $names
+      roles: $roles
+      championIds: $championIds
+      queueIds: $queueIds
       limit: $limit
-      timestamp: $timestamp) {
+      timestamp: $timestamp
+      tags: $tags
+    ) {
       id
       metadata {
         matchId
@@ -39,119 +38,368 @@ const MATCHES_PAGE_QUERY = gql`
         platformId
         queueId
         gameCreation
+
         participants {
           teamPosition
           championId
           championName
-          champLevel
           kills
           deaths
           assists
           win
           summonerName
-          profileIcon
           puuid
           teamId
+          riotIdTagline
+          riotIdGameName
+
           totalMinionsKilled
           neutralMinionsKilled
           goldEarned
-          goldSpent
-          damageDealtToObjectives
           totalDamageDealtToChampions
-          totalDamageShieldedOnTeammates
-          totalHealsOnTeammates
-          firstBloodKill
-          pentaKills
-          quadraKills
-          totalDamageTaken
-          perks {
-            styles {
-              style
-            }
-          }
-          challenges {
-            goldPerMinute
-            killParticipation
-            controlWardsPlaced
-            visionScorePerMinute
-            kda
-            soloKills
-            multikills
-            multikillsAfterAggressiveFlash
-            bountyGold
-            takedownsFirstXMinutes
-            teamDamagePercentage
-            damagePerMinute
-            damageTakenOnTeamPercentage
-            turretPlatesTaken
-            perfectGame
-            visionScoreAdvantageLaneOpponent
-            laneMinionsFirst1NumberMinutes
-            jungleCsBefore1NumberMinutes
-            maxCsAdvantageOnLaneOpponent
-            maxLevelLeadLaneOpponent
-            maxKillDeficit
-            dragonTakedowns
-            baronTakedowns
-            teamElderDragonKills
-            gameLength
-            skillshotsDodged
-            skillshotsHit
-            dodgeSkillShotsSmallWindow
-            snowballsHit
-            teamElderDragonKills
-            teamRiftHeraldKills
-            enemyJungleMonsterKills
-            takedownsFirstXMinutes
-            takedownsAfterGainingLevelAdvantage
-            survivedSingleDigitHpCount
-            killsUnderOwnTurret
-            killsNearEnemyTurret
-            takedownsInEnemyFountain
-            turretPlatesTaken
-            deathsByEnemyChamps
-            epicMonsterSteals
-            controlWardsPlaced
-            effectiveHealAndShielding
-            survivedSingleDigitHpCount
-            initialBuffCount
-            killsWithHelpFromEpicMonster
-            enemyChampionImmobilizations
-            wardTakedowns
-            saveAllyFromDeath
-            takedownsInAlcove
-            twentyMinionsIn3SecondsCount
-            unseenRecalls
-            dancedWithRiftHerald
-            riftHeraldTakedowns
-            turretsTakenWithRiftHerald
-          }
-          itemNumber
-          item0
-          item1
-          item2
-          item3
-          item4
-          item5
-          item6
-          sightWardsBoughtInGame
-          totalDamageDealt
+          visionScore
           wardsPlaced
           wardsKilled
-          summoner1Id
-          summoner2Id
-          visionScore
+
           gameEndedInEarlySurrender
           gameEndedInSurrender
-          turretTakedowns
-          objectivesStolen
-          objectivesStolenAssists
-          totalTimeCCDealt
-          timeCCingOthers
-          largestMultiKill
-          riotIdTagline
-          riotIdGameName
-          onMyWayPings
+
+          challenges {
+            killParticipation
+            kda
+            visionScorePerMinute
+          }
+
+          tags {
+            blind {
+              isTriggered
+              value
+            }
+            worstOfTheWorst {
+              isTriggered
+              value
+            }
+            tagAlong {
+              isTriggered
+              value
+            }
+            poor {
+              isTriggered
+              value
+            }
+            coward {
+              isTriggered
+              value
+            }
+            atm {
+              isTriggered
+              value
+            }
+            honoraryCarry {
+              isTriggered
+              value
+            }
+            jungleFullOfLife {
+              isTriggered
+              value
+            }
+            jungleDiffCamps {
+              isTriggered
+              value
+            }
+            forgotYourButtons {
+              isTriggered
+              value
+            }
+            mapControl0 {
+              isTriggered
+              value
+            }
+            aimWhereTheyreGoing {
+              isTriggered
+              value
+            }
+            allergicToDodging {
+              isTriggered
+              value
+            }
+            throwsForContent {
+              isTriggered
+              value
+            }
+            lastHitTutorialNeeded {
+              isTriggered
+              value
+            }
+            struggling {
+              isTriggered
+              value
+            }
+            jackOfAllTrades {
+              isTriggered
+              value
+            }
+            dragonsHoard {
+              isTriggered
+              value
+            }
+            perfectlyBalanced {
+              isTriggered
+              value
+            }
+            iFeelFine {
+              isTriggered
+              value
+            }
+            afkFarmer {
+              isTriggered
+              value
+            }
+            pve {
+              isTriggered
+              value
+            }
+            paperTank {
+              isTriggered
+              value
+            }
+            walkingWard {
+              isTriggered
+              value
+            }
+            worksBetterAlone {
+              isTriggered
+              value
+            }
+            spongey {
+              isTriggered
+              value
+            }
+            objective {
+              isTriggered
+              value
+            }
+            yeahYeahOmw {
+              isTriggered
+              value
+            }
+            keyboardWarrior {
+              isTriggered
+              value
+            }
+            autoAttackOnly {
+              isTriggered
+              value
+            }
+            buffDeliveryService {
+              isTriggered
+              value
+            }
+            selfCare {
+              isTriggered
+              value
+            }
+            decorationEnthusiast {
+              isTriggered
+              value
+            }
+            flashGaming {
+              isTriggered
+              value
+            }
+            monsterTamer {
+              isTriggered
+              value
+            }
+            blastEm {
+              isTriggered
+              value
+            }
+            stopRightThere {
+              isTriggered
+              value
+            }
+            selfless {
+              isTriggered
+              value
+            }
+            alcoveClub {
+              isTriggered
+              value
+            }
+            minionEater {
+              isTriggered
+              value
+            }
+            hideAndSeekChampion {
+              isTriggered
+              value
+            }
+            shyHerald {
+              isTriggered
+              value
+            }
+            dancePartner {
+              isTriggered
+              value
+            }
+            snowball {
+              isTriggered
+              value
+            }
+            balancedDiet {
+              isTriggered
+              value
+            }
+            teamPlayer {
+              isTriggered
+              value
+            }
+            identityCrisis {
+              isTriggered
+              value
+            }
+            earlyBird {
+              isTriggered
+              value
+            }
+            mercenary {
+              isTriggered
+              value
+            }
+            surviveAtAllCosts {
+              isTriggered
+              value
+            }
+            arentYouForgettingSomeone {
+              isTriggered
+              value
+            }
+            scout {
+              isTriggered
+              value
+            }
+            youreWelcome {
+              isTriggered
+              value
+            }
+            midIsMyNewBestFriend {
+              isTriggered
+              value
+            }
+            imTheCarryNow {
+              isTriggered
+              value
+            }
+            stomper {
+              isTriggered
+              value
+            }
+            adequateJungler {
+              isTriggered
+              value
+            }
+            counterJungler {
+              isTriggered
+              value
+            }
+            betterTogether {
+              isTriggered
+              value
+            }
+            hatesArchitecture {
+              isTriggered
+              value
+            }
+            niceDiveIdiot {
+              isTriggered
+              value
+            }
+            coolTurret {
+              isTriggered
+              value
+            }
+            bountyHunter {
+              isTriggered
+              value
+            }
+            sneakyStealthy {
+              isTriggered
+              value
+            }
+            darkness {
+              isTriggered
+              value
+            }
+            laneKingdom {
+              isTriggered
+              value
+            }
+            quadraMaster {
+              isTriggered
+              value
+            }
+            flawlessVictory {
+              isTriggered
+              value
+            }
+            heGotANoNo {
+              isTriggered
+              value
+            }
+            pentakill {
+              isTriggered
+              value
+            }
+            dontEverSayItsOver {
+              isTriggered
+              value
+            }
+            legendary {
+              isTriggered
+              value
+            }
+            visionDomination {
+              isTriggered
+              value
+            }
+            simplyTheBest {
+              isTriggered
+              value
+            }
+            objectiveSupremacy {
+              isTriggered
+              value
+            }
+            csGod {
+              isTriggered
+              value
+            }
+            damageMaster {
+              isTriggered
+              value
+            }
+            carryingIsKindOfSupporting {
+              isTriggered
+              value
+            }
+            justDoinMyJob {
+              isTriggered
+              value
+            }
+            kingOfDaJungle {
+              isTriggered
+              value
+            }
+            notSoMiddling {
+              isTriggered
+              value
+            }
+            itsCalledTopForAReason {
+              isTriggered
+              value
+            }
+          }
         }
       }
     }
@@ -162,20 +410,18 @@ function Matches() {
   const { region = "any", name = "any" } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   
-  const role = searchParams.get("role") || "any";
-  const championId = parseInt(searchParams.get("championId")) || "any";
-  const queueId = searchParams.get("queueId") || "any";
+  const roles = searchParams.getAll("role") || null;
+  const championIds = searchParams.getAll("championId").map(id => parseInt(id)) || null;
+  const queueIds = searchParams.getAll("queueId") || null;
   const limit = parseInt(searchParams.get("limit")) || 20;
 
   const { loading, error, data, fetchMore } = useQuery(MATCHES_PAGE_QUERY, {
     variables: {
-      region: region === "any" ? null : region,
-      name: name === "any" ? null : name,
-      role: role === "any" || undefined ? null : role,
-      championId: championId === "any" || undefined ? null : championId,
-      queueId: queueId === "any" || undefined ? null : queueId,
+      roles: roles.includes("any") ? [] : roles,
+      championIds: championIds.includes("any") ? [] : championIds,
+      queueIds: queueIds.includes("any") ? [] : queueIds,
       limit,
-      statsLimit: limit,
+      tags: [],
       stats: [
         { path: "win", aggregation: "AVG" },
         { path: "visionScore", aggregation: "AVG" },
@@ -239,54 +485,59 @@ function Matches() {
     <Container size="xl">
      <Stack gap="lg">
         <Group position="center">
-          <Select
+          <MultiSelect
             data={[
-              { label: "Any Role", value: "any" },
               { label: "Top", value: "TOP" },
               { label: "Jungle", value: "JUNGLE" },
               { label: "Mid", value: "MIDDLE" },
               { label: "Bot", value: "BOTTOM" },
               { label: "Support", value: "UTILITY" }
             ]}
-            value={role}
+            value={roles}
+            placeholder="All Roles"
+            withCheckIcon
+            clearable
             onChange={(value) => handleFilterChange({ role: value })}
           />
-          <Select
+          <MultiSelect
             data={[
-              { label: "Any Champion", value: "any" },
               ...Object.values(champions).map((champion) => ({
                 label: champion.name,
                 value: champion.key
               }))
             ]}
-            leftSection={<Avatar src={getChampIcon(championId)} alt="champion icon" size={'sm'} />}
-            renderOption={({option, checked}) => (
-              <Group gap={'xs'} align="left">
+            renderOption={({ option, checked }) => (
+              <Group gap={'xs'} align="center" justify="start">
+                {checked && <IconCheck size={18} />}
                 <Avatar src={getChampIcon(parseInt(option.value))} alt="champion icon" size={'sm'} bd={checked ? '2px solid white' : 'none'} />
                 <Text c={checked ? 'white' : 'dimmed'}>{option.label}</Text>
               </Group>
-            )
-            }
-            value={championId.toString() || "any"} // make
+            )}
+            value={championIds.map(id => id.toString())}
             searchable
-            onChange={(value) => handleFilterChange({ championId: value?parseInt(value)?parseInt(value):"any":"any" })}
+            clearable
+            withCheckIcon
+            placeholder="All Champions"
+            onChange={(value) => handleFilterChange({ championId: value.map(id => parseInt(id)) })}
           />
-          <Select
+          <MultiSelect
             data={[
-              { label: "Any Queue", value: "any" },
               ...Object.values(queues).map((queue) => ({
                 label: queue.description || "unnamed",
                 value: queue.queueId.toString()
               }))
             ]}
             searchable
-            value={queueId.toString() || "any"}
-            onChange={(value) => handleFilterChange({ queueId: value?parseInt(value)?parseInt(value):"any":"any" })}
+            clearable
+            withCheckIcon
+            placeholder="All Queues"
+            value={queueIds}
+            onChange={(value) => handleFilterChange({ queueId: value })}
           />
           <Tooltip label="Reset Filters" withArrow>
-          <ActionIcon onClick={() => setSearchParams({})} color="blue">
-            <IconZoomReset />
-          </ActionIcon>
+            <ActionIcon onClick={() => setSearchParams({})} color="blue">
+              <IconZoomReset />
+            </ActionIcon>
           </Tooltip>
         </Group>
         <MatchListShow />

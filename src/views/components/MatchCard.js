@@ -68,7 +68,7 @@ function MatchSummaryTeams() {
 
 
   const playerMap = (team, side) => team.map(participant => (
-    <Group key={participant.summonerName} justify={side} style={{ flexDirection: `row${side === 'end' ? '-reverse' : ''}` }} wrap="nowrap">
+    <Group key={participant.puuid} justify={side} style={{ flexDirection: `row${side === 'end' ? '-reverse' : ''}` }} wrap="nowrap">
       <Image src={getChampIcon(participant.championId)} alt={participant.summonerName} w='md' h='md' radius={100} bd={'1px solid yellow'} />
       <Text c="dimmed" size="sm">
         {participant.riotIdGameName && <Anchor c="dimmed" target="_blank" href={`https://mobalytics.gg/lol/profile/na/${participant.riotIdGameName}-${participant.riotIdTagline}`}>{participant.riotIdGameName}</Anchor>}
