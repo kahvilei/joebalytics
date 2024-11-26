@@ -3,7 +3,8 @@ import { useQuery, gql } from "@apollo/client";
 import ShowMatchList from "../partials/ShowMatchList";
 import { Container, Group, MultiSelect, Stack, Avatar, Text, Loader, ActionIcon, Tooltip } from "@mantine/core";
 import { useGameData } from "../../context/DataContext";
-import { IconCheck, IconZoomReset } from "@tabler/icons-react";
+import { IconCheck, IconRestore, IconZoomReset } from "@tabler/icons-react";
+import tagsJSON from '../../utils/tags.json';
 
 const MATCHES_PAGE_QUERY = gql`
  query MatchesPageData(
@@ -123,7 +124,7 @@ const MATCHES_PAGE_QUERY = gql`
               isTriggered
               value
             }
-            throwsForContent {
+            bigThrow {
               isTriggered
               value
             }
@@ -132,6 +133,10 @@ const MATCHES_PAGE_QUERY = gql`
               value
             }
             struggling {
+              isTriggered
+              value
+            }
+            highDPS {
               isTriggered
               value
             }
@@ -407,12 +412,12 @@ const MATCHES_PAGE_QUERY = gql`
 `;
 
 function Matches() {
-  const { region = "any", name = "any" } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   
   const roles = searchParams.getAll("role") || null;
   const championIds = searchParams.getAll("championId").map(id => parseInt(id)) || null;
   const queueIds = searchParams.getAll("queueId") || null;
+  const tags = searchParams.getAll("tag") || null;
   const limit = parseInt(searchParams.get("limit")) || 20;
 
   const { loading, error, data, fetchMore } = useQuery(MATCHES_PAGE_QUERY, {
@@ -421,7 +426,7 @@ function Matches() {
       championIds: championIds.includes("any") ? [] : championIds,
       queueIds: queueIds.includes("any") ? [] : queueIds,
       limit,
-      tags: [],
+      tags: tags.includes("any") ? [] : tags,
       stats: [
         { path: "win", aggregation: "AVG" },
         { path: "visionScore", aggregation: "AVG" },
@@ -436,8 +441,10 @@ function Matches() {
 
   const handleFilterChange = (newFilters) => {
     setSearchParams({
-      ...Object.fromEntries(searchParams),
-      ...newFilters
+      role: newFilters.role || roles,
+      championId: newFilters.championId || championIds,
+      queueId: newFilters.queueId || queueIds,
+      tag: newFilters.tag || tags,
     });
   };
 
@@ -484,7 +491,8 @@ function Matches() {
   return (
     <Container size="xl">
      <Stack gap="lg">
-        <Group position="center">
+      <Group gap="lg" align="center" wrap="nowrap">
+        <Group align="start">
           <MultiSelect
             data={[
               { label: "Top", value: "TOP" },
@@ -494,12 +502,28 @@ function Matches() {
               { label: "Support", value: "UTILITY" }
             ]}
             value={roles}
-            placeholder="All Roles"
+            placeholder={roles.length ? "" : "All Roles"}
             withCheckIcon
             clearable
+            w={350}
             onChange={(value) => handleFilterChange({ role: value })}
           />
           <MultiSelect
+            data={[
+              ...Object.values(queues).map((queue) => ({
+                label: queue.description || "unnamed",
+                value: queue.queueId.toString()
+              }))
+            ]}
+            searchable
+            clearable
+            withCheckIcon
+            w={350}
+            placeholder={queueIds.length ? "" : "All Queues"}
+            value={queueIds}
+            onChange={(value) => handleFilterChange({ queueId: value })}
+          />
+           <MultiSelect
             data={[
               ...Object.values(champions).map((champion) => ({
                 label: champion.name,
@@ -517,29 +541,32 @@ function Matches() {
             searchable
             clearable
             withCheckIcon
-            placeholder="All Champions"
+            w={450}
+            placeholder={championIds.length ? "" : "All Champions"}
             onChange={(value) => handleFilterChange({ championId: value.map(id => parseInt(id)) })}
           />
           <MultiSelect
             data={[
-              ...Object.values(queues).map((queue) => ({
-                label: queue.description || "unnamed",
-                value: queue.queueId.toString()
+              ...Object.keys(tagsJSON).map((tag) => ({
+                label: tagsJSON[tag].text,
+                value: tag
               }))
             ]}
             searchable
             clearable
             withCheckIcon
-            placeholder="All Queues"
-            value={queueIds}
-            onChange={(value) => handleFilterChange({ queueId: value })}
+            w={450}
+            placeholder={tags.length ? "" : "All Tags"}
+            value={tags}
+            onChange={(value) => handleFilterChange({ tag: value })}
           />
+          </Group>
           <Tooltip label="Reset Filters" withArrow>
             <ActionIcon onClick={() => setSearchParams({})} color="blue">
-              <IconZoomReset />
+              <IconRestore />
             </ActionIcon>
           </Tooltip>
-        </Group>
+          </Group>
         <MatchListShow />
       </Stack>
     </Container>

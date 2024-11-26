@@ -33,9 +33,6 @@ function calculateTeamStats(participant, teammates) {
           stats.killParticipation += teammate.challenges.killParticipation;
           stats.participants++;
 
-          if (teammate.gameMode.includes('ARAM')) {
-            break;
-          }
 
           const position = teammate.teamPosition;
   
@@ -122,9 +119,16 @@ function calculateTeamStats(participant, teammates) {
         controlWards: participant.challenges.controlWardsPlaced,
   
         // Early game
-        earlyKills: participant.challenges.takedownsFirstXMinutes,
+        earlyKills: participant.challenges.takedownsFirst25Minutes,
         killsUnderOwnTurret: participant.challenges.killsUnderOwnTurret,
         killsNearEnemyTurret: participant.challenges.killsNearEnemyTurret,
+
+        // Objectives
+        towersDestroyed: participant.turretTakedowns,
+        inhibitorsDestroyed: participant.inhibitorTakedowns,
+        dragonsKilled: participant.dragonKills,
+        baronsKilled: participant.baronKills,
+        riftHeraldsKilled: participant.challenges.riftHeraldTakedowns,
         
         // Misc
         pingCount: calculatePingCount(participant),

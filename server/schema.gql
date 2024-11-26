@@ -395,9 +395,10 @@ type Tags {
     mapControl0: TagValueFloat,
     aimWhereTheyreGoing: TagValueFloat,
     allergicToDodging: TagValueFloat, 
-    throwsForContent: TagValueFloat,
+    bigThrow: TagValueFloat,
     lastHitTutorialNeeded: TagValueFloat,
     struggling: TagValueFloat,
+    highDPS: TagValueFloat,
     jackOfAllTrades: TagValueFloat,
     dragonsHoard: TagValueFloat,
     perfectlyBalanced: TagValueFloat,
@@ -547,7 +548,7 @@ type Challenges {
   killsWithHelpFromEpicMonster: Int
   knockEnemyIntoTeamAndKill: Int
   landSkillShotsEarlyGame: Int
-  laneMinionsFirst1NumberMinutes: Int
+  laneMinionsFirst10Minutes: Int
   laningPhaseGoldExpAdvantage: Int
   legendaryCount: Int
   lostAnInhibitor: Int
@@ -585,7 +586,7 @@ type Challenges {
   takedowns: Int
   takedownsAfterGainingLevelAdvantage: Int
   takedownsBeforeJungleMinionSpawn: Int
-  takedownsFirstXMinutes: Int
+  takedownsFirst25Minutes: Int
   takedownsInAlcove: Int
   takedownsInEnemyFountain: Int
   teamBaronKills: Int

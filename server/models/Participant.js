@@ -73,7 +73,7 @@ const ParticipantSchema = new Schema({
     killsWithHelpFromEpicMonster: Number,
     knockEnemyIntoTeamAndKill: Number,
     landSkillShotsEarlyGame: Number,
-    laneMinionsFirst1NumberMinutes: Number,
+    laneMinionsFirst10Minutes: Number,
     laningPhaseGoldExpAdvantage: Number,
     legendaryCount: Number,
     lostAnInhibitor: Number,
@@ -111,7 +111,7 @@ const ParticipantSchema = new Schema({
     takedowns: Number,
     takedownsAfterGainingLevelAdvantage: Number,
     takedownsBeforeJungleMinionSpawn: Number,
-    takedownsFirstXMinutes: Number,
+    takedownsFirst25Minutes: Number,
     takedownsInAlcove: Number,
     takedownsInEnemyFountain: Number,
     teamBaronKills: Number,
@@ -345,7 +345,7 @@ const ParticipantSchema = new Schema({
       isTriggered: Boolean,
       value: Number
     },
-    throwsForContent: {
+    bigThrow: {
       isTriggered: Boolean,
       value: Number
     },
@@ -676,9 +676,10 @@ ParticipantSchema.index({ 'tags.forgotYourButtons.isTriggered': 1 });
 ParticipantSchema.index({ 'tags.mapControl0.isTriggered': 1 });
 ParticipantSchema.index({ 'tags.aimWhereTheyreGoing.isTriggered': 1 });
 ParticipantSchema.index({ 'tags.allergicToDodging.isTriggered': 1 });
-ParticipantSchema.index({ 'tags.throwsForContent.isTriggered': 1 });
+ParticipantSchema.index({ 'tags.bigThrow.isTriggered': 1 });
 ParticipantSchema.index({ 'tags.lastHitTutorialNeeded.isTriggered': 1 });
 ParticipantSchema.index({ 'tags.struggling.isTriggered': 1 });
+ParticipantSchema.index({ 'tags.highDPS.isTriggered': 1 });
 
 // Gray tags
 ParticipantSchema.index({ 'tags.jackOfAllTrades.isTriggered': 1 });

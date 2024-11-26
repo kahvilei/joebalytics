@@ -70,12 +70,6 @@ const recordRecentMatches = async (puuid, region, init) => {
   let matchList = await collectMatchDataFromArray(region, response.data);
 
   //for each participant found in match.info.participants, run the util funnction to calculate tags and save to the participant
-  for (let match of matchList) {
-    for (let participant of match.info.participants) {
-      let tags = await calculateTags(participant, models);
-      participant.tags = tags;
-    }
-  }
 
   if (matchList.length > 0) {
     await Match.insertMany(matchList);
@@ -104,6 +98,8 @@ const collectMatchDataFromArray = async (region, list) => {
           participant.queueId = matchData.info.queueId;
           participant.gameStartTimestamp = matchData.info.gameStartTimestamp;
           participant.uniqueId = matchData.metadata.matchId + participant.puuid;
+          let tags = await calculateTags(participant, matchData);
+          participant.tags = tags;
           let newParticipant = await Participant.create(participant)
           newParticipantList.push(newParticipant);
         }

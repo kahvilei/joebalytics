@@ -48,16 +48,16 @@ const matchResolvers = {
             query[`tags.${tag}.isTriggered`] = true;
           });
         }
+        query.gameStartTimestamp = { $lt: timestamp };
+        let puuids = summoner.map((summoner) => summoner.puuid);
+        if (puuids.length > 0) {
+          query.puuid = { $in: puuids };
+        }
 
-        let isParticipantSearch = summoner.length > 0 || Object.keys(query).length > 0;
+        let isParticipantSearch = Object.keys(query).length > 2;
 
         let matchIds = [];
-        if (summoner.length > 0 || Object.keys(query).length > 0) {
-          query.gameStartTimestamp = { $lt: timestamp };
-          let puuids = summoner.map((summoner) => summoner.puuid);
-          if (puuids.length > 0) {
-            query.puuid = { $in: puuids };
-          }
+        if (Object.keys(query).length > 2) {
 
           let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' }).limit(limit);
           matchIds = participants.map((participant) => participant.matchId);
@@ -65,6 +65,9 @@ const matchResolvers = {
 
         let matchQuery = {};
         if (isParticipantSearch) {
+          if(matchIds.length === 0) {
+            return [];
+          }
           matchQuery["metadata.matchId"] = { $in: matchIds };
           return await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).populate('info.participants');
         }

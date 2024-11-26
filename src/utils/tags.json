@@ -1,0 +1,412 @@
+{
+    "blind": {
+      "text": "Blind",
+      "color": "red",
+      "description": "Low vision score — place and destroy more wards."
+    },
+    "worstOfTheWorst": {
+      "text": "Worst of the Worst",
+      "color": "red", 
+      "description": "Congratulations, you did the worst!"
+    },
+    "tagAlong": {
+      "text": "Tag Along",
+      "color": "red",
+      "description": "Daily reminder to thank your carry"
+    },
+    "poor": {
+      "text": "Poor",
+      "color": "red",
+      "description": "Low gold compared to lane opponent"
+    },
+    "coward": {
+      "text": "Coward",
+      "color": "red",
+      "description": "Low kill participation and high KDA in a loss. Go get in there, coward."
+    },
+    "atm": {
+      "text": "ATM",
+      "color": "red",
+      "description": "Making the enemy team rich, one death at a time"
+    },
+    "honoraryCarry": {
+      "text": "Honorary Carry",
+      "color": "red",
+      "description": "Supports support, you uh... do something else"
+    },
+    "jungleFullOfLife": {
+      "text": "Jungle full of life",
+      "color": "red",
+      "description": "The camps miss you"
+    },
+    "jungleDiff": {
+      "text": "Jungle Diff (The camps won)",
+      "color": "red",
+      "description": "Imagine dying to neutral monsters"
+    },
+    "forgotYourButtons": {
+      "text": "Forgot Your Buttons",
+      "color": "red",
+      "description": "Those summoner spells are meant to be used"
+    },
+    "mapControl0": {
+      "text": "Map Control: 0",
+      "color": "red",
+      "description": "The minimap is the thing in the corner"
+    },
+    "aimWhereTheyreGoing": {
+      "text": "Aim where they're going",
+      "color": "red",
+      "description": "Only hit {value} skillshots"
+    },
+    "allergicToDodging": {
+      "text": "Allergic to Dodging",
+      "color": "red",
+      "description": "Have you tried pressing the right mouse button?"
+    },
+    "bigThrow": {
+      "text": "Throws for Content",
+      "color": "red",
+      "description": "How do you lose with that gold lead?"
+    },
+    "lastHitTutorialNeeded": {
+      "text": "Last Hit Tutorial Needed",
+      "color": "red",
+      "description": "The minions under tower had families"
+    },
+    "struggling": {
+      "text": "Struggling",
+      "color": "red",
+      "description": "It ain't goin' so well"
+    },
+    "highDPS": {
+      "text": "High DPS",
+      "color": "red",
+      "description": "Died {value} times per minute"
+    },
+    "jackOfAllTrades": {
+      "text": "Jack of All Trades",
+      "color": "gray",
+      "description": "Perfectly average at everything"
+    },
+    "dragonsHoard": {
+      "text": "Dragon's Hoard",
+      "color": "gray",
+      "description": "Can't take it with you, friend — {value} unspent gold"
+    },
+    "perfectlyBalanced": {
+      "text": "Perfectly Balanced",
+      "color": "gray",
+      "description": "As all things should be"
+    },
+    "iFeelFine": {
+      "text": "I feel fine",
+      "color": "gray",
+      "description": "Survived {value} fights with single-digit health"
+    },
+    "afkFarmer": {
+      "text": "AFK Farmer",
+      "color": "gray",
+      "description": "Nice farm, where were you in the fights?"
+    },
+    "pve": {
+      "text": "PVE",
+      "color": "gray",
+      "description": "How's the weather up there?"
+    },
+    "paperTank": {
+      "text": "Paper Tank",
+      "color": "gray",
+      "description": "Built tank items but forgot to press buttons"
+    },
+    "walkingWard": {
+      "text": "Walking Ward",
+      "color": "gray",
+      "description": "At least you provide vision"
+    },
+    "worksBetterAlone": {
+      "text": "Works better alone",
+      "color": "gray",
+      "description": "Get more solo kills than team kills"
+    },
+    "spongey": {
+      "text": "Spongey",
+      "color": "gray",
+      "description": "Absorbed 40k+ damage with few deaths"
+    },
+    "objective": {
+      "text": "Objective",
+      "color": "gray",
+      "description": "Towers > People"
+    },
+    "keyboardWarrior": {
+      "text": "Keyboard Warrior",
+      "color": "gray",
+      "description": "{value} pings - We get it."
+    },
+    "autoAttackOnly": {
+      "text": "Auto Attack Only",
+      "color": "gray",
+      "description": "Who needs abilities anyway?"
+    },
+    "buffDeliveryService": {
+      "text": "Buff Delivery Service",
+      "color": "gray",
+      "description": "Took both buffs just to deliver them to the enemy"
+    },
+    "selfCare": {
+      "text": "Self Care",
+      "color": "gray",
+      "description": "Tanky for yourself, not for your team"
+    },
+    "decorationEnthusiast": {
+      "text": "Decoration Enthusiast",
+      "color": "gray",
+      "description": "Those control wards sure look pretty"
+    },
+    "flashGaming": {
+      "text": "Flash Gaming",
+      "color": "gray",
+      "description": "The F key is for Fight. {value} multikills after aggressive flashes"
+    },
+    "monsterTamer": {
+      "text": "Monster Tamer",
+      "color": "gray",
+      "description": "Let Baron and Dragon do the work"
+    },
+    "blastEm": {
+      "text": "Blast 'em",
+      "color": "gray",
+      "description": "Blast cone'd away from opponents {value} times"
+    },
+    "stopRightThere": {
+      "text": "Stop right there",
+      "color": "gray",
+      "description": "Immobilized enemies {value} times"
+    },
+    "selfless": {
+      "text": "Selfless",
+      "color": "gray",
+      "description": "Died trying to save others"
+    },
+    "alcoveClub": {
+      "text": "Alcove club",
+      "color": "gray",
+      "description": "Got {value} takedowns in alcoves"
+    },
+    "minionEater": {
+      "text": "Minion Eater",
+      "color": "gray",
+      "description": "Killed 20 minions in 3 seconds {value} times"
+    },
+    "hideAndSeekChampion": {
+      "text": "Hide and Seek Champion",
+      "color": "gray",
+      "description": "They can't kill you if they can't find you"
+    },
+    "shyHerald": {
+      "text": "Shy Herald",
+      "color": "gray",
+      "description": "The herald had performance anxiety"
+    },
+    "dancePartner": {
+      "text": "Dance Partner",
+      "color": "gray",
+      "description": "Made sure Herald had fun before work"
+    },
+    "snowball": {
+      "text": "Snowball",
+      "color": "gray",
+      "description": "Once you get ahead, you stay ahead"
+    },
+    "balancedDiet": {
+      "text": "Balanced Diet",
+      "color": "gray",
+      "description": "Equal parts physical and magical damage"
+    },
+    "teamPlayer": {
+      "text": "Team Player",
+      "color": "gray",
+      "description": "Happy to help"
+    },
+    "identityCrisis": {
+      "text": "Identity Crisis",
+      "color": "gray",
+      "description": "Building against type"
+    },
+    "earlyBird": {
+      "text": "Early Bird",
+      "color": "gray",
+      "description": "Great start, long game"
+    },
+    "mercenary": {
+      "text": "Mercenary",
+      "color": "gray",
+      "description": "Your lane is wherever you're needed"
+    },
+    "surviveAtAllCosts": {
+      "text": "Survive at all costs",
+      "color": "gray",
+      "description": "Staying alive > Being useful"
+    },
+    "scout": {
+      "text": "Scout",
+      "color": "green",
+      "description": "High vision score, wards cleared"
+    },
+    "youreWelcome": {
+      "text": "You're welcome",
+      "color": "green",
+      "description": "High KDA and kill participation in a win, with teammates who lagged behind."
+    },
+    "midIsMyNewBestFriend": {
+      "text": "Mid is My New Best Friend",
+      "color": "green",
+      "description": "High kill participation and KDA as a support, with the bot lane doing poorly."
+    },
+    "imTheCarryNow": {
+      "text": "I'm the Carry Now",
+      "color": "green",
+      "description": "Dealt more damage as a support than the bot lane, in a win."
+    },
+    "arentYouForgettingSomeone": {
+      "text": "Aren't you forgetting someone?",
+      "color": "gray",
+      "description": "Dealt more damage as a support than the bot lane, in a loss. Play a different role, maybe?"
+    },
+    "stomper": {
+      "text": "Stomper",
+      "color": "green",
+      "description": "High gold lead against lane opponent"
+    },
+    "adequateJungler": {
+      "text": "Adequate Jungler",
+      "color": "green",
+      "description": "Secured {value} major objectives"
+    },
+    "counterJungler": {
+      "text": "Counter Jungler",
+      "color": "green",
+      "description": "Dominated enemy jungle camps"
+    },
+    "betterTogether": {
+      "text": "Better Together",
+      "color": "green",
+      "description": "Team good together, team strong together."
+    },
+    "hatesArchitecture": {
+      "text": "Hates Architecture",
+      "color": "green",
+      "description": "Destroyed {value} turrets"
+    },
+    "niceDiveIdiot": {
+      "text": "Nice dive, idiot",
+      "color": "green",
+      "description": "Killed {value} over-eager enemies"
+    },
+    "coolTurret": {
+      "text": "Cool Turret I guess",
+      "color": "green",
+      "description": "Killed enemies under their own turret {value} times"
+    },
+    "bountyHunter": {
+      "text": "Bounty Hunter",
+      "color": "green",
+      "description": "Cashed in on {value} bounty gold"
+    },
+    "sneakySneaky": {
+      "text": "Sneaky Sneaky",
+      "color": "green",
+      "description": "Stole {value} epic monsters"
+    },
+    "darkness": {
+      "text": "Darkness",
+      "color": "green",
+      "description": "The enemy team is playing with their monitors off"
+    },
+    "laneKingdom": {
+      "text": "Lane Kingdom",
+      "color": "green",
+      "description": "Huge CS lead of {value} over lane opponent"
+    },
+    "flawlessVictory": {
+      "text": "Flawless Victory",
+      "color": "yellow",
+      "description": "Perfect game with high impact"
+    },
+    "hesGotANoNoGoing": {
+      "text": "He's got a no no going",
+      "color": "yellow",
+      "description": "No deaths to champions in ARAM"
+    },
+    "pentakill": {
+      "text": "PENTAKILL",
+      "color": "yellow",
+      "description": "Achieved the pinnacle of League"
+    },
+    "quadraMaster": {
+      "text": "Quadra Master",
+      "color": "green",
+      "description": "Secured a quadra kill"
+    },
+    "dontEverSayItsOver": {
+      "text": "Don't ever say it's over if I'm breathin'",
+      "color": "yellow",
+      "description": "Turned a {value} kill deficit into victory"
+    },
+    "legendary": {
+      "text": "LEGENDARY",
+      "color": "yellow",
+      "description": "Multiple legendary kill streaks"
+    },
+    "visionDomination": {
+      "text": "Vision Domination",
+      "color": "yellow",
+      "description": "Complete vision control over the game"
+    },
+    "simplyTheBest": {
+      "text": "Simply the best",
+      "color": "yellow",
+      "description": "Single-handedly took over the game"
+    },
+    "objectiveSupremacy": {
+      "text": "Objective Supremacy",
+      "color": "yellow",
+      "description": "Controlled every major objective on the map"
+    },
+    "csGod": {
+      "text": "CS God",
+      "color": "yellow",
+      "description": "9+ CS per minute"
+    },
+    "damageDealer": {
+      "text": "Damage Dealer",
+      "color": "yellow",
+      "description": "50k+ damage to champions"
+    },
+    "carryingIsKindOfSupporting": {
+      "text": "Carrying is a kind of supporting, yes?",
+      "color": "yellow",
+      "description": "Supporting a team of feeders to victory (Win a game as support with poor performing teammates)"
+    },
+    "justDoinMyJob": {
+      "text": "Just doin' my job",
+      "color": "yellow",
+      "description": "Carrying a team of feeders to victory (Win a game as bot with poor performing teammates)"
+    },
+    "kingOfDaJungle": {
+      "text": "King of da Jungle",
+      "color": "yellow",
+      "description": "Carrying a team of feeders to victory (Win a game as jungle with poor performing teammates)"
+    },
+    "notSoMiddling": {
+      "text": "Not so middling",
+      "color": "yellow",
+      "description": "Carrying a team of feeders to victory (Win a game as mid with poor performing teammates)"
+    },
+    "itsCalledTopLaneForAReason": {
+      "text": "It's called top lane for a reason",
+      "color": "yellow",
+      "description": "Carrying a team of feeders to victory (Win a game as top with poor performing teammates)"
+    }
+  }
