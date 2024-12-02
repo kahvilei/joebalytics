@@ -1,6 +1,6 @@
-const debug = require('debug')('app:participants');
+
 const { performance } = require('perf_hooks');
-const { calculateTags } = require('../utils/calculateTags');
+const { processTags } = require('../utils/processTags');
 
 const participantResolvers = {
     Query: {
@@ -8,7 +8,7 @@ const participantResolvers = {
         try {
           return await models.Participant.findById(id);
         } catch (error) {
-          debug('Error fetching participant:', error);
+          console.log('Error fetching participant:', error);
           throw new Error(`Failed to fetch participant: ${error.message}`);
         }
       },
@@ -25,7 +25,7 @@ const participantResolvers = {
       }, { models }) => {
         try {
           const startTime = performance.now();
-          debug('Starting participants query with params:', { 
+          console.log('Starting participants query with params:', { 
             region, summonerName, role, tag, championId, queueId 
           });
 
@@ -52,11 +52,11 @@ const participantResolvers = {
             .limit(limit);
 
           const endTime = performance.now();
-          debug(`Query completed in ${endTime - startTime}ms`);
+          console.log(`Query completed in ${endTime - startTime}ms`);
           
           return participants;
         } catch (error) {
-          debug('Error in participants query:', error);
+          console.log('Error in participants query:', error);
           throw new Error(`Failed to fetch participants: ${error.message}`);
         }
       }
@@ -65,32 +65,39 @@ const participantResolvers = {
     Mutation: {
       formatParticipant: async (_, { id }, { models }) => {
         const startTime = performance.now();
-        debug(`Starting formatParticipant for ID: ${id}`);
+        console.log(`Starting formatParticipant for ID: ${id}`);
 
         try {
           const participant = await models.Participant.findById(id);
           if (!participant) {
             throw new UserInputError('Participant not found');
           }
+
+          const match = await models.Match.findOne({ "metadata.matchId": participant.matchId });
+
+          if (!match) {
+            throw new UserInputError('Match not found');
+          }
+          await match.populate('info.participants');
           
-          const tags = await calculateTags(participant, models);
+          const tags = await processTags(participant, match);
           participant.tags = tags;
           
           await participant.save();
 
           const endTime = performance.now();
-          debug(`Formatted participant ${id} in ${endTime - startTime}ms`);
+          console.log(`Formatted participant ${id} in ${endTime - startTime}ms`);
           
           return participant;
         } catch (error) {
-          debug('Error formatting participant:', error);
+          console.log('Error formatting participant:', error);
           throw new Error(`Failed to format participant: ${error.message}`);
         }
       },
 
       formatAllParticipants: async (_, __, { models }) => {
         const startTime = performance.now();
-        debug('Starting batch format of all participants');
+        console.log('Starting batch format of all participants');
 
         const stats = {
           total: 0,
@@ -108,13 +115,20 @@ const participantResolvers = {
               const participantStartTime = performance.now();
               try {
                 
-                const tags = await calculateTags(participant, models);
+                const match = await models.Match.findOne({ "metadata.matchId": participant.matchId });
+
+                if (!match) {
+                  throw new UserInputError('Match not found');
+                }
+                await match.populate('info.participants');
+                
+                const tags = await processTags(participant, match);
                 participant.tags = tags;
                 
                 await participant.save();
 
                 const participantEndTime = performance.now();
-                debug(`Processed ${participant.summonerName} in ${participantEndTime - participantStartTime}ms`);
+                console.log(`Processed ${participant.summonerName} in ${participantEndTime - participantStartTime}ms`);
                 
                 stats.success++;
                 return { status: 'fulfilled' };
@@ -130,12 +144,12 @@ const participantResolvers = {
           );
 
           const endTime = performance.now();
-          debug(`Batch processing completed in ${endTime - startTime}ms`);
-          debug('Processing stats:', stats);
+          console.log(`Batch processing completed in ${endTime - startTime}ms`);
+          console.log('Processing stats:', stats);
 
           return participants;
         } catch (error) {
-          debug('Fatal error in batch processing:', error);
+          console.log('Fatal error in batch processing:', error);
           throw new Error(`Failed to format participants: ${error.message}`);
         }
       }

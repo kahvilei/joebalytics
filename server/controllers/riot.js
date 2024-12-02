@@ -3,7 +3,7 @@ const path = require("path");
 
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
-const { calculateTags } = require('../utils/calculateTags');
+const { processTags } = require('../utils/processTags');
 
 const key = process.env.RIOT_KEY;
 
