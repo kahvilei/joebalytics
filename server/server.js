@@ -12,9 +12,11 @@ async function startServer() {
   // Connect Database
   const db = process.env.MONGO_CONNECT;
   connectDB(db);
+  const typeDefsLoaded = await typeDefs();
+  models.Participant = await models.participantFunctions.createParticipantModel();
   
   const server = new ApolloServer({
-    typeDefs,
+    typeDefs: typeDefsLoaded,
     resolvers,
     context: async ({ req }) => {
       // Add auth context

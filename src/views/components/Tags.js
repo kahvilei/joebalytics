@@ -1,15 +1,48 @@
 import React, { useContext } from 'react';
 import { Badge, Group, Tooltip, useMantineTheme } from '@mantine/core';
 import { ParticipantContext } from './MatchCard';
-import tags from '../../utils/tags.json';
+import { useGameData } from "../../context/DataContext";
 
 function Tags() {
+    
+  const getTag = (tag, isTriggered, value) => {
+    if (!isTriggered) {
+      return { 
+        text: 'Unknown Tag', 
+        color: 'dark', 
+        description: 'oopsie' 
+      };
+    }
+
+    // Get the tag definition from the JSON
+    const tagDefinition = tagsObj[tag];
+    
+    if (!tagDefinition) {
+      return { 
+        text: 'Unknown Tag', 
+        color: 'dark', 
+        description: `couldn't find ${tag} definition, oopsie` 
+      };
+    }
+
+    // If there's a value, replace {value} placeholder in description
+    const description = tagDefinition.description.replace('{value}', value?.toString() || '0');
+
+    return {
+      text: tagDefinition.text,
+      color: tagDefinition.color,
+      description: description
+    };
+  };
+
+  const { getTags } = useGameData();
+  const tagsObj = getTags();
+  const tags = [];
 
   const { participant } = useContext(ParticipantContext);
   const theme = useMantineTheme();
   const tagBools = participant.tags;
 
-  const tags = [];
 
   for (const [key, value] of Object.entries(tagBools)) {
     if (!value) {
@@ -47,37 +80,6 @@ return (
   </Group>
 );
 }
-
-
-const getTag = (tag, isTriggered, value) => {
-  if (!isTriggered) {
-    return { 
-      text: 'Unknown Tag', 
-      color: 'dark', 
-      description: 'oopsie' 
-    };
-  }
-
-  // Get the tag definition from the JSON
-  const tagDefinition = tags[tag];
-  
-  if (!tagDefinition) {
-    return { 
-      text: 'Unknown Tag', 
-      color: 'dark', 
-      description: `couldn't find ${tag} definition, oopsie` 
-    };
-  }
-
-  // If there's a value, replace {value} placeholder in description
-  const description = tagDefinition.description.replace('{value}', value?.toString() || '0');
-
-  return {
-    text: tagDefinition.text,
-    color: tagDefinition.color,
-    description: description
-  };
-};
 
 export default Tags;
 

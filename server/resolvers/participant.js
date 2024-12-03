@@ -1,6 +1,16 @@
 
 const { performance } = require('perf_hooks');
 const { processTags } = require('../utils/processTags');
+const path = require('path');
+
+const yaml = require('js-yaml');
+const { Storage } = require('@google-cloud/storage');
+const storage = new Storage();
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
+
+const bucketName = process.env.BUCKET_NAME;
+const bucket = storage.bucket(bucketName);
+
 
 const participantResolvers = {
     Query: {
@@ -65,6 +75,10 @@ const participantResolvers = {
     Mutation: {
       formatParticipant: async (_, { id }, { models }) => {
         const startTime = performance.now();
+
+        const [tagsfile] = await bucket.file("data/tags.yaml").download();
+        const tagsParsed = yaml.load(tagsfile.toString());
+
         console.log(`Starting formatParticipant for ID: ${id}`);
 
         try {
@@ -80,7 +94,7 @@ const participantResolvers = {
           }
           await match.populate('info.participants');
           
-          const tags = await processTags(participant, match);
+          const tags = await processTags(participant, match, tagsParsed);
           participant.tags = tags;
           
           await participant.save();
@@ -107,7 +121,20 @@ const participantResolvers = {
         };
 
         try {
-          const participants = await models.Participant.find();
+          const [tagsfile] = await bucket.file("data/tags.yaml").download();
+          const tagsParsed = yaml.load(tagsfile.toString());
+
+          const summoners = await models.Summoner.find();
+
+          let query = {};
+
+          let puuids = summoner.map((summoner) => summoner.puuid);
+          if (puuids.length > 0) {
+            query.puuid = { $in: puuids };
+          }
+
+          const participants = await models.Participant.find(query);
+          
           stats.total = participants.length;
 
           const results = await Promise.allSettled(
@@ -122,7 +149,7 @@ const participantResolvers = {
                 }
                 await match.populate('info.participants');
                 
-                const tags = await processTags(participant, match);
+                const tags = await processTags(participant, match, tagsParsed);
                 participant.tags = tags;
                 
                 await participant.save();

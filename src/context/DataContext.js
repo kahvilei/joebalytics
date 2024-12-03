@@ -26,6 +26,10 @@ const GAME_DATA_QUERY = gql`
         map
         description
       }
+      tagData {
+        precalcs
+        tags
+      }
     }
     summoners {
       id
@@ -53,6 +57,7 @@ export function DataProvider({ children }) {
   const [items, setItems] = useState(null);
   const [queues, setQueues] = useState(null);
   const [summoners, setSummoners] = useState(null);
+  const [tags, setTags] = useState(null);
 
   useEffect(() => {
     if (data) {
@@ -60,12 +65,13 @@ export function DataProvider({ children }) {
       setItems(data.gameData.items);
       setQueues(data.gameData.queueTypes);
       setSummoners(data.summoners);
+      setTags(data.gameData.tagData);
     }
   }, [data]);
 
   if (loading) {
     return <div>Loading game data...</div>;
-  } else if (!champions || !items || !queues || !summoners) {
+  } else if (!champions || !items || !queues || !summoners || !tags) {
     return <div>no data</div>;
     }
 
@@ -234,7 +240,15 @@ export function DataProvider({ children }) {
         TR1: "tr"
       };
       return regionNames[id] || "unnamed";
-    }
+    },
+
+    getTags: () => tags.tags,
+
+    getTag: (id) => {
+      return tags.tags[id];
+    },
+
+    getPrecalcs: () => tags.precalcs
   };
 
   return (

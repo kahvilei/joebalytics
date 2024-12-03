@@ -1,6 +1,7 @@
 // resolvers/data.js
 const { Storage } = require('@google-cloud/storage');
 const axios = require('axios');
+const yaml = require('yaml');
 
 const storage = new Storage();
 const path = require('path');
@@ -17,17 +18,20 @@ const dataResolvers = {
         const [itemsData] = await bucket.file("data/items.json").download();
         const [summonerSpellsData] = await bucket.file("data/summonerSpells.json").download();
         const [queueTypesData] = await bucket.file("data/queueTypes.json").download();
+        const [tagsData] = await bucket.file("data/tags.yaml").download();
 
         const championsDataJSON = JSON.parse(championsData.toString());
         const itemsDataJSON = JSON.parse(itemsData.toString());
         const summonerSpellsDataJSON = JSON.parse(summonerSpellsData.toString());
         const queueTypesDataJSON = JSON.parse(queueTypesData.toString());
+        const tagsDataJSON = yaml.parse(tagsData.toString());
 
         return {
           champions: championsDataJSON,
           items: [...itemsDataJSON],
           summonerSpells: summonerSpellsDataJSON,
-          queueTypes: queueTypesDataJSON
+          queueTypes: queueTypesDataJSON,
+          tagData: tagsDataJSON
         };
       } catch (error) {
         throw new Error('Failed to fetch game data');
@@ -67,6 +71,16 @@ const dataResolvers = {
         return JSON.parse(data.toString());
       } catch (error) {
         throw new Error('Failed to fetch queue type data');
+      }
+    },
+
+    tagData: async () => {
+      try {
+        const [data] = await bucket.file("data/tags.yaml").download();
+        const parsedData = yaml.parse(data.toString());
+        return parsedData;
+      } catch (error) {
+        throw new Error('Failed to fetch tag data');
       }
     }
   },
