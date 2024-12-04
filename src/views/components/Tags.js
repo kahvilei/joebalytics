@@ -15,7 +15,7 @@ function Tags() {
     }
 
     // Get the tag definition from the JSON
-    const tagDefinition = tagsObj[tag];
+    const tagDefinition = tagsArray.find((t) => t.key === tag);
     
     if (!tagDefinition) {
       return { 
@@ -36,7 +36,7 @@ function Tags() {
   };
 
   const { getTags } = useGameData();
-  const tagsObj = getTags();
+  const tagsArray = getTags();
   const tags = [];
 
   const { participant } = useContext(ParticipantContext);

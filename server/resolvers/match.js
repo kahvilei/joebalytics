@@ -6,7 +6,7 @@ const matchResolvers = {
       },
   
       matches: async (_, { 
-        limit = 20, 
+        limit = 10, 
         timestamp = Date.now(), 
         region,
         summonerNames = [],
@@ -44,9 +44,7 @@ const matchResolvers = {
           query.teamPosition = { $in: roles };
         }
         if (tags.length > 0) {
-          tags.forEach(tag => {
-            query[`tags.${tag}.isTriggered`] = true;
-          });
+          query['$or'] = tags.map(tag => ({ [`tags.${tag}.isTriggered`]: true }));
         }
         query.gameStartTimestamp = { $lt: timestamp };
         let puuids = summoner.map((summoner) => summoner.puuid);
@@ -59,9 +57,10 @@ const matchResolvers = {
         let matchIds = [];
         if (Object.keys(query).length > 2) {
 
-          let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' }).limit(limit);
+          let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' });
           matchIds = participants.map((participant) => participant.matchId);
         }
+        let matches = [];
 
         let matchQuery = {};
         if (isParticipantSearch) {
@@ -69,14 +68,32 @@ const matchResolvers = {
             return [];
           }
           matchQuery["metadata.matchId"] = { $in: matchIds };
-          return await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).populate('info.participants');
+          matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
         }
         if (queueIds.length > 0) {
           matchQuery["info.queueId"] = { $in: queueIds };
         }
-        matchQuery["info.gameStartTimestamp"] = { $lt: timestamp };
-
-        let matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
+        if (matches.length === 0) {
+          matchQuery["info.gameStartTimestamp"] = { $lt: timestamp };
+          matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
+        }
+       
+        //convert MongooseMaps within matches to plain objects
+        matches = matches.map(match => {
+          let newMatch = match.toObject();
+          newMatch.info.participants = newMatch.info.participants.map(participant => {
+            let newParticipant = participant
+            if(newParticipant.challenges) {
+            newParticipant.challenges = Object.fromEntries(newParticipant.challenges);
+            }
+            if (newParticipant.tags) {
+              newParticipant.tags = Object.fromEntries(newParticipant.tags);
+            }
+            return newParticipant;
+          }
+          );
+          return newMatch;
+        });
 
         return matches;
       }

@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { Container, Loader, ScrollArea, Stack } from '@mantine/core';
+import { Card, Container, Group, Loader, ScrollArea, Stack } from '@mantine/core';
 import MatchCard from "../components/MatchCard";
 
-function ShowMatchList({ matches, onLoadMore, infiniteScroll, focusedSummoners }) {
-  const [isLoading, setIsLoading] = useState(false);
+function ShowMatchList({ matches, onLoadMore, isLoading, infiniteScroll, focusedSummoners }) {
 
   useEffect(() => {
     if (!infiniteScroll || isLoading ) return;
-    function loadMore() {
-      onLoadMore().finally(() => setIsLoading(false)).catch(() => setIsLoading(false));
-    }
+
 
     function handleScroll() {  
       if (isLoading) return;
@@ -18,8 +15,7 @@ function ShowMatchList({ matches, onLoadMore, infiniteScroll, focusedSummoners }
         >= document.documentElement.offsetHeight - 2;
 
       if (scrolledToBottom) {
-        setIsLoading(true);
-        loadMore();
+        onLoadMore();
       }
     }
 
@@ -32,7 +28,13 @@ function ShowMatchList({ matches, onLoadMore, infiniteScroll, focusedSummoners }
         {matches.map((match, k) => (
           <MatchCard match={match} key={k} focusedSummoners={focusedSummoners} />
         ))}
-      {isLoading && <Loader />}
+      {isLoading && 
+        <Card shadow="xs" padding="xl" radius="lg">
+          <Group align="center" justify="center">
+            <Loader type='bars' />
+          </Group>
+        </Card>
+      }
     </Stack>
   );
 }

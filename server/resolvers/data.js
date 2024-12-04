@@ -132,6 +132,25 @@ const dataResolvers = {
       } catch (error) {
         throw new Error(`Failed to update game data: ${error.message}`);
       }
+    },
+
+    // Update tag data from user uploaded file
+
+    updateTagData: async (_, { file }, { user, models }) => {
+      if (!user?.admin) {
+        throw new AuthenticationError('Admin access required');
+      }
+
+      try {
+        const tags = yaml.parse(file);
+        await bucket.file("data/tags.yaml").save(yaml.stringify(tags));
+        return {
+          message: "Tag data updated successfully",
+          success: true
+        };
+      } catch (error) {
+        throw new Error(`Failed to update tag data: ${error.message}`);
+      }
     }
   }
 };

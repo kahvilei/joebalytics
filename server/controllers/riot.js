@@ -1,15 +1,22 @@
 const axios = require("axios");
 const path = require("path");
 
+const yaml = require('js-yaml');
+const { Storage } = require('@google-cloud/storage');
+const storage = new Storage();
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
-const { processTags } = require('../utils/processTags');
+const bucketName = process.env.BUCKET_NAME;
+const bucket = storage.bucket(bucketName);
+
+const { processTags } = require('./tags');
 
 const key = process.env.RIOT_KEY;
 
 // Load Match model
 const Match = require("../models/Match");
-const Participant = require("../models/Participant");
+const participantFunctions = require("../models/Participant");
+const { models } = require("mongoose");
 
 const getSummonerDetails = async (name, region) => {
   return axios.get(
@@ -83,6 +90,9 @@ const recordRecentMatches = async (puuid, region, init) => {
 
 const collectMatchDataFromArray = async (region, list) => {
   let matchList = [];
+  const Participant = models.Participant;
+  const [tagsfile] = await bucket.file("data/tags.yaml").download();
+  const tagsParsed = yaml.load(tagsfile.toString());
   for (let match of list) {
     let exists = await Match.find({ "metadata.matchId": match });
     if (exists.length == 0) {
@@ -98,7 +108,7 @@ const collectMatchDataFromArray = async (region, list) => {
           participant.queueId = matchData.info.queueId;
           participant.gameStartTimestamp = matchData.info.gameStartTimestamp;
           participant.uniqueId = matchData.metadata.matchId + participant.puuid;
-          let tags = await calculateTags(participant, matchData);
+          let tags = await processTags(participant, matchData, tagsParsed);
           participant.tags = tags;
           let newParticipant = await Participant.create(participant)
           newParticipantList.push(newParticipant);

@@ -1,12 +1,7 @@
-const yaml = require('yaml');
-const fs = require('fs');
-
-
-
 function calculatePrecalc(precalc, context) {
   const evalAllConditions = (conditions, item) => {
     return conditions.every(condition => {
-      try{
+      try {
         const evaluateConditions = new Function('match', 'participant', 'precalcs', 'item', `return ${condition}`);
         return evaluateConditions(context.match, context.participant, context.precalcs, item) || 0;
       } catch (e) {
@@ -45,8 +40,8 @@ function calculatePrecalc(precalc, context) {
 
     case 'calculate':
       try {
-      const evaluateValue = new Function('match', 'participant', 'precalcs', `return ${precalc.value}`);
-      return evaluateValue(context.match, context.participant, context.precalcs) || 0;
+        const evaluateValue = new Function('match', 'participant', 'precalcs', `return ${precalc.value}`);
+        return evaluateValue(context.match, context.participant, context.precalcs) || 0;
       } catch (e) {
         console.log('Error in calculate:', precalc.value);
         console.log(e);
@@ -78,7 +73,7 @@ function processTags(participant, match, tagsFile) {
   if (match.info?.gameDuration < 300 || !match.info) {
     return results;
   }
-  for (const [tagId, tag] of Object.entries(tags.tags)) {
+  for (const tag of tags.tags) {
     if (!tag.triggers) continue;
     let value = null;
     try {
@@ -105,7 +100,7 @@ function processTags(participant, match, tagsFile) {
       value: value
     };
 
-    results[tagId] = tagResult;
+    results[tag.key] = tagResult;
   }
 
   return results;

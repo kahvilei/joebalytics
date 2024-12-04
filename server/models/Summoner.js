@@ -14,7 +14,6 @@ const { regionMapping } = require("../config/regionMapping");
 // Load Mastery model
 const Mastery = require("./Mastery");
 const Challenge = require("./Challenge");
-const Participant = require("./Participant");
 
 const SummonerSchema = new Schema({
   regionDisplay: {
@@ -179,20 +178,6 @@ const SummonerSchema = new Schema({
                   mastery.summonerId = this.id;
                   mastery.profileIconId = this.profileIconId;
                   mastery.uniqueId = this.puuid + '-' + mastery.championId;
-                  let pastGames = await Participant.find({
-                    $and: [
-                      { championId: mastery.championId },
-                      { summonerId: mastery.summonerId },
-                    ],
-                  });
-                  mastery.gamesPlayed = pastGames.length;
-                  if (pastGames.length > 5) {
-                    let counter = 0;
-                    for (let game of pastGames) {
-                      counter += game.win ? 1 : 0;
-                    }
-                    mastery.winRate = counter / pastGames.length;
-                  }
                   //check if a mastery item with the same uniqueId exists within masteryList, if so, update it, if not, continue to push onto the list
                   let existingMastery = masteryList.find(m => m.uniqueId === mastery.uniqueId);
                   if (existingMastery) {

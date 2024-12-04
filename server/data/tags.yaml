@@ -149,7 +149,7 @@ precalcs:
         - precalcs.team.support.challenges.killParticipation < 0.4
 
 tags:
-  blind:
+  - key: "blind"
     text: Blind
     color: red
     description: Low vision score — place and destroy more wards.
@@ -158,7 +158,7 @@ tags:
       - precalcs.isRemake === false
     value: participant.challenges.visionScorePerMinute
       
-  worstOfTheWorst:
+  - key: "worstOfTheWorst"
     text: Worst of the Worst
     color: red
     description: Congratulations, you did the worst!
@@ -166,7 +166,7 @@ tags:
       - precalcs.isLowPerformer === true
       - participant.win === false
 
-  tagAlong:
+  - key: "tagAlong"
     text: Tag Along
     color: red
     description: Daily reminder to thank your carry
@@ -174,7 +174,7 @@ tags:
       - precalcs.isLowPerformer === true
       - participant.win === true
 
-  poor:
+  - key: "poor"
     text: Poor
     color: red
     description: Low gold compared to lane opponent
@@ -182,7 +182,7 @@ tags:
       - participant.challenges.laningPhaseGoldExpAdvantage < -2000
     value: participant.challenges.laningPhaseGoldExpAdvantage
 
-  coward:
+  - key: "coward"
     text: Coward
     color: red
     description: Low kill participation and high KDA in a loss. Go get in there, coward.
@@ -191,7 +191,7 @@ tags:
       - participant.win == false
       - precalcs.isRemake === false
 
-  atm:
+  - key: "atm"
     text: ATM
     color: red
     description: Making the enemy team rich, one death at a time. (Died a lot, had bounty gold)
@@ -199,7 +199,7 @@ tags:
       - participant.deaths > 10
       - participant.bountyLevel > 1
 
-  honoraryCarry:
+  - key: "honoraryCarry"
     text: Honorary Carry
     color: red
     description: Supports support, you uh... do something else
@@ -208,7 +208,7 @@ tags:
       - precalcs.isSupport === true
       - precalcs.poorVision === true
 
-  jungleFullOfLife:
+  - key: "jungleFullOfLife"
     text: Jungle full of life
     color: red
     description: The camps miss you
@@ -219,7 +219,7 @@ tags:
     value: participant.totalAllyJungleMinionsKilled/precalcs.minutes + participant.totalEnemyJungleMinionsKilled/precalcs.minutes
 
 
-  jungleDiff:
+  - key: "jungleDiff"
     text: Jungle Diff (The camps won)
     color: red
     description: Imagine dying to neutral monsters
@@ -227,7 +227,7 @@ tags:
       - participant.deaths > participant.challenges.deathsByEnemyChamps
       - precalcs.isJungle === true
 
-  forgotYourButtons:
+  - key: "forgotYourButtons"
     text: Forgot Your Buttons
     color: red
     description: Those summoner spells are meant to be used
@@ -235,7 +235,7 @@ tags:
       - (participant.summoner1Casts + participant.summoner2Casts)/precalcs.minutes < 0.1
     value: participant.summoner1Casts + participant.summoner2Casts
 
-  mapControl0:
+  - key: "mapControl0"
     text: "Map Control: 0"
     color: red
     description: The minimap is the thing in the corner
@@ -245,7 +245,7 @@ tags:
       - participant.baronsKilled < 1
       - participant.dragonsKilled < 1
 
-  aimWhereTheyreGoing:
+  - key: "aimWhereTheyreGoing"
     text: Aim where they're going
     color: red
     description: Only hit {value} skillshots
@@ -254,7 +254,7 @@ tags:
       - participant.challenges.skillshotsHit/precalcs.minutes < 0.1
     value: participant.challenges.skillshotsHit
 
-  allergicToDodging:
+  - key: "allergicToDodging"
     text: Allergic to Dodging
     color: red
     description: Have you tried pressing the right mouse button?
@@ -263,7 +263,7 @@ tags:
       - participant.challenges.skillshotsDodged/precalcs.minutes < 0.1
       - participant.damageTaken/participant.challenges.skillshotsDodged > 1000
 
-  bigThrow:
+  - key: "bigThrow"
     text: Big Throw
     color: red
     description: How do you lose with that gold lead?
@@ -271,7 +271,7 @@ tags:
       - participant.challenges.laningPhaseGoldExpAdvantage > 2000
       - participant.win === false
 
-  lastHitTutorialNeeded:
+  - key: "lastHitTutorialNeeded"
     text: Last Hit Tutorial Needed
     color: red
     description: CS no good :(
@@ -280,7 +280,7 @@ tags:
       - participant.isSupport === false
       - participant.isJungle === false
 
-  struggling:
+  - key: "struggling"
     text: Struggling
     color: red
     description: It ain't goin' so well
@@ -289,15 +289,15 @@ tags:
       - participant.win === false
       - participant.challenges.killParticipation < 20
 
-  highDPS:
-    text: High DPS (Death per second)
+  - key: "highDPS"
+    text: High DPS 
     color: red
     description: Died {value} times per minute
     triggers:
       - participant.deaths/precalcs.minutes > 0.5
     value: participant.deaths/precalcs.minutes
 
-  jackOfAllTrades:
+  - key: "jackOfAllTrades"
     text: Jack of All Trades
     color: gray
     description: Perfectly average at everything (perform on par with team averages)
@@ -305,7 +305,7 @@ tags:
       - precalcs.team.avgKda - .5 < participant.challenges.kda < precalcs.team.avgKda + .5
       - precalcs.team.avgKillParticipation - 5 < participant.challenges.killParticipation < precalcs.team.avgKillParticipation + 5
 
-  dragonsHoard:
+  - key: "dragonsHoard"
     text: Dragon's Hoard
     color: gray
     description: Can't take it with you, friend — {value} unspent gold
@@ -313,14 +313,14 @@ tags:
       - participant.goldEarned - participant.goldSpent > 2000
     value: participant.goldEarned - participant.goldSpent
 
-  perfectlyBalanced:
+  - key: "perfectlyBalanced"
     text: Perfectly Balanced
     color: gray
     description: As all things should be
     triggers:
       - participant.deaths === participant.kills === participant.assists
 
-  iFeelFine:
+  - key: "iFeelFine"
     text: I feel fine
     color: gray
     description: Survived {value} fights with single-digit health
@@ -328,7 +328,7 @@ tags:
       - participant.challenges.survivedSingleDigitHpCount > 1
     value: participant.challenges.survivedSingleDigitHpCount
 
-  afkFarmer:
+  - key: "afkFarmer"
     text: AFK Farmer
     color: gray
     description: Nice farm, where were you in the fights?
@@ -336,7 +336,7 @@ tags:
       - participant.totalMinionsKilled > 200
       - participant.challenges.killParticipation < 0.3
 
-  pve:
+  - key: "pve"
     text: PVE
     color: gray
     description: How's the weather up there?
@@ -346,14 +346,14 @@ tags:
       - participant.kills < 3
       - participant.deaths < 3
 
-  iWorkAlone:
+  - key: "iWorkAlone"
     text: I work alone
     color: gray
     description: Get more solo kills than team kills
     triggers:
       - participant.challenges.soloKills > (participant.kills - participant.challenges.soloKills)
 
-  spongey:
+  - key: "spongey"
     text: Spongey
     color: gray
     description: Took {value} damage in a single game with few deaths
@@ -362,14 +362,14 @@ tags:
       - participant.totalDamageTaken/precalcs.minutes > 1000
     value: participant.totalDamageTaken
 
-  objective:
+  - key: "objective"
     text: Objective
     color: gray
     description: Towers > People
     triggers:
       - participant.damageDealtToObjectives > participant.totalDamageDealtToChampions * 1.5
 
-  keyboardWarrior:
+  - key: "keyboardWarrior"
     text: Keyboard Warrior
     color: gray
     description: "{value} pings - We get it."
@@ -383,14 +383,14 @@ tags:
            participant.enemyVisionPings + participant.getBackPings + participant.needVisionPings + 
            participant.onMyWayPings
 
-  autoAttackOnly:
+  - key: "autoAttackOnly"
     text: Auto Attack Only
     color: gray
     description: Who needs abilities anyway?
     triggers:
       - (participant.spell1Casts + participant.spell2Casts + participant.spell3Casts + participant.spell4Casts) < precalcs.minutes
 
-  selfCare:
+  - key: "selfCare"
     text: Self Care
     color: gray
     description: Tanky for yourself, not for your team
@@ -398,7 +398,7 @@ tags:
       - participant.damageSelfMitigated > 100000
       - participant.totalDamageShieldedOnTeammates < 1000
 
-  decorationEnthusiast:
+  - key: "decorationEnthusiast"
     text: Decoration Enthusiast
     color: gray
     description: Those control wards sure look pretty
@@ -406,7 +406,7 @@ tags:
       - participant.challenges.controlWardsPlaced > 10
       - participant.visionScore < participant.challenges.controlWardsPlaced * 2
 
-  flashGaming:
+  - key: "flashGaming"
     text: Flash Gaming
     color: gray
     description: The F key is for Fight. {value} multikills after aggressive flashes
@@ -414,7 +414,7 @@ tags:
       - participant.challenges.multikillsAfterAggressiveFlash > 0
     value: participant.challenges.multikillsAfterAggressiveFlash
 
-  monsterTamer:
+  - key: "monsterTamer"
     text: Monster Tamer
     color: gray
     description: Let Baron and Dragon do the work (Got {value} kills with help from epic monsters)
@@ -422,7 +422,7 @@ tags:
       - participant.challenges.killsWithHelpFromEpicMonster > 3
     value: participant.challenges.killsWithHelpFromEpicMonster
 
-  blastEm:
+  - key: "blastEm"
     text: Blast 'em
     color: gray
     description: Blast cone'd away from opponents {value} times
@@ -430,7 +430,7 @@ tags:
       - participant.challenges.blastConeOppositeOpponentCount > 1
     value: participant.challenges.blastConeOppositeOpponentCount
 
-  stopRightThere:
+  - key: "stopRightThere"
     text: Stop right there
     color: gray
     description: Immobilized enemies {value} times
@@ -438,7 +438,7 @@ tags:
       - participant.challenges.immobilizedEnemiesCount/precalcs.minutes > 0.6
     value: participant.challenges.immobilizedEnemiesCount
 
-  selfless:
+  - key: "selfless"
     text: Selfless
     color: gray
     description: Died trying to save others, and succeeded {value} times. Also died a lot.
@@ -447,7 +447,7 @@ tags:
       - participant.deaths > 10
     value: participant.challenges.saveAllyFromDeath
 
-  alcoveGaming:
+  - key: "alcoveGaming"
     text: Alcove Gaming
     color: gray
     description: Got {value} takedowns in alcoves
@@ -455,15 +455,15 @@ tags:
       - participant.challenges.takedownsInAlcove > 1
     value: participant.challenges.takedownsInAlcove
 
-  minionEater:
-      text: Minion Eater
-      color: gray
-      description: Killed 20 minions in 3 seconds {value} times
-      triggers:
-        - participant.challenges.twentyMinionsIn3SecondsCount > 1
-      value: participant.challenges.twentyMinionsIn3SecondsCount
+  - key: "minionEater"
+    text: Minion Eater
+    color: gray
+    description: Killed 20 minions in 3 seconds {value} times
+    triggers:
+      - participant.challenges.twentyMinionsIn3SecondsCount > 1
+    value: participant.challenges.twentyMinionsIn3SecondsCount
 
-  hideAndSeekChampion:
+  - key: "hideAndSeekChampion"
     text: Hide and Seek Champion
     color: gray
     description: They can't stop your recall if they can't see you (Recalled out of enemy vision {value} times)
@@ -471,7 +471,7 @@ tags:
       - participant.challenges.unseenRecalls/precalcs.minutes > 0.1
     value: participant.challenges.unseenRecalls
 
-  shyHerald:
+  - key: "shyHerald"
     text: Shy Herald
     color: gray
     description: The herald had performance anxiety (Took a herald, but didn't use it)
@@ -479,14 +479,14 @@ tags:
       - participant.challenges.turretsTakenWithRiftHerald === 0
       - participant.challenges.riftHeraldTakedowns > 1
 
-  dancePartner:
+  - key: "dancePartner"
     text: Dance Partner
     color: gray
     description: Made sure Herald had fun before work
     triggers:
       - participant.challenges.dancedWithRiftHerald > 0
 
-  snowball:
+  - key: "snowBall"
     text: Snowball
     color: gray
     description: Once you get ahead, you stay ahead
@@ -495,7 +495,7 @@ tags:
       - participant.kills > 3
       - participant.win === true
 
-  balancedDiet:
+  - key: "balancedDiet"
     text: Balanced Diet
     color: gray
     description: Equal parts physical and magical damage
@@ -503,7 +503,7 @@ tags:
       - Math.abs(participant.physicalDamageDealtToChampions - participant.magicDamageDealtToChampions) < 1000
       - participant.totalDamageDealtToChampions > 10000
 
-  teamPlayer:
+  - key: "teamPlayer"
     text: Team Player
     color: gray
     description: Happy to help
@@ -511,7 +511,7 @@ tags:
       - participant.assists > participant.kills * 3
       - participant.assists > 10
 
-  identityCrisis:
+  - key: "identityCrisis"
     text: Identity Crisis
     color: gray
     description: Building against type
@@ -522,7 +522,7 @@ tags:
         (participant.magicDamageDealtToChampions > participant.physicalDamageDealtToChampions && 
         ["Zed", "Talon", "Yasuo"].includes(participant.championName))
 
-  earlyBird:
+  - key: "earlyBird"
     text: Early Bird
     color: gray
     description: Great start, long game
@@ -530,7 +530,7 @@ tags:
       - participant.challenges.takedownsFirstXMinutes > 5
       - match.info.gameDuration > 2400
 
-  mercenary:
+  - key: "mercenary"
     text: Mercenary
     color: gray
     description: Your lane is wherever you're needed
@@ -539,7 +539,7 @@ tags:
       - participant.challenges.killParticipation > 0.6
       - match.info.gameMode !== "ARAM"
 
-  surviveAtAllCosts:
+  - key: "survive"
     text: Survive at all costs
     color: gray
     description: Staying alive > Being useful
@@ -548,7 +548,7 @@ tags:
       - participant.challenges.killParticipation < 0.4
       - match.info.gameDuration > 1500
 
-  scout:
+  - key: "scout"
     text: Scout
     color: green
     description: High vision score, wards cleared
@@ -556,7 +556,7 @@ tags:
       - participant.visionScorePerMinute > 1.5
       - participant.wardsKilled > 3
 
-  youreWelcome:
+  - key: "highPerformer"
     text: You're welcome
     color: green
     description: High KDA and kill participation in a win, with teammates who lagged behind.
@@ -564,7 +564,7 @@ tags:
       - precalcs.isHighPerformer === true
       - participant.win === true
 
-  midIsMyNewBestFriend:
+  - key: "midIsMyNewBestFriend"
     text: Mid is My New Best Friend
     color: green
     description: High kill participation and KDA as a support, with the bot lane doing poorly.
@@ -575,7 +575,7 @@ tags:
       - precalcs.team.botLaner.challenges.kda < 3
       - precalcs.team.botLaner.challenges.killParticipation < 0.4
 
-  imTheCarryNow:
+  - key: "imTheCarryNow"
     text: I'm the Carry Now
     color: green
     description: Dealt more damage as a support than the bot lane, in a win.
@@ -584,7 +584,7 @@ tags:
       - participant.totalDamageDealtToChampions > precalcs.team.botLaner.totalDamageDealtToChampions
       - participant.win === true
 
-  arentYouForgettingSomeone:
+  - key: "forgettingSomeone"
     text: Aren't you forgetting someone?
     color: gray
     description: Dealt more damage as a support than the bot lane, in a loss. Play a different role, maybe?
@@ -593,7 +593,7 @@ tags:
       - participant.totalDamageDealtToChampions > precalcs.team.botLaner.totalDamageDealtToChampions
       - participant.win === false
 
-  stomper:
+  - key: "stomper"
     text: Stomper
     color: green
     description: High gold lead against lane opponent
@@ -601,7 +601,7 @@ tags:
       - participant.goldEarned - precalcs.laneOpponent.goldEarned > 2000
       - match.info.gameMode !== "ARAM"
 
-  adequateJungler:
+  - key: "jungleKing"
     text: Adequate Jungler
     color: green
     description: Secured {value} major objectives in the jungle
@@ -610,14 +610,14 @@ tags:
       - participant.challenges.dragonTakedowns + participant.challenges.baronTakedowns + participant.challenges.riftHeraldTakedowns > 2
     value: participant.challenges.dragonTakedowns + participant.challenges.baronTakedowns + participant.challenges.riftHeraldTakedowns
 
-  counterJungler:
+  - key: "counterJungler"
     text: Counter Jungler
     color: green
     description: Dominated enemy jungle camps
     triggers:
       - participant.challenges.enemyJungleMonsterKills > 19
 
-  betterTogether:
+  - key: "betterTogether"
     text: Better Together
     color: green
     description: Team good together, team strong together.
@@ -627,7 +627,7 @@ tags:
       - participant.challenges.killParticipation > 0.7
       - match.info.gameMode !== "ARAM"
 
-  hatesArchitecture:
+  - key: "hatesArchitecture"
     text: Hates Architecture
     color: green
     description: Destroyed {value} turrets
@@ -635,7 +635,7 @@ tags:
       - participant.turretTakedowns > 4
     value: participant.turretTakedowns
 
-  niceDiveIdiot:
+  - key: "niceDive"
     text: Nice dive, idiot
     color: green
     description: Killed {value} over-eager enemies
@@ -644,7 +644,7 @@ tags:
       - match.info.gameMode !== "ARAM"
     value: participant.challenges.killsUnderOwnTurret
 
-  coolTurret:
+  - key: "coolTurret"
     text: Cool Turret I guess
     color: green
     description: Killed enemies under their own turret {value} times
@@ -653,7 +653,7 @@ tags:
       - match.info.gameMode !== "ARAM"
     value: participant.challenges.killsNearEnemyTurret
 
-  bountyHunter:
+  - key: "bountyHunter"
     text: Bounty Hunter
     color: green
     description: Cashed in on {value} bounty gold
@@ -661,7 +661,7 @@ tags:
       - participant.challenges.bountyGold > 1000
     value: participant.challenges.bountyGold
 
-  sneakySneaky:
+  - key: "sneakySneaky"
     text: Sneaky Sneaky
     color: green
     description: Stole {value} epic monsters
@@ -669,7 +669,7 @@ tags:
       - (participant.challenges.epicMonsterSteals + participant.challenges.epicMonsterStealAssists) > 1
     value: participant.challenges.epicMonsterSteals + participant.challenges.epicMonsterStealAssists
 
-  darkness:
+  - key: "darkness"
     text: Darkness
     color: green
     description: The enemy team is playing with their monitors off
@@ -677,7 +677,7 @@ tags:
       - participant.challenges.controlWardsPlaced > 3
       - participant.wardsKilled > 5
 
-  laneKingdom:
+  - key: "laneKingdom"
     text: Lane Kingdom
     color: green
     description: Huge CS lead of {value} over lane opponent
@@ -688,7 +688,7 @@ tags:
       - participant.teamPosition !== "JUNGLE"
     value: participant.challenges.maxCsAdvantageOnLaneOpponent
 
-  flawlessVictory:
+  - key: "flawlessVictory"
     text: Flawless Victory
     color: yellow
     description: Perfect game with high impact
@@ -697,7 +697,7 @@ tags:
       - participant.challenges.killParticipation > 0.7
       - match.info.gameMode !== "ARAM"
 
-  hesGotANoNoGoing:
+  - key: "noNo"
     text: He's got a no no going
     color: yellow
     description: No deaths to champions in ARAM
@@ -705,14 +705,14 @@ tags:
       - match.info.gameMode === "ARAM"
       - participant.deaths === 0
 
-  pentakill:
+  - key: "pentakill"
     text: PENTAKILL
     color: yellow
     description: Achieved the pinnacle of League
     triggers:
       - participant.pentaKills > 0
 
-  quadraGet:
+  - key: "quadraKill"
     text: Quadra get
     color: green
     description: Secured a quadra kill
@@ -720,7 +720,7 @@ tags:
       - participant.quadraKills > 0
       - participant.pentaKills === 0
 
-  dontEverSayItsOver:
+  - key: "comeback"
     text: Don't ever say it's over if I'm breathin'
     color: yellow
     description: Turned a {value} kill deficit into victory
@@ -731,14 +731,14 @@ tags:
       - participant.challenges.kda > 3
     value: participant.challenges.maxKillDeficit
 
-  legendary:
+  - key: "legendary"
     text: LEGENDARY
     color: yellow
     description: Multiple legendary kill streaks
     triggers:
       - participant.challenges.legendaryCount > 2
 
-  visionDomination:
+  - key: "visionDomination"
     text: Vision Domination
     color: yellow
     description: Complete vision control over the game
@@ -747,7 +747,7 @@ tags:
       - participant.wardsPlaced > 20
       - participant.challenges.visionScoreAdvantageLaneOpponent > 1.5
 
-  simplyTheBest:
+  - key: "simplyTheBest"
     text: Simply the best
     color: yellow
     description: Single-handedly took over the game
@@ -756,7 +756,7 @@ tags:
       - participant.challenges.killParticipation > 0.7
       - participant.challenges.damagePerMinute > 1000
 
-  objectiveSupremacy:
+  - key: "objectiveSupremacy"
     text: Objective Supremacy
     color: yellow
     description: Controlled every major objective on the map
@@ -766,7 +766,7 @@ tags:
       - participant.challenges.riftHeraldTakedowns > 1
       - match.info.gameMode !== "ARAM"
 
-  csGod:
+  - key: "csGod"
     text: CS God
     color: yellow
     description: 9+ CS per minute
@@ -774,14 +774,14 @@ tags:
       - participant.totalMinionsKilled/precalcs.minutes > 9
       - match.info.gameMode !== "ARAM"
 
-  damageDealer:
+  - key: "damageDealer"
     text: Damage Dealer
     color: yellow
     description: 50k+ damage to champions
     triggers:
       - participant.totalDamageDealtToChampions > 50000
 
-  carryingIsKindOfSupporting:
+  - key: "carryingIsAKindOfSupporting"
     text: Carrying is a kind of supporting, yes?
     color: yellow
     description: Supporting a team of feeders to victory (Win a game as support with poor performing teammates)
@@ -794,7 +794,7 @@ tags:
       - precalcs.team.topLaner.poorPerformer === true
       - participant.win === true
 
-  justDoinMyJob:
+  - key: "justDoinMyJob"
     text: Just doin' my job
     color: yellow
     description: Carrying a team of feeders to victory (Win a game as bot with poor performing teammates)
@@ -807,7 +807,7 @@ tags:
       - precalcs.team.support.poorPerformer === true
       - participant.win === true
 
-  kingOfDaJungle:
+  - key: "kingOfDaJungle"
     text: King of da Jungle
     color: yellow
     description: Carrying a team of feeders to victory (Win a game as jungle with poor performing teammates)
@@ -820,7 +820,7 @@ tags:
       - precalcs.team.support.poorPerformer === true
       - participant.win === true
 
-  notSoMiddling:
+  - key: "notSoMiddling"
     text: Not so middling
     color: yellow
     description: Carrying a team of feeders to victory (Win a game as mid with poor performing teammates)
@@ -833,7 +833,7 @@ tags:
       - precalcs.team.support.poorPerformer === true
       - participant.win === true
 
-  itsCalledTopLaneForAReason:
+  - key: "itsCalledTopLaneForAReason"
     text: It's called top lane for a reason
     color: yellow
     description: Carrying a team of feeders to victory (Win a game as top with poor performing teammates)

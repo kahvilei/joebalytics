@@ -12,6 +12,7 @@ import Home from "./views/pages/Home"
 import Login from "./views/partials/Login";
 import Register from "./views/partials/Register";
 import Matches from "./views/pages/Matches";
+import TagUpdate from "./views/pages/TagUpdate";
 // import Champions from "./views/pages/Champions";
 // import ChampionDetails from "./views/pages/ChampionDetails";
 //partial
@@ -29,20 +30,26 @@ function App() {
   return (
     <ApolloProvider client={client}>
     <AuthProvider>
-    <DataProvider>
+  
       <MantineProvider forceColorScheme="dark" theme={theme}>
+      <DataProvider>
       <Router>
-        <AppShell>
+        <AppShell
+         header={{ height: 60 }}
+         padding="md"
+        >
           <AppShell.Header>
+            <Navigation />
           </AppShell.Header>
           <AppShell.Navbar>
           </AppShell.Navbar>
           <AppShell.Main>
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            <Route exact path="/" element={<Matches/>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/matches" element={< Matches/>} />
+            <Route path="/tag-update" element={<RequireAdmin><TagUpdate /></RequireAdmin>} />
             {/*<Route path="/champions" element={<Champions />} />
             <Route path="/champion/:id" element={<ChampionDetails />} />
             <Route
@@ -65,8 +72,9 @@ function App() {
           </AppShell.Main>
          </AppShell>
     </Router>
-    </MantineProvider>
     </DataProvider>
+    </MantineProvider>
+    
     </AuthProvider> 
     </ApolloProvider>
   );

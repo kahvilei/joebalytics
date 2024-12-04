@@ -41,7 +41,7 @@ async function generateParticipantSchema() {
     queueId: Number,
     challenges: {
       type: Map,
-      of: Number
+      of: Schema.Types.Mixed
     },
     champExperience: Number,
     champLevel: Number,
@@ -244,13 +244,13 @@ async function generateParticipantSchema() {
   ParticipantSchema.index({ queueId: 1 });
 
   if (config.tags) {
-    for (const [tagKey, tagConfig] of Object.entries(config.tags)) {
+    for (const tag of config.tags) {
       // Create index for isTriggered field
-      ParticipantSchema.index({ [`tags.${tagKey}.isTriggered`]: 1 });
+      ParticipantSchema.index({ [`tags.${tag.key}.isTriggered`]: 1 });
 
       // Create index for value field if the tag has value in its triggers or a value property
-      if (tagConfig.value || (tagConfig.triggers && tagConfig.triggers.some(t => t.includes('value')))) {
-        ParticipantSchema.index({ [`tags.${tagKey}.value`]: 1 });
+      if (tag.value || (tag.triggers && tag.triggers.some(t => t.includes('value')))) {
+        ParticipantSchema.index({ [`tags.${tag.key}.value`]: 1 });
       }
     }
   }

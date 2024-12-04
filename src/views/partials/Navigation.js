@@ -1,67 +1,47 @@
 import { Link, useNavigate } from "react-router-dom";
-
 import { useAuth } from "../../auth/auth";
-import Menu from "./Menu";
+import { Group, Button, Text, Burger, Title, Box, Anchor } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 function Navigation() {
-  let auth = useAuth();
-  let navigate = useNavigate();
-
-  function toggleMenu() {
-    let menu = document.getElementById("menu");
-    let navButton = document.getElementById("nav-collapse");
-    if (!menu.className.includes("active")) {
-      menu.className = "menu active";
-      navButton.className = "active";
-    } else {
-      menu.className = "menu";
-      navButton.className = "";
-    }
-  }
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const [opened, { toggle }] = useDisclosure(false);
 
   function UserTools() {
     if (!auth.user) {
       return (
-        <div className="loggedin-status">
-          <Link to={`/register`}>Register</Link>
-          <Link className="button" to={`/login`}>
+        <Group gap="md">
+          <Anchor component={Link} to="/register" c="dimmed">
+            Register
+          </Anchor>
+          <Button component={Link} to="/login" variant="filled">
             Login
-          </Link>
-        </div>
+          </Button>
+        </Group>
       );
     }
     return (
-      <div className="loggedin-status">
-        <div>Logged in as {auth.user}</div>
-        <button
+      <Group gap="md">
+        <Text c="dimmed">Logged in as {auth.user}</Text>
+        <Button 
           onClick={() => {
             auth.signout(() => navigate("/"));
           }}
         >
           Sign out
-        </button>
-      </div>
+        </Button>
+      </Group>
     );
   }
 
   return (
-    <div className="logged-in-nav nav">
-        <div
-          onClick={() => {
-            toggleMenu();
-          }}
-          id="nav-collapse"
-        >
-          <div className="hamburger-lines">
-            <span className="line line1"></span>
-            <span className="line line2"></span>
-            <span className="line line3"></span>
-          </div>
-        </div>
-        <Menu />
-        <h3>Joebalytics</h3>
-      <UserTools />
-    </div>
+      <Group justify="space-between" align="center" p={5}>
+        <Group>
+          <Title order={4}>Joebalytics</Title>
+        </Group>
+        <UserTools />
+      </Group>
   );
 }
 

@@ -18,8 +18,8 @@ const typeDefs = async () => {
     const tags = await bucket.file("data/tags.yaml").download();
     // Generate GraphQL type for individual tag fields
     const tagList = yaml.load(tags.toString()).tags;
-    const tagFields = Object.keys(tagList).map(tagKey => {
-        return `    ${tagKey}: TagValueFloat`;
+    const tagFields = tagList.map(tag => {
+        return `    ${tag.key}: TagValueFloat`;
     }).join(',\n');
 
     const returnSchema = raw.replace('type Tags {', `type Tags {\n
