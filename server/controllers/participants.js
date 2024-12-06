@@ -1,18 +1,8 @@
 const { UserInputError } = require('apollo-server-express');
 const { performance } = require('perf_hooks');
-const path = require('path');
+const { getTagFile } = require('./tags');
 
-const yaml = require('js-yaml');
-const { Storage } = require('@google-cloud/storage');
-const storage = new Storage();
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
-
-const bucketName = process.env.BUCKET_NAME;
-const bucket = storage.bucket(bucketName);
-
-
-
-async function formatParticipant(participant, models, tagsParsed) {
+async function formatParticipant(participant, models) {
     try{
     const participantStartTime = performance.now();
     const match = await models.Match.findOne({ "metadata.matchId": participant.matchId });
@@ -22,7 +12,7 @@ async function formatParticipant(participant, models, tagsParsed) {
     }
     await match.populate('info.participants');
     
-    const tags = await processTags(participant, match, tagsParsed);
+    const tags = await processTags(participant, match);
     participant.tags = tags;
     
     await participant.save();
@@ -53,10 +43,6 @@ async function formatAllParticipants(models) {
     };
 
     try {
-        // Get tags file
-        const [tagsfile] = await bucket.file("data/tags.yaml").download();
-        const tagsParsed = yaml.load(tagsfile.toString());
-
         // Get all summoner PUUIDs
         const summoners = await models.Summoner.find();
         const trackedPuuids = new Set(summoners.map(s => s.puuid));
@@ -74,7 +60,7 @@ async function formatAllParticipants(models) {
 
             for (let participant of relevantParticipants) {
                 try {
-                    await formatParticipant(participant, models, tagsParsed, stats);
+                    await formatParticipant(participant, models);
                     stats.processed++;
                 } catch (error) {
                     stats.failed++;

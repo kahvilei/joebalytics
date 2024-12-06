@@ -522,6 +522,9 @@ type Query {
   summonerSpellData: SummonerSpellData!
   queueTypeData: [QueueType!]!
   tagData: TagData!
+  tagFileVersions: [TagFileVersion!]!
+  tagCurrentVersion: TagFileVersion!
+  tagFileByVersion( version: ID! ): TagData!
 }
 
 type Mutation {
@@ -535,6 +538,13 @@ type GameData {
   summonerSpells: SummonerSpellData!
   queueTypes: [QueueType!]!
   tagData: TagData!
+  tagFileVersions: [TagFileVersion!]!
+  tagCurrentVersion: TagFileVersion!
+}
+
+type TagFileVersion {
+  id: ID!
+  user: String!
 }
 
 type ChampionData {

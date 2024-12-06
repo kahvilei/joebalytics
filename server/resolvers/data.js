@@ -1,6 +1,5 @@
 // resolvers/data.js
 const { Storage } = require('@google-cloud/storage');
-const axios = require('axios');
 const yaml = require('yaml');
 
 const storage = new Storage();
@@ -10,6 +9,9 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 const bucketName = process.env.BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
 
+const { updateTagFile, getAllVersions, getTagFile, getTagFileByVersion } = require('../controllers/tags');
+const { get } = require('http');
+
 const dataResolvers = {
   Query: {
     gameData: async () => {
@@ -18,7 +20,7 @@ const dataResolvers = {
         const [itemsData] = await bucket.file("data/items.json").download();
         const [summonerSpellsData] = await bucket.file("data/summonerSpells.json").download();
         const [queueTypesData] = await bucket.file("data/queueTypes.json").download();
-        const [tagsData] = await bucket.file("data/tags.yaml").download();
+        const [tagsData] = await bucket.file("data/tags/tags.yaml").download();
 
         const championsDataJSON = JSON.parse(championsData.toString());
         const itemsDataJSON = JSON.parse(itemsData.toString());
@@ -26,12 +28,16 @@ const dataResolvers = {
         const queueTypesDataJSON = JSON.parse(queueTypesData.toString());
         const tagsDataJSON = yaml.parse(tagsData.toString());
 
+        const tagFileVersions = await getAllVersions();
+    
         return {
           champions: championsDataJSON,
           items: [...itemsDataJSON],
           summonerSpells: summonerSpellsDataJSON,
           queueTypes: queueTypesDataJSON,
-          tagData: tagsDataJSON
+          tagData: tagsDataJSON,
+          tagFileVersions: tagFileVersions.versions,
+          tagCurrentVersion: tagFileVersions.currentVersion
         };
       } catch (error) {
         throw new Error('Failed to fetch game data');
@@ -76,13 +82,40 @@ const dataResolvers = {
 
     tagData: async () => {
       try {
-        const [data] = await bucket.file("data/tags.yaml").download();
-        const parsedData = yaml.parse(data.toString());
+        const [data] = getTagFile();
         return parsedData;
       } catch (error) {
         throw new Error('Failed to fetch tag data');
       }
+    },
+
+    tagFileVersions: async () => {
+      try {
+        const versions = await getAllVersions();
+        return versions.versions;
+      } catch (error) {
+        throw new Error('Failed to fetch tag file versions');
+      }
+    },
+
+    tagCurrentVersion: async () => {
+      try {
+        const versions = await getAllVersions();
+        return versions.currentVersion;
+      } catch (error) {
+        throw new Error('Failed to fetch current tag file version');
+      }
+    },
+
+    tagFileByVersion: async (_, { version }) => {
+      try {
+        const data = await getTagFileByVersion(version);
+        return data;
+      } catch (error) {
+        throw new Error('Failed to fetch tag data');
+      }
     }
+
   },
 
   Mutation: {
@@ -135,15 +168,15 @@ const dataResolvers = {
     },
 
     // Update tag data from user uploaded file
-
-    updateTagData: async (_, { file }, { user, models }) => {
+    updateTagData: async (_, { file }, { user, updateSchema }) => {
       if (!user?.admin) {
         throw new AuthenticationError('Admin access required');
       }
 
       try {
         const tags = yaml.parse(file);
-        await bucket.file("data/tags.yaml").save(yaml.stringify(tags));
+        await updateTagFile(tags, user.username);
+        await updateSchema();
         return {
           message: "Tag data updated successfully",
           success: true

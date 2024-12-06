@@ -1,3 +1,14 @@
+const path = require('path');
+
+const yaml = require('js-yaml');
+const { Storage } = require('@google-cloud/storage');
+const storage = new Storage();
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
+
+const bucketName = process.env.BUCKET_NAME;
+const bucket = storage.bucket(bucketName);
+
+
 function calculatePrecalc(precalc, context) {
   const evalAllConditions = (conditions, item) => {
     return conditions.every(condition => {
@@ -53,8 +64,8 @@ function calculatePrecalc(precalc, context) {
   }
 }
 
-function processTags(participant, match, tagsFile) {
-  const tags = tagsFile;
+async function processTags(participant, match) {
+  const tags = await getTagFile();
   // Process precalculations
   const precalcs = {};
   const context = { match, participant, precalcs };
@@ -106,4 +117,68 @@ function processTags(participant, match, tagsFile) {
   return results;
 }
 
-module.exports = { processTags };
+async function getTagFile() {
+  const [tagsfile] = await bucket.file("data/tags/tags.yaml").download();
+  return yaml.load(tagsfile.toString());
+}
+
+async function updateTagFile(file, user) {
+  const tags = yaml.dump(file);
+  //get current tags file and save it as tag.[timestamp].yaml
+  const timestamp = new Date().getTime();
+  await bucket.file(`data/tags/tags.${timestamp}.yaml`).save(tags);
+  // get versions yaml, if it doesn't exist, create it
+  let versions;
+  try {
+    [versions] = await bucket.file("data/tags/versions.yaml").download();
+    versions = yaml.load(versions.toString());
+  } catch (error) {
+    versions = { versions: [], currentVersion: {id:0, user:'user'} };
+  }
+  //add the timestamp to the versions file
+  versions.versions.unshift({ id: timestamp, user: user });
+  versions.currentVersion = { id: timestamp, user: user };
+  //save the versions file
+  await bucket.file("data/tags/versions.yaml").save(yaml.dump(versions));
+
+  //save the new tags file
+  await bucket.file("data/tags/tags.yaml").save(tags);
+}
+
+async function revertTagFile(version, user) {
+  //get the tags file with the version number
+  const [tagsfile] = await bucket.file(`data/tags/tags.${version}.yaml`).download();
+  const tags = yaml.load(tagsfile.toString());
+  //save the tags file
+  await bucket.file("data/tags/tags.yaml").save(yaml.dump(tags));
+  //get versions yaml, if it doesn't exist, create it
+  let versions;
+  try {
+    [versions] = await bucket.file("data/tags/versions.yaml").download();
+    versions = yaml.load(versions.toString());
+  } catch (error) {
+    versions = { versions: [], currentVersion: {id:0, user:'user'} };
+  }
+  versions.currentVersion = { id: version, user: user };
+  //save the versions file
+  await bucket.file("data/tags/versions.yaml").save(yaml.dump(versions));
+}
+
+async function getAllVersions() {
+  try {
+    [versions] = await bucket.file("data/tags/versions.yaml").download();
+    versions = yaml.load(versions.toString());
+  } catch (error) {
+    versions = { versions: [{id:0, user:'user'}], currentVersion: {id:0, user:'user'} };
+  }
+  return versions;
+}
+
+getTagFileByVersion = async (version) => {
+  const [tagsfile] = await bucket.file(`data/tags/tags.${version}.yaml`).download();
+  const file = yaml.load(tagsfile.toString());
+  return file;
+}
+
+
+module.exports = { processTags, getTagFile, updateTagFile, revertTagFile, getAllVersions, getTagFileByVersion };

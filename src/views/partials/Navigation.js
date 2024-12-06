@@ -36,7 +36,7 @@ function Navigation() {
   }
 
   return (
-      <Group justify="space-between" align="center" p={5}>
+      <Group justify="space-between" align="center" p={5} h={60}>
         <Group>
           <Title order={4}>Joebalytics</Title>
         </Group>

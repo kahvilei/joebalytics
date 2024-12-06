@@ -35,7 +35,7 @@ function App() {
       <DataProvider>
       <Router>
         <AppShell
-         header={{ height: 60 }}
+         header={{ height: 60, align: "center" }}
          padding="md"
         >
           <AppShell.Header>

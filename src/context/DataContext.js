@@ -146,6 +146,19 @@ const MATCHES_PAGE_QUERY = gql`
   }
 `;
 
+const TAG_VERSIONS_QUERY = gql`
+  query TagVersions {
+      tagFileVersions{
+        id
+        user
+      }
+      tagCurrentVersion{
+        id
+        user
+      }
+  }
+`;
+
 const UPDATE_TAGS_MUTATION = gql`
   mutation UpdateTagData($file: String!) {
     updateTagData(file: $file) {
@@ -155,10 +168,39 @@ const UPDATE_TAGS_MUTATION = gql`
   }
 `;
 
+const TAG_FILE_BY_VERSION_QUERY = gql`
+query TagFileByVersion($version: ID!) {
+  tagFileByVersion(version: $version) {
+    precalcs {
+      name
+      type
+      from {
+        list
+        type
+        path
+        conditions
+      }
+      list
+      value
+      conditions
+    }
+    tags {
+      key
+      text
+      color
+      description
+      triggers
+      value
+    }
+  }
+}
+`;
+
 export const DataContext = createContext(null);
 
 export function DataProvider({ children }) {
   const { loading, error, data } = useQuery(GAME_DATA_QUERY);
+  const adminTag = useQuery(TAG_VERSIONS_QUERY);
   const [champions, setChampions] = useState(null);
   const [items, setItems] = useState(null);
   const [queues, setQueues] = useState(null);
@@ -166,6 +208,8 @@ export function DataProvider({ children }) {
   const [queuesSimplified, setQueuesSimplified] = useState(null);
   const [summoners, setSummoners] = useState(null);
   const [tags, setTags] = useState(null);
+  const [tagsFileVersions, setTagsFileVersions] = useState(null);
+  const [tagsCurrentVersion, setTagsCurrentVersion] = useState(null);
   const [matchListQuery, setMatchListQuery] = useState(MATCHES_PAGE_QUERY);
 
   useEffect(() => {
@@ -202,6 +246,13 @@ export function DataProvider({ children }) {
   }, [data]);
 
   useEffect(() => {
+    if (adminTag.data) {
+      setTagsFileVersions(adminTag.data.tagFileVersions);
+      setTagsCurrentVersion(adminTag.data.tagCurrentVersion);
+    }
+  }, [adminTag.data]);
+
+  useEffect(() => {
     //sort queues into ARAM, Draft, Ranked, URF, ARURF, Summoner's Spellbook, and Other
     if (queues) {
       const aram = queues.filter(q => q.description?.includes("ARAM"));
@@ -216,17 +267,17 @@ export function DataProvider({ children }) {
     }
   }, [queues]);
 
-  if (loading) {
+  if (loading || adminTag.loading) {
     return (
       <Stack w={"100vw"} h={"100vh"} justify={"center"} align={"center"}>
         <Loader type='bars' size='xl' />
       </Stack>
     )
-  } else if (!champions || !items || !queues || !summoners || !tags) {
+  } else if (!champions || !items || !queues || !summoners || !tags || !tagsFileVersions || !tagsCurrentVersion) {
     return <div>no data</div>;
     }
 
-  if (error) {
+  if (error || adminTag.error) {
     return <div>Error loading game data</div>;
   }
 
@@ -452,11 +503,19 @@ export function DataProvider({ children }) {
       return queueIds;
     },
 
-    getUpdateTagsMutation: () => UPDATE_TAGS_MUTATION
+    getUpdateTagsMutation: () => UPDATE_TAGS_MUTATION,
+
+    getTagFileByVersionQuery: () => TAG_FILE_BY_VERSION_QUERY,
+
+    reloadAdminTagData: async () => {
+      const { data } = await adminTag.refetch();
+      setTagsFileVersions(data.tagFileVersions);
+      setTagsCurrentVersion(data.tagCurrentVersion);
+    }
   };
 
   return (
-    <DataContext.Provider value={{...utils, summoners, champions, items, queues, tags, queuesSimplified,}}>
+    <DataContext.Provider value={{...utils, summoners, champions, items, queues, tags, tagsFileVersions, tagsCurrentVersion, queueMap, queuesSimplified, matchListQuery}}>
       {children}
     </DataContext.Provider>
   );

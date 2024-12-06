@@ -15,7 +15,7 @@ const bucket = storage.bucket(bucketName);
 async function generateParticipantSchema() {
 
   // Get the YAML content
-  const [tags] = await bucket.file("data/tags.yaml").download();
+  const [tags] = await bucket.file("data/tags/tags.yaml").download();
   // Generate GraphQL type for individual tag fields
   const config = yaml.load(tags.toString());
   // Base schema definition
