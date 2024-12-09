@@ -1,27 +1,38 @@
 const { UserInputError } = require('apollo-server-express');
 const { performance } = require('perf_hooks');
-const { getTagFile } = require('./tags');
+const { getTagFile, addBackFillData, processTags } = require('./tags');
 
-async function formatParticipant(participant, models) {
-    try{
+async function formatParticipant(participant, match, stats) {
+    try {
+    const participantObject = participant.toObject();
     const participantStartTime = performance.now();
-    const match = await models.Match.findOne({ "metadata.matchId": participant.matchId });
-
-    if (!match) {
-      throw new UserInputError('Match not found');
-    }
-    await match.populate('info.participants');
-    
-    const tags = await processTags(participant, match);
+    participantObject.challenges = Object.fromEntries(participantObject.challenges);
+    participantObject.tags = Object.fromEntries(participantObject.tags);
+    const matchObject = match.toObject();
+    // objectize challenges and perks for each participant
+    matchObject.info.participants = matchObject.info.participants.map(participant => {
+        let newParticipant = participant;
+        if (newParticipant.challenges) {
+            newParticipant.challenges = Object.fromEntries(newParticipant.challenges);
+        }
+        if (newParticipant.tags) {
+            newParticipant.tags = Object.fromEntries(newParticipant.tags);
+        }
+        return newParticipant;
+    });
+    const tags = await processTags(participantObject, matchObject);
     participant.tags = tags;
     
     await participant.save();
 
     const participantEndTime = performance.now();
     console.log(`Processed ${participant.summonerName} in ${participantEndTime - participantStartTime}ms`);
+    stats.success++;
     
     return { status: 'fulfilled' };
 } catch (error) {
+    console.error('Error processing participant:', error);
+    stats.failed++;
     stats.errors.push({
       id: participant._id,
       error: error.message
@@ -30,7 +41,7 @@ async function formatParticipant(participant, models) {
 }
 }
 
-async function formatAllParticipants(models) {
+async function formatAllParticipants(models, user) {
     const startTime = performance.now();
     console.log('Starting batch format of participants for tracked summoners');
 
@@ -47,11 +58,14 @@ async function formatAllParticipants(models) {
         const summoners = await models.Summoner.find();
         const trackedPuuids = new Set(summoners.map(s => s.puuid));
 
-        // Get all matches and populate participants
-        const matches = await models.Match.find().populate('info.participants');
+        // Get all ARAM and CLASSIC gameMode matches
+        const matches = await models.Match.find({
+            'info.gameMode': { $in: ['ARAM', 'CLASSIC'] }
+        }).populate('info.participants');
         
         // Process each match's participants
         for (let match of matches) {
+            
             const relevantParticipants = match.info.participants.filter(p => 
                 trackedPuuids.has(p.puuid)
             );
@@ -60,7 +74,7 @@ async function formatAllParticipants(models) {
 
             for (let participant of relevantParticipants) {
                 try {
-                    await formatParticipant(participant, models);
+                    await formatParticipant(participant, match, stats);
                     stats.processed++;
                 } catch (error) {
                     stats.failed++;
@@ -76,6 +90,7 @@ async function formatAllParticipants(models) {
         const endTime = performance.now();
         console.log(`Batch processing completed in ${endTime - startTime}ms`);
         console.log(`Processed ${stats.processed} participants out of ${stats.total} total`);
+        addBackFillData(stats, user);
         return stats;
     } catch (error) {
         console.error('Error processing participants:', error);

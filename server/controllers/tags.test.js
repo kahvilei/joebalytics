@@ -1,4 +1,4 @@
-const { processTags } = require('./processTags.js');
+const { processTags, getTagFile} = require('./tags.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -18,8 +18,7 @@ describe('Tag Processor Tests', () => {
     // Load test match data
     const testDataPath = path.join(__dirname, './sampleMatches.json');
     testMatches = JSON.parse(fs.readFileSync(testDataPath, 'utf8'));
-    const [data] = await bucket.file("data/tags.yaml").download();
-    tags = yaml.load(data.toString());
+    tags = await getTagFile();
   });
 
   beforeEach(() => {
@@ -31,7 +30,7 @@ describe('Tag Processor Tests', () => {
     jest.clearAllMocks();
   });
 
-  test('should skip processing for short games', () => {
+  test('should skip processing for short games', async () => {
     const shortMatch = {
       info: { gameDuration: 200 },
       // ... other match data
@@ -41,21 +40,21 @@ describe('Tag Processor Tests', () => {
       // ... other participant data
     };
 
-    const result = processTags(participant, shortMatch, tags);
+    const result = await processTags(participant, shortMatch);
     expect(result).toEqual({});
   });
 
-  test('should process precalcs of type list', () => {
+  test('should process precalcs of type list', async () => {
     const match = testMatches[0];  // Assuming first match from test data
     const participant = match.info.participants[0];
     
-    const result = processTags(participant, match, tags);
+    const result = await processTags(participant, match);
     // Check that the result contains expected tags
     expect(result).toBeDefined();
     expect(typeof result).toBe('object');
   });
 
-  test('should handle missing data gracefully', () => {
+  test('should handle missing data gracefully', async () => {
     const invalidMatch = {
       info: {
         gameDuration: 1000,
@@ -64,12 +63,12 @@ describe('Tag Processor Tests', () => {
     };
     const invalidParticipant = {};
 
-    const result = processTags(invalidParticipant, invalidMatch, tags);
+    const result = await processTags(invalidParticipant, invalidMatch);
     expect(result).toBeDefined();
     // Should not throw errors for missing data
   });
 
-  test('should calculate averages correctly', () => {
+  test('should calculate averages correctly', async () => {
     const match = testMatches[0];
     const participant = match.info.participants[0];
     
@@ -78,18 +77,18 @@ describe('Tag Processor Tests', () => {
     // You'll need to adjust these expectations based on your actual tags.yaml
   });
 
-  test('should evaluate boolean conditions correctly', () => {
+  test('should evaluate boolean conditions correctly', async () => {
     const match = testMatches[0];
     const participant = match.info.participants[0];
     
-    const result = processTags(participant, match, tags);
+    const result = await processTags(participant, match);
     // Check boolean tag results
     Object.entries(result).forEach(([tagId, tagResult]) => {
       expect(typeof tagResult.isTriggered).toBe('boolean');
     });
   });
 
-  test('should handle calculation errors gracefully', () => {
+  test('should handle calculation errors gracefully', async () => {
     const match = {
       info: {
         gameDuration: 1000,
@@ -101,16 +100,16 @@ describe('Tag Processor Tests', () => {
     };
     const participant = match.info.participants[0];
 
-    const result = processTags(participant, match, tags);
+    const result = await processTags(participant, match);
     expect(result).toBeDefined();
     // Should not throw errors for calculation issues
   });
 
-  test('should process copy operations correctly', () => {
+  test('should process copy operations correctly', async () => {
     const match = testMatches[0];
     const participant = match.info.participants[0];
     
-    const result = processTags(participant, match, tags);
+    const result = await processTags(participant, match);
     // Verify copy operations based on your yaml config
   });
 
@@ -122,13 +121,13 @@ describe('Tag Processor Tests', () => {
     return result[tagId];
   };
 
-  test('should return all tags, triggered and untriggered or be entirely empty', () => {
+  test('should return all tags, triggered and untriggered or be entirely empty', async () => {
     const tagResults = {};
     let index = 0;
     for (const match of testMatches) {
       const participants = match.info?.participants?? [{}];
       for(participant of participants) {
-        const result = processTags(participant, match, tags);
+        const result = await processTags(participant, match);
         if (Object.keys(result).length === 0) {
           // Empty result, no tags should be processed
           continue;
@@ -139,8 +138,8 @@ describe('Tag Processor Tests', () => {
         tagResults[resultsIndex] = {};
         
         // Check that all tags are processed
-        for (const [tagId, tag] of Object.entries(tags.tags)) {
-          tagResults[resultsIndex][tagId] = testSpecificTag(tagId, result);
+        for (const tag of tags.tags) {
+          tagResults[resultsIndex][tag.key] = testSpecificTag(tag.key, result);
         }
         index++;
       }
@@ -148,18 +147,18 @@ describe('Tag Processor Tests', () => {
   
     // Check that all tags are processed for each match
     for (const [matchId, result] of Object.entries(tagResults)) {
-      expect(Object.keys(result)).toEqual(Object.keys(tags.tags));
+      expect(Object.keys(result)).toEqual(tags.tags.map(tag => tag.key));
     }
 
   });
 
-  test('should maintain consistent precalc context', () => {
+  test('should maintain consistent precalc context', async () => {
     const match = testMatches[0];
     const participant = match.info.participants[0];
     
     // Run the processor multiple times to ensure consistent results
-    const result1 = processTags(participant, match, tags);
-    const result2 = processTags(participant, match, tags);
+    const result1 = await processTags(participant, match, tags);
+    const result2 = await processTags(participant, match, tags);
     
     expect(result1).toEqual(result2);
   });

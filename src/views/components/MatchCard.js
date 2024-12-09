@@ -35,7 +35,7 @@ const MatchCard = (props) => {
         <Stack gap="xs">
         <Group align="center" justify="space-between">
           <Badge color={matchModeColor} variant="filled">{matchMode}</Badge>
-          <Paper radius="md" >
+          <Paper radius="xl" p={'4px 8px'}>
             <Group gap="xs">
               <Text c={'dimmed'} size="xs">{date.toLocaleString("en-US", { month: 'short', day: 'numeric', year: 'numeric', hour: "2-digit", minute: "2-digit" })}</Text>
               <Text c={'dimmed'} size="xs">{(gameDuration / 60).toFixed(0)}m</Text>

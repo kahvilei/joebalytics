@@ -16,6 +16,9 @@ function calculatePrecalc(precalc, context) {
         const evaluateConditions = new Function('match', 'participant', 'precalcs', 'item', `return ${condition}`);
         return evaluateConditions(context.match, context.participant, context.precalcs, item) || 0;
       } catch (e) {
+        if (context.match.info.gameMode === 'ARAM' && condition.includes('team') && condition.includes('challenge')) {
+          return 0;
+        }
         console.log('Error in condition:', condition);
         console.log(e);
         return 0;
@@ -35,7 +38,7 @@ function calculatePrecalc(precalc, context) {
     case 'avg':
       const list = precalc.list.split('.').reduce((obj, key) => obj?.[key], context);
       if (!list) return 0;
-      const values = list.map(item => precalc.from.split('.').reduce((obj, key) => obj?.[key], item));
+      const values = list.map(item => precalc.value.split('.').reduce((obj, key) => obj?.[key], item));
       return values.reduce((a, b) => a + b, 0) / values.length;
 
     case 'copy':
@@ -54,8 +57,11 @@ function calculatePrecalc(precalc, context) {
         const evaluateValue = new Function('match', 'participant', 'precalcs', `return ${precalc.value}`);
         return evaluateValue(context.match, context.participant, context.precalcs) || 0;
       } catch (e) {
+        //if this is an aram match, and the error is on team.[laner].challenge, it's because the laner is not defined, do not print error
+        if (context.match.info.gameMode === 'ARAM' && precalc.value.includes('team') && precalc.value.includes('challenge')) {
+          return 0;
+        }
         console.log('Error in calculate:', precalc.value);
-        console.log(e);
         return 0;
       }
 
@@ -99,7 +105,8 @@ async function processTags(participant, match) {
       isTriggered: tag.triggers.every(trigger => {
         try {
           const evaluateCondition = new Function('match', 'participant', 'precalcs', `return ${trigger}`);
-          return evaluateCondition(context.match, context.participant, context.precalcs);
+          const isTriggered = evaluateCondition(context.match, context.participant, context.precalcs);
+          return isTriggered;
         } catch (e) {
           console.log('Error in condition:', trigger);
           console.log(e);
@@ -133,7 +140,7 @@ async function updateTagFile(file, user) {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());
   } catch (error) {
-    versions = { versions: [], currentVersion: {id:0, user:'user'} };
+    versions = { versions: [], currentVersion: {id:0, user:'user'}, lastBackFill: {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}}};
   }
   //add the timestamp to the versions file
   versions.versions.unshift({ id: timestamp, user: user });
@@ -157,7 +164,7 @@ async function revertTagFile(version, user) {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());
   } catch (error) {
-    versions = { versions: [], currentVersion: {id:0, user:'user'} };
+    versions = { versions: [], currentVersion: {id:0, user:'user'}, lastBackFill: {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}}};
   }
   versions.currentVersion = { id: version, user: user };
   //save the versions file
@@ -169,7 +176,14 @@ async function getAllVersions() {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());
   } catch (error) {
-    versions = { versions: [{id:0, user:'user'}], currentVersion: {id:0, user:'user'} };
+    versions = { versions: [], currentVersion: {id:0, user:'user'}, lastBackFill: {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}}};
+  }
+  //fille any missing data
+  if (!versions.currentVersion) {
+    versions.currentVersion = {id:0, user:'user'};
+  }
+  if (!versions.lastBackFill) {
+    versions.lastBackFill = {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}};
   }
   return versions;
 }
@@ -180,5 +194,19 @@ getTagFileByVersion = async (version) => {
   return file;
 }
 
+addBackFillData = async (results, user) => {
+  let versions;
+  try {
+    [versions] = await bucket.file("data/tags/versions.yaml").download();
+    versions = yaml.load(versions.toString());
+  } catch (error) {
+    versions = { versions: [], currentVersion: {id:0, user:'user'}, lastBackFill: {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}}};
+  }
+  versions.lastBackFill = { id: versions.currentVersion.id, user: user.username, results: results };
+  await bucket.file("data/tags/versions.yaml").save(yaml.dump(versions));
+}
 
-module.exports = { processTags, getTagFile, updateTagFile, revertTagFile, getAllVersions, getTagFileByVersion };
+
+
+
+module.exports = { processTags, getTagFile, updateTagFile, revertTagFile, getAllVersions, getTagFileByVersion, addBackFillData };

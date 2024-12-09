@@ -147,15 +147,25 @@ const MATCHES_PAGE_QUERY = gql`
 `;
 
 const TAG_VERSIONS_QUERY = gql`
-  query TagVersions {
-      tagFileVersions{
-        id
-        user
+  query TagVersions{
+    tagFileVersions{
+      id
+      user
+    }
+    tagCurrentVersion{
+      id
+      user
+    }
+    tagLastBackFill {
+      id
+      user
+      results {
+        total
+        success
+        failed
+        errors
       }
-      tagCurrentVersion{
-        id
-        user
-      }
+    }
   }
 `;
 
@@ -196,6 +206,18 @@ query TagFileByVersion($version: ID!) {
 }
 `;
 
+const BACK_FILL_MUTATION = gql`
+ mutation FormatAllParticipants {
+  formatAllParticipants {
+    total
+    success
+    failed
+    errors
+  }
+}
+`;
+
+
 export const DataContext = createContext(null);
 
 export function DataProvider({ children }) {
@@ -210,6 +232,7 @@ export function DataProvider({ children }) {
   const [tags, setTags] = useState(null);
   const [tagsFileVersions, setTagsFileVersions] = useState(null);
   const [tagsCurrentVersion, setTagsCurrentVersion] = useState(null);
+  const [tagsLastBackFill, setTagsLastBackFill] = useState(null);
   const [matchListQuery, setMatchListQuery] = useState(MATCHES_PAGE_QUERY);
 
   useEffect(() => {
@@ -249,6 +272,7 @@ export function DataProvider({ children }) {
     if (adminTag.data) {
       setTagsFileVersions(adminTag.data.tagFileVersions);
       setTagsCurrentVersion(adminTag.data.tagCurrentVersion);
+      setTagsLastBackFill(adminTag.data.tagLastBackFill);
     }
   }, [adminTag.data]);
 
@@ -507,15 +531,18 @@ export function DataProvider({ children }) {
 
     getTagFileByVersionQuery: () => TAG_FILE_BY_VERSION_QUERY,
 
+    getBackFillMutation: () => BACK_FILL_MUTATION,
+
     reloadAdminTagData: async () => {
       const { data } = await adminTag.refetch();
       setTagsFileVersions(data.tagFileVersions);
       setTagsCurrentVersion(data.tagCurrentVersion);
+      setTagsLastBackFill(data.tagLastBackFill);
     }
   };
 
   return (
-    <DataContext.Provider value={{...utils, summoners, champions, items, queues, tags, tagsFileVersions, tagsCurrentVersion, queueMap, queuesSimplified, matchListQuery}}>
+    <DataContext.Provider value={{...utils, summoners, champions, items, queues, tags, tagsFileVersions, tagsCurrentVersion, tagsLastBackFill, queueMap, queuesSimplified, matchListQuery}}>
       {children}
     </DataContext.Provider>
   );

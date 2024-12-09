@@ -38,7 +38,8 @@ const participantResolvers = {
         }
       },
 
-      formatAllParticipants: async (_, __, { models }) => {
+      formatAllParticipants: async (_, __, { models, user }) => {
+        if (!user?.admin) throw new AuthenticationError('Admin access required');
         const startTime = performance.now();
         console.log('Starting batch format of all participants');
 
@@ -52,7 +53,7 @@ const participantResolvers = {
         let participants = [];
 
         try{
-          participants = await formatAllParticipants(models);
+          participants = await formatAllParticipants(models, user);
         } catch (error) {
           console.log('Error processing participants:', error);
           throw new Error(`Failed to format participants: ${error.message}`);
@@ -60,7 +61,7 @@ const participantResolvers = {
 
         const endTime = performance.now();
         console.log(`Batch processing completed in ${endTime - startTime}ms`);
-        return participants;
+        return stats;
       }
     }
 };

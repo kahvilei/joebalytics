@@ -37,7 +37,8 @@ const dataResolvers = {
           queueTypes: queueTypesDataJSON,
           tagData: tagsDataJSON,
           tagFileVersions: tagFileVersions.versions,
-          tagCurrentVersion: tagFileVersions.currentVersion
+          tagCurrentVersion: tagFileVersions.currentVersion,
+          tagFileBackFill: tagFileVersions.lastBackFill
         };
       } catch (error) {
         throw new Error('Failed to fetch game data');
@@ -113,6 +114,15 @@ const dataResolvers = {
         return data;
       } catch (error) {
         throw new Error('Failed to fetch tag data');
+      }
+    },
+
+    tagLastBackFill: async () => {
+      try {
+        const versions = await getAllVersions();
+        return versions.lastBackFill;
+      } catch (error) {
+        throw new Error('Failed to fetch last tag backfill');
       }
     }
 

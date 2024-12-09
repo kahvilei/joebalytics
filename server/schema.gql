@@ -33,7 +33,7 @@ type Mutation {
   deleteSummoner(id: ID!): DeleteResponse!
   deleteOrphanMatches: DeleteResponse!
   formatOneParticipant(id: ID!): Participant!
-  formatAllParticipants: [Participant!]!
+  formatAllParticipants: FormatParticipantsResponse!
 }
 
 type Summoner {
@@ -371,6 +371,13 @@ type Participant {
   win: Boolean
 }
 
+type FormatParticipantsResponse {
+  total: Int!
+  success: Int!
+  failed: Int!
+  errors: JSON!
+}
+
 type Tags {
   
 }
@@ -525,6 +532,7 @@ type Query {
   tagFileVersions: [TagFileVersion!]!
   tagCurrentVersion: TagFileVersion!
   tagFileByVersion( version: ID! ): TagData!
+  tagLastBackFill: TagFileBackFill!
 }
 
 type Mutation {
@@ -540,11 +548,18 @@ type GameData {
   tagData: TagData!
   tagFileVersions: [TagFileVersion!]!
   tagCurrentVersion: TagFileVersion!
+  tagLastBackFill: TagFileBackFill!
 }
 
 type TagFileVersion {
   id: ID!
   user: String!
+}
+
+type TagFileBackFill {
+  id: ID!
+  user: String!
+  results: FormatParticipantsResponse!
 }
 
 type ChampionData {
