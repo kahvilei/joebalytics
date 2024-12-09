@@ -43,7 +43,9 @@ function Tags() {
   const theme = useMantineTheme();
   const tagBools = participant.tags;
 
-
+ if (!tagBools) {
+    return null;
+  }
   for (const [key, value] of Object.entries(tagBools)) {
     if (!value) {
       continue;

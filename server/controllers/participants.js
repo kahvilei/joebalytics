@@ -42,6 +42,7 @@ async function formatParticipant(participant, match, stats) {
 }
 
 async function formatAllParticipants(models, user) {
+    const BATCH_SIZE = 50;
     const startTime = performance.now();
     console.log('Starting batch format of participants for tracked summoners');
 
@@ -58,33 +59,29 @@ async function formatAllParticipants(models, user) {
         const summoners = await models.Summoner.find();
         const trackedPuuids = new Set(summoners.map(s => s.puuid));
 
-        // Get all ARAM and CLASSIC gameMode matches
-        const matches = await models.Match.find({
+        // Create cursor for memory efficient querying
+        const cursor = models.Match.find({
             'info.gameMode': { $in: ['ARAM', 'CLASSIC'] }
-        }).populate('info.participants');
-        
-        // Process each match's participants
-        for (let match of matches) {
-            
-            const relevantParticipants = match.info.participants.filter(p => 
-                trackedPuuids.has(p.puuid)
-            );
-            
-            stats.total += relevantParticipants.length;
+        }).populate('info.participants').cursor({ batchSize: BATCH_SIZE });
 
-            for (let participant of relevantParticipants) {
-                try {
-                    await formatParticipant(participant, match, stats);
-                    stats.processed++;
-                } catch (error) {
-                    stats.failed++;
-                    stats.errors.push({
-                        puuid: participant.puuid,
-                        matchId: match.metadata.matchId,
-                        error: error.message
-                    });
-                }
+        let batchCount = 0;
+        let matches = [];
+
+        // Process matches in batches
+        for await (const match of cursor) {
+            matches.push(match);
+            
+            if (matches.length === BATCH_SIZE) {
+                await processMatchBatch(matches, trackedPuuids, stats);
+                batchCount++;
+                console.log(`Processed batch ${batchCount}, total processed: ${stats.processed}`);
+                matches = []; // Clear batch
             }
+        }
+
+        // Process remaining matches
+        if (matches.length > 0) {
+            await processMatchBatch(matches, trackedPuuids, stats);
         }
 
         const endTime = performance.now();
@@ -95,6 +92,30 @@ async function formatAllParticipants(models, user) {
     } catch (error) {
         console.error('Error processing participants:', error);
         throw new Error(`Failed to format participants: ${error.message}`);
+    }
+}
+
+async function processMatchBatch(matches, trackedPuuids, stats) {
+    for (let match of matches) {
+        const relevantParticipants = match.info.participants.filter(p => 
+            trackedPuuids.has(p.puuid)
+        );
+        
+        stats.total += relevantParticipants.length;
+
+        for (let participant of relevantParticipants) {
+            try {
+                await formatParticipant(participant, match, stats);
+                stats.processed++;
+            } catch (error) {
+                stats.failed++;
+                stats.errors.push({
+                    puuid: participant.puuid,
+                    matchId: match.metadata.matchId,
+                    error: error.message
+                });
+            }
+        }
     }
 }
 
