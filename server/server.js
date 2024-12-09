@@ -58,6 +58,13 @@ async function startServer() {
   app.listen({ port: process.env.PORT }, () =>
     console.log(`Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`)
   );
+
+  app.use(express.static(path.join(__dirname, "../build")));
+
+  app.get('/*', (req, res) => {
+    res.sendFile('index.html', {root: 'build'});
+  });
+
 }
 
 startServer();
