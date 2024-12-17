@@ -1,0 +1,9 @@
+
+@container (max-width: 800px) {
+  .key-stats-tags>div {
+    align-items: start;
+  }
+  .key-stats-tags{
+    align-items: start;
+  }
+}

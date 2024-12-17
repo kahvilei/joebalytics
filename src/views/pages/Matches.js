@@ -15,7 +15,7 @@ function Matches() {
   const roles = searchParams.getAll("role") || null;
   const championIds = searchParams.getAll("championId").map(id => parseInt(id)) || null;
   const gameModes = searchParams.getAll("gameMode") || null;
-  const queueIds = getQueueIdsFromDisplayNames(gameModes);
+  const queueIds = gameModes? getQueueIdsFromDisplayNames(gameModes) : [];
   const tags = searchParams.getAll("tag") || null;
   const limit = parseInt(searchParams.get("limit")) || 10;
 
@@ -115,7 +115,6 @@ function Matches() {
             placeholder={roles.length ? "" : "All Roles"}
             withCheckIcon
             clearable
-            w={350}
             onChange={(value) => handleFilterChange({ role: value })}
           />
           <MultiSelect
@@ -128,7 +127,6 @@ function Matches() {
             searchable
             clearable
             withCheckIcon
-            w={350}
             placeholder={gameModes.length ? "" : "All Game Modes"}
             value={gameModes}
             onChange={(value) => handleFilterChange({ gameMode: value })}
@@ -151,7 +149,6 @@ function Matches() {
             searchable
             clearable
             withCheckIcon
-            w={450}
             placeholder={championIds.length ? "" : "All Champions"}
             onChange={(value) => handleFilterChange({ championId: value.map(id => parseInt(id)) })}
           />
@@ -165,7 +162,6 @@ function Matches() {
             searchable
             clearable
             withCheckIcon
-            w={450}
             placeholder={tags.length ? "" : "All Tags"}
             value={tags}
             onChange={(value) => handleFilterChange({ tag: value })}

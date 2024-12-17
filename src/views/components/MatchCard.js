@@ -3,7 +3,7 @@ import { useGameData } from "../../context/DataContext";
 import { IconCoin, IconEye, IconFlag, IconFlagFilled, IconInnerShadowBottomLeftFilled, IconSwords } from "@tabler/icons-react";
 import { Card, Image, Group, Text, Container, Grid, Tooltip, Stack, Paper, BackgroundImage, Badge, useMantineTheme, Anchor } from '@mantine/core';
 import Tags from "./Tags";
-import { Link } from "react-router-dom";
+import './MatchCard.css'
 
 export const MatchContext = React.createContext();
 export const ParticipantContext = React.createContext();
@@ -33,23 +33,28 @@ const MatchCard = (props) => {
     <MatchContext.Provider value={{ match, region, matchMode, gameDuration, focusedParticipants }}>
       <Card padding="md" w={'100%'}>
         <Stack gap="xs">
-        <Group align="center" justify="space-between">
-          <Badge color={matchModeColor} variant="filled">{matchMode}</Badge>
-          <Paper radius="xl" p={'4px 8px'}>
-            <Group gap="xs">
-              <Text c={'dimmed'} size="xs">{date.toLocaleString("en-US", { month: 'short', day: 'numeric', year: 'numeric', hour: "2-digit", minute: "2-digit" })}</Text>
-              <Text c={'dimmed'} size="xs">{(gameDuration / 60).toFixed(0)}m</Text>
-            </Group>
-          </Paper>
-        </Group>
-        <Grid align="center" justify="space-between" >
-          <Grid.Col span={8}>
-            <FocusedParticipantList />
-          </Grid.Col>
-          <Grid.Col span={4}>
-            <MatchSummaryTeams />
-          </Grid.Col>
-        </Grid>
+          <Group align="center" justify="space-between">
+            <Badge color={matchModeColor} variant="filled">{matchMode}</Badge>
+            <Paper radius="xl" p={'4px 8px'}>
+              <Group gap="xs">
+                <Text c={'dimmed'} size="xs">{date.toLocaleString("en-US", { month: 'short', day: 'numeric', year: 'numeric', hour: "2-digit", minute: "2-digit" })}</Text>
+                <Text c={'dimmed'} size="xs">{(gameDuration / 60).toFixed(0)}m</Text>
+              </Group>
+            </Paper>
+          </Group>
+          <Grid
+            align="center"
+            justify="space-between"
+            type="container"
+            breakpoints={{ lg: '800px' }}
+          >
+            <Grid.Col span={{ base: 12, lg: 8 }}>
+              <FocusedParticipantList />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, lg: 4 }}>
+              <MatchSummaryTeams />
+            </Grid.Col>
+          </Grid>
         </Stack>
       </Card>
     </MatchContext.Provider>
@@ -80,18 +85,18 @@ function MatchSummaryTeams() {
   const team100Win = team100[0].win;
   const team200Win = team200[0].win;
 
-    //check if either team surrendered by checking the gameEndedInSurrender and gameEndedInEarlySurrender fields on one player from each team
-    let team100Surrendered = false;
-    let team200Surrendered = false;
-    let team100EarlySurrendered = false;
-    let team200EarlySurrendered = false;
-    if (match.info.participants[0].gameEndedInSurrender) {
-      team100Win ? team200Surrendered = true : team100Surrendered = true;
-    }
-    if (match.info.participants[0].gameEndedInEarlySurrender) {
-      team100Win ? team200EarlySurrendered = true : team100EarlySurrendered = true;
-    }
-  
+  //check if either team surrendered by checking the gameEndedInSurrender and gameEndedInEarlySurrender fields on one player from each team
+  let team100Surrendered = false;
+  let team200Surrendered = false;
+  let team100EarlySurrendered = false;
+  let team200EarlySurrendered = false;
+  if (match.info.participants[0].gameEndedInSurrender) {
+    team100Win ? team200Surrendered = true : team100Surrendered = true;
+  }
+  if (match.info.participants[0].gameEndedInEarlySurrender) {
+    team100Win ? team200EarlySurrendered = true : team100EarlySurrendered = true;
+  }
+
 
   const team100Kills = team100.reduce((total, participant) => total + participant.kills, 0);
   const team200Kills = team200.reduce((total, participant) => total + participant.kills, 0);
@@ -99,15 +104,15 @@ function MatchSummaryTeams() {
   return (
     <Stack gap={2}>
       <Group gap={'xs'} justify="stretch" wrap="nowrap">
-        <Stack w={'50%'} gap={0}>
-          <Text size={'md'} ta={'right'} c={team100Win ? 'green' : 'red'}> {team100Surrendered ? <IconFlagFilled size={12} style={{transform: "scaleX(-1)"}}/> : team100EarlySurrendered ? <IconFlag size={12}/> : ''} {team100Kills}</Text>
+        <Stack w={'50%'} gap={0} align="end">
+          <Text size={'md'} ta={'right'} c={team100Win ? 'green' : 'red'}> {team100Surrendered ? <IconFlagFilled size={12} style={{ transform: "scaleX(-1)" }} /> : team100EarlySurrendered ? <IconFlag size={12} /> : ''} {team100Kills}</Text>
           {playerMap(team100, 'end')}
-          </Stack>
-          <Text size={'xs'} c='dimmed'>vs.</Text>
-        <Stack w={'50%'} gap={0}>
-        <Text size={'md'} c={team200Win ? 'green' : 'red'}>{team200Kills} {team200Surrendered ? <IconFlagFilled size={12}/> : team200EarlySurrendered ? <IconFlag size={12}/> : ''}</Text>
+        </Stack>
+        <Text size={'xs'} c='dimmed'>vs.</Text>
+        <Stack w={'50%'} gap={0} align="start">
+          <Text size={'md'} c={team200Win ? 'green' : 'red'}>{team200Kills} {team200Surrendered ? <IconFlagFilled size={12} /> : team200EarlySurrendered ? <IconFlag size={12} /> : ''}</Text>
           {playerMap(team200, 'start')}
-          </Stack>
+        </Stack>
       </Group>
     </Stack>
   );
@@ -133,19 +138,27 @@ function Participant() {
 
   return (
     <Paper p="xs" radius="md" style={{ background: gradientColor(participant.win) }}>
-      <Group justify="space-between" wrap="nowrap">
-        <Group align="center" gap={'xs'}>
-          <Tooltip label={participant.championName} position="top">
-            <BackgroundImage bgsz={"110%"} src={getChampIcon(participant.championId)} alt={participant.summonerName} w='xl' h='xl' radius={100} bd={`2px solid ${participant.win ? 'green' : 'red'}`} />
-          </Tooltip>
-          <Image src={getRoleIcon(participant.teamPosition)} alt={participant.summonerName} w='md' h='md' />
-          <Text size="sm">{participant.summonerName}</Text>
-        </Group>
-        <Stack align="end">
-          <KeyStats />
-          <Tags />
-        </Stack>
-      </Group>
+      <Grid
+        align="center"
+        justify="space-between"
+        type="container"
+        breakpoints={{ lg: '800px' }}
+      >
+        <Grid.Col span={{ base: 12, lg: 4 }}>
+          <Group align="center" gap={'xs'}>
+            <Tooltip label={participant.championName} position="top">
+              <BackgroundImage bgsz={"110%"} src={getChampIcon(participant.championId)} alt={participant.summonerName} w='xl' h='xl' radius={100} bd={`2px solid ${participant.win ? 'green' : 'red'}`} />
+            </Tooltip>
+            <Image src={getRoleIcon(participant.teamPosition)} alt={participant.summonerName} w='md' h='md' />
+            <Text size="sm">{participant.summonerName}</Text>
+          </Group></Grid.Col>
+        <Grid.Col span={{ base: 12, lg: 8 }}>
+          <Stack gap="xs" align="end" className="key-stats-tags">
+            <KeyStats />
+            <Tags />
+          </Stack>
+        </Grid.Col>
+      </Grid>
     </Paper>
   );
 }
@@ -157,12 +170,12 @@ function KeyStats() {
 
   return (
     <Group gap="xs" align="center">
-      <KDA/>
-      <KP/>
-      <Damage/>
-      {!isAram && <CS/>}
-      {!isAram && <Vision/>}
-      <Gold/>
+      <KDA />
+      <KP />
+      <Damage />
+      {!isAram && <CS />}
+      {!isAram && <Vision />}
+      <Gold />
     </Group>
   );
 }
@@ -172,7 +185,7 @@ function gradientColor(win) {
 }
 
 function KDA() {
-  const {participant} = useContext(ParticipantContext);
+  const { participant } = useContext(ParticipantContext);
   const kills = participant.kills;
   const deaths = participant.deaths || 1;
   const assists = participant.assists;
@@ -187,28 +200,28 @@ function KDA() {
     kdaColor = 'gray';
   }
   else if (kda > 5) {
-    kdaColor = 'blue';  
+    kdaColor = 'blue';
   }
 
   return (
     <Tooltip label={`${kills} / ${deaths} / ${assists}`} position="top">
       <Group gap={'sm'}>
-      <Group gap={2}>
-        <Text size="sm" c={kdaColor}>{kda.toFixed(1)}</Text>
-        <Text size={'10px'}>KDA</Text>
-      </Group>
-      <Group gap={3}>
-        <Text size="sm">{kills} /</Text>
-        <Text size="sm">{deaths} /</Text>
-        <Text size="sm">{assists}</Text>
-      </Group>
+        <Group gap={2}>
+          <Text size="sm" c={kdaColor}>{kda.toFixed(1)}</Text>
+          <Text size={'10px'}>KDA</Text>
+        </Group>
+        <Group gap={3}>
+          <Text size="sm">{kills} /</Text>
+          <Text size="sm">{deaths} /</Text>
+          <Text size="sm">{assists}</Text>
+        </Group>
       </Group>
     </Tooltip>
   );
 }
 
 function Gold() {
-  const {participant, gameDuration,} = useContext(ParticipantContext);
+  const { participant, gameDuration, } = useContext(ParticipantContext);
   const { matchMode } = useContext(MatchContext);
   const gold = participant.goldEarned;
   const lane = participant.teamPosition;
@@ -222,7 +235,7 @@ function Gold() {
   }
   else if (lane === 'BOTTOM') {
     avgGold = gameDuration / 60 * 400;
-  }else if (matchMode.includes('ARAM')) {
+  } else if (matchMode.includes('ARAM')) {
     avgGold = gameDuration / 60 * 600;
   }
   else if (lane === 'UTILITY') {
@@ -239,7 +252,7 @@ function Gold() {
   else if (gold > avgGold * 2) {
     goldColor = 'blue';
   }
-  
+
   let inner = gold;
   if (gold > 1000) {
     inner = `${(gold / 1000).toFixed(1)}k`;
@@ -255,7 +268,7 @@ function Gold() {
 }
 
 function CS() {
-  const {participant, gameDuration} = useContext(ParticipantContext);
+  const { participant, gameDuration } = useContext(ParticipantContext);
   const cs = participant.totalMinionsKilled + participant.neutralMinionsKilled;
   const lane = participant.teamPosition;
   const time = gameDuration;
@@ -290,7 +303,7 @@ function CS() {
 }
 
 function Damage() {
-  const {participant, gameDuration} = useContext(ParticipantContext);
+  const { participant, gameDuration } = useContext(ParticipantContext);
   const { matchMode } = useContext(MatchContext);
   const damage = participant.totalDamageDealtToChampions;
   const lane = participant.teamPosition;
@@ -330,7 +343,7 @@ function Damage() {
 }
 
 function KP() {
-  const {participant} = useContext(ParticipantContext);
+  const { participant } = useContext(ParticipantContext);
   const { matchMode } = useContext(MatchContext);
   const kp = participant.challenges.killParticipation;
   const lane = participant.teamPosition
@@ -366,7 +379,7 @@ function KP() {
 }
 
 function Vision() {
-  const {participant} = useContext(ParticipantContext);
+  const { participant } = useContext(ParticipantContext);
   const wardsPlaced = participant.wardsPlaced;
   const wardsKilled = participant.wardsKilled;
   const visionScore = participant.visionScore;
