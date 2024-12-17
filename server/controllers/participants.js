@@ -6,17 +6,17 @@ async function formatParticipant(participant, match, stats) {
     try {
     const participantObject = participant.toObject();
     const participantStartTime = performance.now();
-    participantObject.challenges = Object.fromEntries(participantObject.challenges);
-    participantObject.tags = Object.fromEntries(participantObject.tags);
+    participantObject.challenges = participantObject.challenges? Object.fromEntries(participantObject.challenges) : {};
+    participantObject.tags = participantObject.tags ? Object.fromEntries(participantObject.tags) : {};
     const matchObject = match.toObject();
     // objectize challenges and perks for each participant
     matchObject.info.participants = matchObject.info.participants.map(participant => {
         let newParticipant = participant;
         if (newParticipant.challenges) {
-            newParticipant.challenges = Object.fromEntries(newParticipant.challenges);
+            newParticipant.challenges = newParticipant.challenges? Object.fromEntries(newParticipant.challenges) : {};
         }
         if (newParticipant.tags) {
-            newParticipant.tags = Object.fromEntries(newParticipant.tags);
+            newParticipant.tags = newParticipant.tags? Object.fromEntries(newParticipant.tags) : {};
         }
         return newParticipant;
     });
@@ -62,7 +62,7 @@ async function formatAllParticipants(models, user) {
         // Create cursor for memory efficient querying
         const cursor = models.Match.find({
             'info.gameMode': { $in: ['ARAM', 'CLASSIC'] }
-        }).populate('info.participants').cursor({ batchSize: BATCH_SIZE });
+        }).populate('info.participants').sort({ 'info.gameCreation': -1 }).cursor({ batchSize: BATCH_SIZE });
 
         let batchCount = 0;
         let matches = [];
