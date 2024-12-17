@@ -1,4 +1,5 @@
 // resolvers/match.js
+const { performance } = require('perf_hooks');
 const matchResolvers = {
     Query: {
       match: async (_, { id }, { models }) => {
@@ -14,7 +15,11 @@ const matchResolvers = {
         championIds = [],
         queueIds = [],
         tags = []
-      }, { models }) => {
+      }, { models, data }) => {
+
+        let totalTime = performance.now();
+
+        let collectingSumms = performance.now();
 
         let summonerQuery = {};
         if (region) {
@@ -26,12 +31,15 @@ const matchResolvers = {
 
         let summoner = [];
         if (Object.keys(summonerQuery).length > 0) {
-          summoner = await models.Summoner.find({
-            $and: [ summonerQuery ]
-          });
+          //grab only the summoners that are needed from server data
+          summoner = data.summoners.filter(summoner => summonerNames.includes(summoner.nameURL));
         }else {
-          summoner = await models.Summoner.find();
+          //get summoners from cached server data (data.summoners)
+          summoner = data.summoners;
         }
+
+        let collectingSummsEnd = performance.now();
+        console.log(`Collecting summoners took ${(collectingSummsEnd - collectingSumms)}ms`);
 
         let query = {};
         if (queueIds.length > 0) {
@@ -56,9 +64,11 @@ const matchResolvers = {
 
         let matchIds = [];
         if (Object.keys(query).length > 2) {
-
-          let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' });
+          const start = performance.now();
+          let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' }).limit(limit*summoner.length);
           matchIds = participants.map((participant) => participant.matchId);
+          const end = performance.now();
+          console.log(`Participant query took ${(end - start)}ms`);
         }
         let matches = [];
 
@@ -67,18 +77,27 @@ const matchResolvers = {
           if(matchIds.length === 0) {
             return [];
           }
+          const start = performance.now();
           matchQuery["metadata.matchId"] = { $in: matchIds };
           matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
+          const end = performance.now();
+          console.log(`Match query took ${(end - start)}ms`);
         }
         if (queueIds.length > 0) {
           matchQuery["info.queueId"] = { $in: queueIds };
         }
         if (matches.length === 0) {
           matchQuery["info.gameStartTimestamp"] = { $lt: timestamp };
+          // start second timer to debug time taken to query
+          const start = performance.now();
           matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
+          const end = performance.now();
+          console.log(`Query took ${(end - start)}ms`);
+
         }
        
         //convert MongooseMaps within matches to plain objects
+        const objectMakeStart = performance.now();
         matches = matches.map(match => {
           let newMatch = match.toObject();
           newMatch.info.participants = newMatch.info.participants.map(participant => {
@@ -94,6 +113,10 @@ const matchResolvers = {
           );
           return newMatch;
         });
+        const objectMakeEnd = performance.now();
+        console.log(`Object make took ${(objectMakeEnd - objectMakeStart)}ms`);
+        let totalEnd = performance.now();
+        console.log(`Total time taken ${(totalEnd - totalTime)}ms`);
 
         return matches;
       }

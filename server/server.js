@@ -27,6 +27,10 @@ async function startServer() {
     const db = process.env.MONGO_CONNECT;
     connectDB(db);
     models.Participant = await models.participantFunctions.createParticipantModel();
+
+    const data = {}
+
+    data.summoners = await models.Summoner.find();
     
     // Create new server instance
     server = new ApolloServer({
@@ -43,7 +47,7 @@ async function startServer() {
             console.error('Invalid token');
           }
         }
-        return { models, user, updateSchema };
+        return { models, user, updateSchema, data };
       }
     });
 

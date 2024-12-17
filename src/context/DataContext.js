@@ -221,8 +221,6 @@ const BACK_FILL_MUTATION = gql`
 export const DataContext = createContext(null);
 
 export function DataProvider({ children }) {
-  const { loading, error, data } = useQuery(GAME_DATA_QUERY);
-  const adminTag = useQuery(TAG_VERSIONS_QUERY);
   const [champions, setChampions] = useState(null);
   const [items, setItems] = useState(null);
   const [queues, setQueues] = useState(null);
@@ -235,6 +233,36 @@ export function DataProvider({ children }) {
   const [tagsLastBackFill, setTagsLastBackFill] = useState(null);
   const [matchListQuery, setMatchListQuery] = useState(MATCHES_PAGE_QUERY);
 
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const cachedData = localStorage.getItem('gameData');
+      const cachedTimestamp = localStorage.getItem('gameDataTimestamp');
+      const timeInterval = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+
+      if (cachedData && cachedTimestamp && (Date.now() - parseInt(cachedTimestamp)) < timeInterval) {
+        const parsedData = JSON.parse(cachedData);
+        setChampions(parsedData.champions);
+        setItems(parsedData.items);
+        setQueues(parsedData.queueTypes);
+        setSummoners(parsedData.summoners);
+        setTags(parsedData.tagData);
+        setQueuesSimplified(["ARAM", "Draft", "Ranked Solo", "Ranked Flex", "URF", "ARURF", "Summoner's Spellbook", "Other"]);
+        setMatchListQuery(parsedData.matchListQuery);
+      } else {
+        setShouldFetch(true);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const { loading, error, data } = useQuery(GAME_DATA_QUERY, {
+    skip: !shouldFetch,
+    fetchPolicy: "network-only"
+  });
+
   useEffect(() => {
     if (data) {
       setChampions(data.gameData.champions.data);
@@ -243,30 +271,44 @@ export function DataProvider({ children }) {
       setSummoners(data.summoners);
       setTags(data.gameData.tagData);
       setQueuesSimplified(["ARAM", "Draft", "Ranked Solo", "Ranked Flex", "URF", "ARURF", "Summoner's Spellbook", "Other"]);
-    }
-    if (data && data.gameData.tagData) {
-      //replace contents of tag section of the match page query with the tags from the server
-      let matchListTemp = matchListQuery;
-      matchListTemp.definitions[0].selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections = data.gameData.tagData.tags.map(tag => ({
-        kind: "Field",
-        name: { kind: "Name", value: tag.key },
-        selectionSet: {
-          kind: "SelectionSet",
-          selections: [
-            {
-              kind: "Field",
-              name: { kind: "Name", value: "isTriggered" }
-            },
-            {
-              kind: "Field",
-              name: { kind: "Name", value: "value" }
-            }
-          ]
-        }
+
+      if (data.gameData.tagData) {
+        // Replace contents of tag section of the match page query with the tags from the server
+        let matchListTemp = matchListQuery;
+        matchListTemp.definitions[0].selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections = data.gameData.tagData.tags.map(tag => ({
+          kind: "Field",
+          name: { kind: "Name", value: tag.key },
+          selectionSet: {
+            kind: "SelectionSet",
+            selections: [
+              {
+                kind: "Field",
+                name: { kind: "Name", value: "isTriggered" }
+              },
+              {
+                kind: "Field",
+                name: { kind: "Name", value: "value" }
+              }
+            ]
+          }
+        }));
+        setMatchListQuery(matchListQuery);
+      }
+
+      // Cache the data in local storage with a timestamp
+      localStorage.setItem('gameData', JSON.stringify({
+        champions: data.gameData.champions.data,
+        items: data.gameData.items,
+        queueTypes: data.gameData.queueTypes,
+        summoners: data.summoners,
+        tagData: data.gameData.tagData,
+        matchListQuery: matchListQuery
       }));
-      setMatchListQuery(matchListQuery);
+      localStorage.setItem('gameDataTimestamp', Date.now().toString());
     }
   }, [data]);
+
+  const adminTag = useQuery(TAG_VERSIONS_QUERY);
 
   useEffect(() => {
     if (adminTag.data) {
