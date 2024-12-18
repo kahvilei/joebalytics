@@ -1,5 +1,24 @@
 // resolvers/match.js
 const { performance } = require('perf_hooks');
+const { parse } = require('graphql');
+
+const getRequestedFields = (selectionSet) => {
+  const fields = {};
+
+  selectionSet.selections.forEach((selection) => {
+    if (selection.selectionSet) {
+      fields[selection.name.value] = getRequestedFields(selection.selectionSet);
+    } else {
+      fields[selection.name.value] = 1;
+    }
+  });
+
+  return fields;
+};
+
+const extractFields = (info) => {
+  return getRequestedFields(info.fieldNodes[0].selectionSet);
+};
 const matchResolvers = {
     Query: {
       match: async (_, { id }, { models }) => {
@@ -15,7 +34,7 @@ const matchResolvers = {
         championIds = [],
         queueIds = [],
         tags = []
-      }, { models, data }) => {
+      }, { models, data }, info) => {
 
         let totalTime = performance.now();
 
@@ -60,62 +79,50 @@ const matchResolvers = {
           query.puuid = { $in: puuids };
         }
 
-        let isParticipantSearch = Object.keys(query).length > 2;
-
         let matchIds = [];
-        if (Object.keys(query).length > 2) {
-          const start = performance.now();
-          let participants = await models.Participant.find(query).sort({ gameStartTimestamp: 'desc' }).limit(limit*summoner.length);
-          matchIds = participants.map((participant) => participant.matchId);
-          const end = performance.now();
-          console.log(`Participant query took ${(end - start)}ms`);
-        }
+        const startP = performance.now();
+        let participants = await models.Participant.find(query, { matchId:1, abstract:1, } ).sort({ gameStartTimestamp: 'desc' }).limit(limit*summoner.length);
+        matchIds = participants.map((participant) => participant.matchId);
+        const endP = performance.now();
+        console.log(`Participant query took ${(endP - startP)}ms`);
         let matches = [];
-
         let matchQuery = {};
-        if (isParticipantSearch) {
           if(matchIds.length === 0) {
             return [];
           }
-          const start = performance.now();
-          matchQuery["metadata.matchId"] = { $in: matchIds };
-          matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
-          const end = performance.now();
-          console.log(`Match query took ${(end - start)}ms`);
-        }
-        if (queueIds.length > 0) {
-          matchQuery["info.queueId"] = { $in: queueIds };
-        }
-        if (matches.length === 0) {
-          matchQuery["info.gameStartTimestamp"] = { $lt: timestamp };
-          // start second timer to debug time taken to query
-          const start = performance.now();
-          matches = await models.Match.find(matchQuery).sort({ "info.gameStartTimestamp": 'desc' }).limit(limit).populate('info.participants');
-          const end = performance.now();
-          console.log(`Query took ${(end - start)}ms`);
+        //remove repeated matchIds
+        matchIds = [...new Set(matchIds)];
+        //limit to the first limit matches
+        matchIds = matchIds.slice(0, limit);
 
-        }
-       
-        //convert MongooseMaps within matches to plain objects
-        const objectMakeStart = performance.now();
+        const start = performance.now();
+        matchQuery["metadata.matchId"] = { $in: matchIds };
+        // Get requested fields from GraphQL query
+        const requestedFields = extractFields(info);
+        const participantFields = requestedFields.info.participants;
+        const requestedFieldsMatch = new Object(requestedFields);
+        requestedFieldsMatch.info.participants = 1;
+
+        matches = await models.Match.find(matchQuery, requestedFields).sort({ "info.gameStartTimestamp": 'desc' }).populate('info.participants', participantFields);
+        const end = performance.now();
+        console.log(`Match query took ${(end - start)}ms`);
+
         matches = matches.map(match => {
           let newMatch = match.toObject();
           newMatch.info.participants = newMatch.info.participants.map(participant => {
-            let newParticipant = participant
-            if(newParticipant.challenges) {
-            newParticipant.challenges = Object.fromEntries(newParticipant.challenges);
+            let newParticipant = participant;
+            if (newParticipant.challenges) {
+              newParticipant.challenges = Object.fromEntries(participant.challenges);
             }
             if (newParticipant.tags) {
-              newParticipant.tags = Object.fromEntries(newParticipant.tags);
+              newParticipant.tags = Object.fromEntries(participant.tags);
             }
             return newParticipant;
-          }
-          );
+          });
           return newMatch;
         });
-        const objectMakeEnd = performance.now();
-        console.log(`Object make took ${(objectMakeEnd - objectMakeStart)}ms`);
         let totalEnd = performance.now();
+    
         console.log(`Total time taken ${(totalEnd - totalTime)}ms`);
 
         return matches;

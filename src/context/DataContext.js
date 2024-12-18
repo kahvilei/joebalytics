@@ -116,7 +116,7 @@ const MATCHES_PAGE_QUERY = gql`
           teamId
           riotIdTagline
           riotIdGameName
-
+          matchId
           totalMinionsKilled
           neutralMinionsKilled
           goldEarned
@@ -124,7 +124,6 @@ const MATCHES_PAGE_QUERY = gql`
           visionScore
           wardsPlaced
           wardsKilled
-
           gameEndedInEarlySurrender
           gameEndedInSurrender
 

@@ -243,6 +243,16 @@ async function generateParticipantSchema() {
   ParticipantSchema.index({ role: 1 });
   ParticipantSchema.index({ queueId: 1 });
 
+  //compound indexes 
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1 });
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1, championId: 1 });
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1, queueId: 1 });
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1, role: 1 });
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1, championId: 1, role: 1 });
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1, queueId: 1, role: 1 });
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1, championId: 1, queueId: 1 });
+  ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1, championId: 1, queueId: 1, role: 1 });
+
   if (config.tags) {
     for (const tag of config.tags) {
       // Create index for isTriggered field
