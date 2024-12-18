@@ -1,9 +1,44 @@
 
+
+.key-stats-tags{
+  align-items: end;
+}
+
+.key-stats-tags>div {
+  justify-content: end;
+}
+
 @container (max-width: 800px) {
   .key-stats-tags>div {
-    align-items: start;
+    justify-content: left;
   }
   .key-stats-tags{
     align-items: start;
   }
 }
+
+.participant-card{
+  background: none;
+  position: relative;
+}
+
+.participant-card:before{
+  content: '';
+  display: block;
+  height: 0px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  left: 1rem;
+  border-bottom: 2px solid var(--mantine-color-dark-6);
+}
+
+.participant-card:first-child:before{
+  border-bottom: none;
+}
+
+.participant-card>div>div>div{
+  min-height: 70px;
+}
+

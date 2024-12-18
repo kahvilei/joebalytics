@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useGameData } from "../../context/DataContext";
 import { IconCoin, IconEye, IconFlag, IconFlagFilled, IconInnerShadowBottomLeftFilled, IconSwords } from "@tabler/icons-react";
-import { Card, Image, Group, Text, Container, Grid, Tooltip, Stack, Paper, BackgroundImage, Badge, useMantineTheme, Anchor } from '@mantine/core';
+import { Card, Image, Group, Text, Container, Grid, Tooltip, Stack, Paper, BackgroundImage, Badge, useMantineTheme, Anchor, Box } from '@mantine/core';
 import Tags from "./Tags";
 import './MatchCard.css'
 
@@ -121,13 +121,36 @@ function MatchSummaryTeams() {
 function FocusedParticipantList() {
   const { focusedParticipants, gameDuration } = useContext(MatchContext);
 
+  const winGradient = { background: gradientColor(true) };
+  const lossGradient = { background: gradientColor(false) };
+
+  //return a list of the winning team's focused participants with a green gradient, followed by the losing team's focused participants with a red gradient
+
+  const teamWin = focusedParticipants.filter(participant => participant.win === true);
+  const teamLoss = focusedParticipants.filter(participant => participant.win === false);
+
+const teamList = (team, gradient) => {
+  return(
+    <Paper radius="md" style={gradient}>
+          <Stack gap="0" align="left">
+            {team.map(participant => (
+              <ParticipantContext.Provider value={{ participant, gameDuration }}>
+                <Participant />
+              </ParticipantContext.Provider>
+            ))}
+          </Stack>
+        </Paper>
+  );
+  }
+
   return (
     <Stack gap="xs">
-      {focusedParticipants.map(participant => (
-        <ParticipantContext.Provider key={participant.summonerName} value={{ participant, gameDuration }}>
-          <Participant />
-        </ParticipantContext.Provider>
-      ))}
+      {teamWin.length > 0 &&
+        teamList(teamWin, winGradient)
+      }
+      {teamLoss.length > 0 &&
+        teamList(teamLoss, lossGradient)
+      }
     </Stack>
   );
 }
@@ -137,7 +160,7 @@ function Participant() {
   const { getChampIcon, getRoleIcon } = useGameData();
 
   return (
-    <Paper p="xs" radius="md" style={{ background: gradientColor(participant.win) }}>
+    <Box p="sm" className="participant-card">
       <Grid
         align="center"
         justify="space-between"
@@ -153,13 +176,13 @@ function Participant() {
             <Text size="sm">{participant.summonerName}</Text>
           </Group></Grid.Col>
         <Grid.Col span={{ base: 12, lg: 8 }}>
-          <Stack gap="xs" align="end" className="key-stats-tags">
+          <Stack gap="xs" className="key-stats-tags">
             <KeyStats />
             <Tags />
           </Stack>
         </Grid.Col>
       </Grid>
-    </Paper>
+    </Box>
   );
 }
 

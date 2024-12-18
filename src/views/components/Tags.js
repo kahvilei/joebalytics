@@ -56,7 +56,7 @@ function Tags() {
   }
 
 return (
-  <Group gap={4}>
+  <Group gap={4} justify='end'>
     {tags.map((tag) => (
       <Tooltip key={tag.text + participant.id} label={tag.description} position="top">
         {tag.color === 'yellow' ? (
