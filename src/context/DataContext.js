@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { get, set } from 'mongoose';
 import { Container, Loader, Stack } from '@mantine/core';
@@ -234,8 +234,9 @@ export function DataProvider({ children }) {
   const [matchListQuery, setMatchListQuery] = useState(MATCHES_PAGE_QUERY);
 
   const [shouldFetch, setShouldFetch] = useState(false);
+  const [shouldFetchAdmin, setShouldFetchAdmin] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const loadData = async () => {
       const cachedData = localStorage.getItem('gameData');
       const cachedTimestamp = localStorage.getItem('gameDataTimestamp');
@@ -255,11 +256,29 @@ export function DataProvider({ children }) {
       }
     };
 
+    const loadAdminData = async () => {
+      const cachedData = localStorage.getItem('adminTagData');
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+        setTagsFileVersions(parsedData.tagFileVersions);
+        setTagsCurrentVersion(parsedData.tagCurrentVersion);
+        setTagsLastBackFill(parsedData.tagLastBackFill);
+      } else {
+      setShouldFetchAdmin(true);
+    }
+  };
+
     loadData();
+    loadAdminData();
   }, []);
 
   const { loading, error, data } = useQuery(GAME_DATA_QUERY, {
     skip: !shouldFetch,
+    fetchPolicy: "network-only"
+  });
+
+  const adminTag = useQuery(TAG_VERSIONS_QUERY, {
+    skip: !shouldFetchAdmin,
     fetchPolicy: "network-only"
   });
 
@@ -306,9 +325,19 @@ export function DataProvider({ children }) {
       }));
       localStorage.setItem('gameDataTimestamp', Date.now().toString());
     }
-  }, [data]);
+    if (adminTag.data) {
+      setTagsFileVersions(adminTag.data.tagFileVersions);
+      setTagsCurrentVersion(adminTag.data.tagCurrentVersion);
+      setTagsLastBackFill(adminTag.data.tagLastBackFill);
 
-  const adminTag = useQuery(TAG_VERSIONS_QUERY);
+      // Cache the admin tag data in local storage with a timestamp
+      localStorage.setItem('adminTagData', JSON.stringify({
+        tagFileVersions: adminTag.data.tagFileVersions,
+        tagCurrentVersion: adminTag.data.tagCurrentVersion,
+        tagLastBackFill: adminTag.data.tagLastBackFill
+      }));
+    }
+  }, [data, adminTag.data]);
 
   useEffect(() => {
     if (adminTag.data) {
@@ -333,17 +362,17 @@ export function DataProvider({ children }) {
     }
   }, [queues]);
 
-  if (loading || adminTag.loading) {
+  if (loading) {
     return (
       <Stack w={"100vw"} h={"100vh"} justify={"center"} align={"center"}>
         <Loader type='bars' size='xl' />
       </Stack>
     )
-  } else if (!champions || !items || !queues || !summoners || !tags || !tagsFileVersions || !tagsCurrentVersion) {
+  } else if (!champions || !items || !queues || !summoners || !tags ) {
     return <div>no data</div>;
     }
 
-  if (error || adminTag.error) {
+  if (error) {
     return <div>Error loading game data</div>;
   }
 
