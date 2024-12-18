@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useGameData } from "../../context/DataContext";
 import { IconCoin, IconEye, IconFlag, IconFlagFilled, IconInnerShadowBottomLeftFilled, IconSwords } from "@tabler/icons-react";
 import { Card, Image, Group, Text, Container, Grid, Tooltip, Stack, Paper, BackgroundImage, Badge, useMantineTheme, Anchor, Box } from '@mantine/core';
-import Tags from "./Tags";
+import { Tags } from "./Tags";
 import './MatchCard.css'
 
 export const MatchContext = React.createContext();
@@ -33,15 +33,7 @@ const MatchCard = (props) => {
     <MatchContext.Provider value={{ match, region, matchMode, gameDuration, focusedParticipants }}>
       <Card padding="md" w={'100%'}>
         <Stack gap="xs">
-          <Group align="center" justify="space-between">
-            <Badge color={matchModeColor} variant="filled">{matchMode}</Badge>
-            <Paper radius="xl" p={'4px 8px'}>
-              <Group gap="xs">
-                <Text c={'dimmed'} size="xs">{date.toLocaleString("en-US", { month: 'short', day: 'numeric', year: 'numeric', hour: "2-digit", minute: "2-digit" })}</Text>
-                <Text c={'dimmed'} size="xs">{(gameDuration / 60).toFixed(0)}m</Text>
-              </Group>
-            </Paper>
-          </Group>
+
           <Grid
             align="center"
             justify="space-between"
@@ -49,7 +41,16 @@ const MatchCard = (props) => {
             breakpoints={{ lg: '800px' }}
           >
             <Grid.Col span={{ base: 12, lg: 8 }}>
+            <Stack gap="xs">
+              <Group align="center" justify="left">
+              <Badge color={matchModeColor} variant="filled">{matchMode}</Badge>
+                  <Group gap="xs">
+                    <Text c={'dimmed'} size="xs">{date.toLocaleString("en-US", { month: 'short', day: 'numeric', year: 'numeric', hour: "2-digit", minute: "2-digit" })}</Text>
+                    <Text c={'dimmed'} size="xs">{(gameDuration / 60).toFixed(0)}m</Text>
+                  </Group>
+              </Group>
               <FocusedParticipantList />
+            </Stack>
             </Grid.Col>
             <Grid.Col span={{ base: 12, lg: 4 }}>
               <MatchSummaryTeams />
@@ -74,7 +75,7 @@ function MatchSummaryTeams() {
 
   const playerMap = (team, side) => team.map(participant => (
     <Group key={participant.puuid} justify={side} style={{ flexDirection: `row${side === 'end' ? '-reverse' : ''}` }} wrap="nowrap">
-      <Image src={getChampIcon(participant.championId)} alt={participant.summonerName} w='md' h='md' radius={100} bd={'1px solid yellow'} />
+      <Image src={getChampIcon(participant.championId)} alt={participant.summonerName} w='lg' h='lg' radius={100} bd={'1px solid yellow'} />
       <Text c="dimmed" size="sm">
         {participant.riotIdGameName && <Anchor c="dimmed" target="_blank" href={`https://mobalytics.gg/lol/profile/na/${participant.riotIdGameName}-${participant.riotIdTagline}`}>{participant.riotIdGameName}</Anchor>}
         {!participant.riotIdGameName && (participant.summonerName || 'Unknown')}
@@ -129,18 +130,18 @@ function FocusedParticipantList() {
   const teamWin = focusedParticipants.filter(participant => participant.win === true);
   const teamLoss = focusedParticipants.filter(participant => participant.win === false);
 
-const teamList = (team, gradient) => {
-  return(
-    <Paper radius="md" style={gradient}>
-          <Stack gap="0" align="left">
-            {team.map(participant => (
-              <ParticipantContext.Provider value={{ participant, gameDuration }}>
-                <Participant />
-              </ParticipantContext.Provider>
-            ))}
-          </Stack>
-        </Paper>
-  );
+  const teamList = (team, gradient) => {
+    return (
+      <Paper radius="md" style={gradient}>
+        <Stack gap="0" align="left">
+          {team.map(participant => (
+            <ParticipantContext.Provider value={{ participant, gameDuration }}>
+              <Participant />
+            </ParticipantContext.Provider>
+          ))}
+        </Stack>
+      </Paper>
+    );
   }
 
   return (
@@ -170,9 +171,9 @@ function Participant() {
         <Grid.Col span={{ base: 12, lg: 4 }}>
           <Group align="center" gap={'xs'}>
             <Tooltip label={participant.championName} position="top">
-              <BackgroundImage bgsz={"110%"} src={getChampIcon(participant.championId)} alt={participant.summonerName} w='xl' h='xl' radius={100} bd={`2px solid ${participant.win ? 'green' : 'red'}`} />
+              <BackgroundImage bgsz={"110%"} src={getChampIcon(participant.championId)} alt={participant.summonerName} w={'3rem'} h={'3rem'} radius={100} bd={`2px solid ${participant.win ? 'green' : 'red'}`} />
             </Tooltip>
-            <Image src={getRoleIcon(participant.teamPosition)} alt={participant.summonerName} w='md' h='md' />
+            <Image src={getRoleIcon(participant.teamPosition)} alt={participant.summonerName} w='lg' h='lg' />
             <Text size="sm">{participant.summonerName}</Text>
           </Group></Grid.Col>
         <Grid.Col span={{ base: 12, lg: 8 }}>

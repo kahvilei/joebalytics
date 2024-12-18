@@ -3,7 +3,7 @@ import { Badge, Group, Tooltip, useMantineTheme } from '@mantine/core';
 import { ParticipantContext } from './MatchCard';
 import { useGameData } from "../../context/DataContext";
 
-function Tags() {
+export function Tags() {
     
   const getTag = (tag, isTriggered, value) => {
     if (!isTriggered) {
@@ -58,30 +58,43 @@ function Tags() {
 return (
   <Group gap={4} justify='end'>
     {tags.map((tag) => (
-      <Tooltip key={tag.text + participant.id} label={tag.description} position="top">
-        {tag.color === 'yellow' ? (
-          <Badge
-            c={'rgb(156, 88, 16)'}
-            style={{
-              background: 'linear-gradient(135deg, #FFD700 0%, #FDB931 30%, #FFD700 50%, #FDB931 70%, #FFD700 100%)',
-              boxShadow: '0 2px 4px rgba(253, 185, 49, 0.3)',
-              border: '1px solid #FDB931',
-              animation: 'shine 2s infinite linear'
-            }}
-            variant="filled"
-          >
-            {tag.text}
-          </Badge>
-        ) : (
-          <Badge c={tag.color} color={theme.colors.dark[8]} variant="filled">
-            {tag.text}
-          </Badge>
-        )}
-      </Tooltip>
+      <Tag key={tag.text} tag={tag} participant={participant} />
     ))}
   </Group>
 );
 }
 
-export default Tags;
+export function Tag({ tag, participant, selected }) {
+  if (!tag) {
+    return null;
+  }
+  if (!participant) {
+    participant = { id: 0 };
+  }
+  return (
+    <Tooltip key={tag.text + participant} label={tag.description} position="top">
+    {tag.color === 'yellow' ? (
+      <Badge
+        c={'rgb(156, 88, 16)'}
+        style={{
+          background: 'linear-gradient(135deg, #FFD700 0%, #FDB931 30%, #FFD700 50%, #FDB931 70%, #FFD700 100%)',
+          boxShadow: '0 2px 4px rgba(253, 185, 49, 0.3)',
+          border: '1px solid #FDB931',
+          animation: 'shine 2s infinite linear'
+        }}
+        variant="filled"
+      >
+        {tag.text}
+      </Badge>
+    ) : (
+      <Badge c={tag.color} color={"var(--mantine-color-dark-8)"} variant="filled">
+        {tag.text}
+      </Badge>
+    )}
+  </Tooltip>
+  );
+}
+
+
+
 

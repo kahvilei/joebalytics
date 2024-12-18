@@ -39,6 +39,26 @@
 }
 
 .participant-card>div>div>div{
-  min-height: 70px;
+  min-height: 90px;
+}
+
+.tag-options>div>div>div>div>div{
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-option.m_92253aa5{
+  padding: 0px;
+}
+
+.tag-option.m_92253aa5>div:hover{
+  outline: 2px solid var(--mantine-color-blue-5);
+  cursor: pointer;
+}
+
+/* aria is selected */
+.tag-option.m_92253aa5[aria-selected="true"]>div{
+  outline: 2px solid var(--mantine-color-blue-5);
 }
 

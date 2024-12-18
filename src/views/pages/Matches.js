@@ -6,6 +6,7 @@ import { useGameData } from "../../context/DataContext";
 import { IconCheck, IconRestore } from "@tabler/icons-react";
 import { useState } from "react";
 import MatchCardLoad from "../components/MarchCardLoad";
+import { Tag } from "../components/Tags";
 
 function Matches() {
   const { getMatchListQuery, getTags, champions, queuesSimplified, summoners, getChampIcon, getQueueIdsFromDisplayNames} = useGameData();
@@ -95,6 +96,11 @@ function Matches() {
     }
   }
 
+  const tagsRenderOptions =  ({ option, checked }) => (
+    <Tag key={option.value} tag={tagsList.find(tag => tag.key === option.value)} />
+  );
+
+
   return (
     <Container size="xl">
      <Stack gap="lg">
@@ -156,6 +162,9 @@ function Matches() {
                 value: tag.key
               }))
             ]}
+            renderOption={tagsRenderOptions}
+            comboboxProps={{ width: 500, position: 'bottom-start' }}
+            classNames={{ options: 'tag-options', option: 'tag-option' }}
             searchable
             clearable
             withCheckIcon
