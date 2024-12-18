@@ -5,6 +5,7 @@ import { Container, Group, MultiSelect, Stack, Avatar, Text, Loader, ActionIcon,
 import { useGameData } from "../../context/DataContext";
 import { IconCheck, IconRestore } from "@tabler/icons-react";
 import { useState } from "react";
+import MatchCardLoad from "../components/MarchCardLoad";
 
 function Matches() {
   const { getMatchListQuery, getTags, champions, queuesSimplified, summoners, getChampIcon, getQueueIdsFromDisplayNames} = useGameData();
@@ -74,11 +75,7 @@ function Matches() {
   function MatchListShow() {
     if (loading) {
       return (
-        <Card shadow="xs" padding="xl" radius="lg">
-        <Group align="center" justify="center">
-          <Loader type='bars' />
-        </Group>
-      </Card>
+       <MatchCardLoad />
       )
     }
     else if(!data || !data.matches || data.matches.length === 0) {
