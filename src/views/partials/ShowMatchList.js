@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Card, Container, Group, Loader, ScrollArea, Stack } from '@mantine/core';
+import { useEffect } from "react";
+import { Stack } from '@mantine/core';
 import MatchCard from "../components/MatchCard";
 import MatchCardLoad from "../components/MarchCardLoad";
 
@@ -7,7 +7,6 @@ function ShowMatchList({ matches, onLoadMore, isLoading, infiniteScroll, focused
 
   useEffect(() => {
     if (!infiniteScroll || isLoading ) return;
-
 
     function handleScroll() {  
       if (isLoading) return;

@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, memo } from 'react';
 import { useGameData } from "../../context/DataContext";
-import { IconCoin, IconEye, IconFlag, IconFlagFilled, IconInnerShadowBottomLeftFilled, IconSwords } from "@tabler/icons-react";
-import { Card, Image, Group, Text, Container, Grid, Tooltip, Stack, Paper, BackgroundImage, Badge, useMantineTheme, Anchor, Box } from '@mantine/core';
+import { IconEye, IconFlag, IconFlagFilled, IconInnerShadowBottomLeftFilled, IconSwords } from "@tabler/icons-react";
+import { Card, Image, Group, Text, Grid, Tooltip, Stack, Paper, BackgroundImage, Badge, Anchor, Box } from '@mantine/core';
 import { Tags } from "./Tags";
 import './MatchCard.css'
 
@@ -62,7 +62,12 @@ const MatchCard = (props) => {
   );
 };
 
-export default MatchCard;
+// Custom comparison function to check if the match prop has changed
+const areEqual = (prevProps, nextProps) => {
+  return prevProps.match == nextProps.match;
+};
+
+export default memo(MatchCard, areEqual);
 
 function MatchSummaryTeams() {
   const { match } = useContext(MatchContext);
