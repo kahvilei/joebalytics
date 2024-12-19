@@ -6,6 +6,7 @@ import { useGameData } from "../../context/DataContext";
 import { useState, useMemo, memo } from "react";
 import MatchCardLoad from "../components/MarchCardLoad";
 import MatchFilters from "../components/MatchFilters";
+import { set } from "mongoose";
 
 // Memoize MatchFilters to prevent re-renders when matches update
 const MemoizedMatchFilters = memo(MatchFilters);
@@ -28,6 +29,8 @@ function Matches() {
     const queueIds = gameModes ? getQueueIdsFromDisplayNames(gameModes) : [];
     const tags = searchParams.getAll("tag") || null;
     const limit = parseInt(searchParams.get("limit")) || 10;
+
+    setHasMoreMatches(true);
 
     return {
       roles: roles.includes("any") ? [] : roles,
