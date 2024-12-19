@@ -1,16 +1,17 @@
-import { useEffect } from "react";
-import { Stack } from '@mantine/core';
+import { useEffect, memo } from 'react';
+import { Stack, Text } from '@mantine/core';
 import MatchCard from "../components/MatchCard";
 import MatchCardLoad from "../components/MarchCardLoad";
 
-function ShowMatchList({ matches, onLoadMore, isLoading, infiniteScroll, focusedSummoners }) {
+
+function ShowMatchList({ matches, onLoadMore, isLoading, infiniteScroll, focusedSummoners, hasMoreMatches }) {
 
   useEffect(() => {
-    if (!infiniteScroll || isLoading ) return;
+    if (!infiniteScroll || isLoading) return;
 
-    function handleScroll() {  
+    function handleScroll() {
       if (isLoading) return;
-      const scrolledToBottom = 
+      const scrolledToBottom =
         window.innerHeight + document.documentElement.scrollTop
         >= document.documentElement.offsetHeight - 2;
 
@@ -23,13 +24,23 @@ function ShowMatchList({ matches, onLoadMore, isLoading, infiniteScroll, focused
     return () => window.removeEventListener('scroll', handleScroll);
   }, [infiniteScroll, isLoading, onLoadMore]);
 
+  // Memoize the match list rendering logic
+  const NoMoreMatches = memo(() => (
+    <Text align="center" size="sm" weight={500} c="dimmed" fs={'italic'}>
+      No more matches to show
+    </Text>
+  ));
+
   return (
-    <Stack spacing="md" p="0rem 0rem 300px 0rem">
-        {matches.map((match, k) => (
-          <MatchCard match={match} key={k} focusedSummoners={focusedSummoners} />
-        ))}
-      {isLoading && 
+    <Stack spacing="md" p="0px 0px 100px 0px">
+      {matches.map((match, k) => (
+        <MatchCard match={match} key={k} focusedSummoners={focusedSummoners} />
+      ))}
+      {isLoading &&
         <MatchCardLoad />
+      }
+      {!hasMoreMatches &&
+        <NoMoreMatches />
       }
     </Stack>
   );

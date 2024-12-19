@@ -14,6 +14,7 @@ const MemoizedMatchFilters = memo(MatchFilters);
 const MemoizedShowMatchList = memo(ShowMatchList);
 
 function Matches() {
+  const [hasMoreMatches, setHasMoreMatches] = useState(true);
   const { getMatchListQuery, summoners, getQueueIdsFromDisplayNames } = useGameData();
   const matchPageQuery = getMatchListQuery();
   const [searchParams] = useSearchParams();
@@ -63,6 +64,10 @@ function Matches() {
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
+          if (fetchMoreResult.matches.length === 0) {
+            setHasMoreMatches(false);
+            return prev;
+          }
           return {
             ...prev,
             matches: [...prev.matches, ...fetchMoreResult.matches]
@@ -81,7 +86,6 @@ function Matches() {
     [summoners]
   );
 
-  // Memoize the match list rendering logic
   const MatchListShow = useMemo(() => {
     if (loading) {
       return <MatchCardLoad />;
@@ -93,13 +97,16 @@ function Matches() {
       return <div>Error loading matches: {error.message}</div>;
     }
     return (
-      <MemoizedShowMatchList
-        matches={data.matches}
-        onLoadMore={loadMoreMatches}
-        isLoading={isLoading}
-        infiniteScroll={true}
-        focusedSummoners={focusedSummoners}
-      />
+      <>
+        <MemoizedShowMatchList
+          matches={data.matches}
+          onLoadMore={loadMoreMatches}
+          isLoading={isLoading}
+          infiniteScroll={hasMoreMatches}
+          focusedSummoners={focusedSummoners}
+          hasMoreMatches={hasMoreMatches}
+        />
+      </>
     );
   }, [loading, error, data, isLoading, loadMoreMatches, focusedSummoners]);
 
