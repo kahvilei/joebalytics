@@ -171,7 +171,7 @@ function Participant() {
         align="center"
         justify="space-between"
         type="container"
-        breakpoints={{ lg: '800px' }}
+        breakpoints={{ lg: '500px' }}
       >
         <Grid.Col span={{ base: 12, lg: 4 }}>
           <Group align="center" gap={'xs'}>

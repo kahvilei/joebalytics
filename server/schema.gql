@@ -12,7 +12,8 @@
     championIds: [Int!]
     queueIds: [Int!]
     tags: [String!]
-  ): [Match!]!
+    stats: [StatRequest!]
+  ): MatchData!
   mastery(id: ID!): Mastery
   masteries(
     limit: Int
@@ -26,6 +27,7 @@
   ): [Challenge!]!
 }
 
+
 type Mutation {
   addSummoner(region: String!, name: String!): Summoner!
   updateSummoner(id: ID!): Summoner!
@@ -34,6 +36,11 @@ type Mutation {
   deleteOrphanMatches: DeleteResponse!
   formatOneParticipant(id: ID!): Participant!
   formatAllParticipants: FormatParticipantsResponse!
+}
+
+type MatchData {
+  matchData: [Match!]!
+  statData: JSON!
 }
 
 type Summoner {

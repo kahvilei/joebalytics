@@ -80,6 +80,8 @@ const MATCHES_PAGE_QUERY = gql`
     $limit: Int
     $timestamp: Float
     $tags: [String!]
+    $stats: [StatRequest!]
+    
   ) {
     matches(
       region: $region
@@ -90,57 +92,61 @@ const MATCHES_PAGE_QUERY = gql`
       limit: $limit
       timestamp: $timestamp
       tags: $tags
+      stats: $stats
     ) {
-      metadata {
-        matchId
-        participants
-      }
-      info {
-        gameMode
-        gameStartTimestamp
-        gameDuration
-        platformId
-        queueId
-        gameCreation
-
-        participants {
-          teamPosition
-          championId
-          championName
-          kills
-          deaths
-          assists
-          win
-          summonerName
-          puuid
-          teamId
-          riotIdTagline
-          riotIdGameName
+      matchData {
+        metadata {
           matchId
-          totalMinionsKilled
-          neutralMinionsKilled
-          goldEarned
-          totalDamageDealtToChampions
-          visionScore
-          wardsPlaced
-          wardsKilled
-          gameEndedInEarlySurrender
-          gameEndedInSurrender
+          participants
+        }
+        info {
+          gameMode
+          gameStartTimestamp
+          gameDuration
+          platformId
+          queueId
+          gameCreation
 
-          challenges {
-            killParticipation
-            kda
-            visionScorePerMinute
-          }
+          participants {
+            teamPosition
+            championId
+            championName
+            kills
+            deaths
+            assists
+            win
+            summonerName
+            puuid
+            teamId
+            riotIdTagline
+            riotIdGameName
+            matchId
+            totalMinionsKilled
+            neutralMinionsKilled
+            goldEarned
+            totalDamageDealtToChampions
+            visionScore
+            wardsPlaced
+            wardsKilled
+            gameEndedInEarlySurrender
+            gameEndedInSurrender
+            challenges {
+              killParticipation
+              kda
+              visionScorePerMinute
+              soloKills
+            }
 
-          tags {
-            blind {
-              isTriggered
-              value
+            tags {
+              blind {
+                isTriggered
+                value
+              }
+            }
             }
           }
         }
-      }
+      statData
     }
   }
 `;
@@ -263,9 +269,9 @@ export function DataProvider({ children }) {
         setTagsCurrentVersion(parsedData.tagCurrentVersion);
         setTagsLastBackFill(parsedData.tagLastBackFill);
       } else {
-      setShouldFetchAdmin(true);
-    }
-  };
+        setShouldFetchAdmin(true);
+      }
+    };
 
     loadData();
     loadAdminData();
@@ -293,7 +299,7 @@ export function DataProvider({ children }) {
       if (data.gameData.tagData) {
         // Replace contents of tag section of the match page query with the tags from the server
         let matchListTemp = matchListQuery;
-        matchListTemp.definitions[0].selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections = data.gameData.tagData.tags.map(tag => ({
+        matchListTemp.definitions[0].selectionSet.selections.at(0).selectionSet.selections.at(0).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections = data.gameData.tagData.tags.map(tag => ({
           kind: "Field",
           name: { kind: "Name", value: tag.key },
           selectionSet: {
@@ -367,9 +373,9 @@ export function DataProvider({ children }) {
         <Loader type='bars' size='xl' />
       </Stack>
     )
-  } else if (!champions || !items || !queues || !summoners || !tags ) {
+  } else if (!champions || !items || !queues || !summoners || !tags) {
     return <div>no data</div>;
-    }
+  }
 
   if (error) {
     return <div>Error loading game data</div>;
@@ -548,7 +554,7 @@ export function DataProvider({ children }) {
 
     getMatchListQuery: () => matchListQuery,
 
-    getDisplayNameFromQueueId: (id) => { 
+    getDisplayNameFromQueueId: (id) => {
       const queue = queues.find(q => q.queueId === id);
       if (queue) {
         if (queue.description.includes("ARAM")) return "ARAM";
@@ -580,7 +586,7 @@ export function DataProvider({ children }) {
       });
       return displayNames;
     },
-    
+
     getQueueIdsFromDisplayNames: (names) => {
       let queueIds = [];
       if (queueMap === null) return ["0"];
@@ -612,7 +618,7 @@ export function DataProvider({ children }) {
   };
 
   return (
-    <DataContext.Provider value={{...utils, summoners, champions, items, queues, tags, tagsFileVersions, tagsCurrentVersion, tagsLastBackFill, queueMap, queuesSimplified, matchListQuery}}>
+    <DataContext.Provider value={{ ...utils, summoners, champions, items, queues, tags, tagsFileVersions, tagsCurrentVersion, tagsLastBackFill, queueMap, queuesSimplified, matchListQuery }}>
       {children}
     </DataContext.Provider>
   );

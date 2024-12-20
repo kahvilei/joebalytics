@@ -8,7 +8,7 @@
   justify-content: end;
 }
 
-@container (max-width: 800px) {
+@container (max-width: 500px) {
   .key-stats-tags>div {
     justify-content: left;
   }
