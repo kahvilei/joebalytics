@@ -1,16 +1,18 @@
 // resolvers/mastery.js
+
+// resolvers
 const masteryResolvers = {
     Query: {
-      mastery: async (_, { id }, { models }) => {
-        return await models.Mastery.findById(id);
-      },
-  
+      // returns all masteries, sorted by champion points by default. Can be filtered by championId or puuid.
       masteries: async (_, { 
         limit, 
         championId, 
+        puuid,
         sortBy = { field: 'CHAMPION_POINTS', direction: 'DESC' } 
       }, { models }) => {
-        const query = championId ? { championId } : {};
+        const query = {};
+        if (championId) query.championId = championId;
+        if (puuid) query.puuid = puuid;
         const sort = {};
         sort[sortBy.field.toLowerCase()] = sortBy.direction === 'DESC' ? -1 : 1;
   

@@ -1,6 +1,6 @@
 
 const { performance } = require('perf_hooks');
-const { formatParticipant, formatAllParticipants } = require('../controllers/participants');
+const { formatParticipant, formatAllParticipants, recoverMatchDataFromOrphanParticipants } = require('../controllers/participants');
 const path = require('path');
 
 const yaml = require('js-yaml');

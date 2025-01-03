@@ -119,6 +119,77 @@ async function processMatchBatch(matches, trackedPuuids, stats) {
     }
 }
 
+async function recoverMatchDataFromOrphanParticipants(models, user) {
+    const startTime = performance.now();
+    console.log('Starting match data recovery from orphan participants');
+
+    const stats = {
+        total: 0,
+        processed: 0,
+        success: 0,
+        failed: 0,
+        errors: []
+    };
+
+    try {
+        // Get all summoner PUUIDs
+        const summoners = await models.Summoner.find();
+        const trackedPuuids = new Set(summoners.map(s => s.puuid));
+
+        // Create cursor for memory efficient querying
+        const cursor = models.Participant.find({
+            'abstract': { $exists: true }
+        }).sort({ 'gameStartTimestamp': -1 }).cursor({ batchSize: 50 });
+
+        let batchCount = 0;
+        let participants = [];
+
+        // Process participants in batches
+        for await (const participant of cursor) {
+            participants.push(participant);
+            
+            if (participants.length === 50) {
+                await processParticipantBatch(participants, trackedPuuids, stats);
+                batchCount++;
+                console.log(`Processed batch ${batchCount}, total processed: ${stats.processed}`);
+                participants = []; // Clear batch
+            }
+        }
+
+        // Process remaining participants
+        if (participants.length > 0) {
+            await processParticipantBatch(participants, trackedPuuids, stats);
+        }
+
+        const endTime = performance.now();
+        console.log(`Batch processing completed in ${endTime - startTime}ms`);
+        console.log(`Processed ${stats.processed} participants out of ${stats.total} total`);
+        addBackFillData(stats, user);
+        return stats;
+    } catch (error) {
+        console.error('Error processing participants:', error);
+        throw new Error(`Failed to recover match data: ${error.message}`);
+    }
+}
+
+async function processParticipantBatch(participants, trackedPuuids, stats) {
+    for (let participant of participants) {
+        if (trackedPuuids.has(participant.puuid)) {
+            stats.total++;
+            try {
+                await processTags(participant);
+                stats.processed++;
+            } catch (error) {
+                stats.failed++;
+                stats.errors.push({
+                    puuid: participant.puuid,
+                    error: error.message
+                });
+            }
+        }
+    }
+}
+
 module.exports = {
     formatParticipant,
     formatAllParticipants

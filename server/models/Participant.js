@@ -193,6 +193,7 @@ async function generateParticipantSchema() {
     teamPosition: String,
     timeCCingOthers: Number,
     timePlayed: Number,
+    tagsVersion: Number,
     tags: {
       type: Map,
       of: {

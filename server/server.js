@@ -1,8 +1,11 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
+
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
 const models = require('./models');
+const { initializeData } = require('./controllers/data');
+
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const connectDB = require('./config/db');
@@ -29,6 +32,7 @@ async function startServer() {
     models.Participant = await models.participantFunctions.createParticipantModel();
 
     const data = {}
+    await initializeData(data);
 
     data.summoners = await models.Summoner.find();
     

@@ -18,11 +18,13 @@
   masteries(
     limit: Int
     championId: Int
+    puuid: String
     sortBy: MasterySortInput
   ): [Mastery!]!
   challenge(id: ID!): Challenge
   challenges(
     limit: Int
+    puuid: String
     sortBy: ChallengeSortInput
   ): [Challenge!]!
 }
@@ -36,6 +38,7 @@ type Mutation {
   deleteOrphanMatches: DeleteResponse!
   formatOneParticipant(id: ID!): Participant!
   formatAllParticipants: FormatParticipantsResponse!
+  recoverMatchDataFromOrphanParticipants: FormatParticipantsResponse!
 }
 
 type MatchData {
@@ -346,6 +349,7 @@ type Participant {
   summonerId: String
   summonerLevel: Int
   summonerName: String
+  tagsVersion: Int
   tags: Tags
   teamEarlySurrendered: Boolean
   teamId: Int
@@ -556,6 +560,7 @@ type GameData {
   tagFileVersions: [TagFileVersion!]!
   tagCurrentVersion: TagFileVersion!
   tagLastBackFill: TagFileBackFill!
+  summoners: [Summoner!]!
 }
 
 type TagFileVersion {

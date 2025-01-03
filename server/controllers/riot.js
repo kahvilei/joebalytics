@@ -69,7 +69,24 @@ const recordRecentMatches = async (puuid, region, init) => {
   //for each participant found in match.info.participants, run the util funnction to calculate tags and save to the participant
 
   if (matchList.length > 0) {
-    await Match.insertMany(matchList);
+    //insert matches one at a time, so that if one fails, the others will still be added, and we can delete the 10 participants that were added
+    for (let match of matchList) {
+      try {
+        let newMatch = await Match.create(match);
+      } catch (err) {
+        //delete the 10 participants that were added, unless this is a duplicate match key error
+        if (err.code != 11000) {
+        for (let participant of match.info.participants) {
+          try{
+          await models.Participant.deleteOne({ uniqueId: participant.uniqueId });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+        console.log(err);
+      }
+    }
     console.log(`${matchList.length} matches added successfully`);
     return `${matchList.length} matches added successfully`;
   } else {
@@ -98,7 +115,7 @@ const collectMatchDataFromArray = async (region, list) => {
           participant.uniqueId = matchData.metadata.matchId + participant.puuid;
           let tags = await processTags(participant, matchData);
           participant.tags = tags;
-          let newParticipant = await Participant.create(participant)
+          let newParticipant = await Participant.create(participant);
           newParticipantList.push(newParticipant);
         }
 

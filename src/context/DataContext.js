@@ -51,20 +51,20 @@ const GAME_DATA_QUERY = gql`
           value
         }
       }
-    }
-    summoners {
-      id
-      name
-      regionDisplay
-      regionURL
-      tagline
-      profileIconId
-      puuid
-      summonerLevel
-      rankedData {
-        tier
-        rank
-        leaguePoints
+       summoners {
+        id
+        name
+        regionDisplay
+        regionURL
+        tagline
+        profileIconId
+        puuid
+        summonerLevel
+        rankedData {
+          tier
+          rank
+          leaguePoints
+        }
       }
     }
   }
@@ -292,7 +292,7 @@ export function DataProvider({ children }) {
       setChampions(data.gameData.champions.data);
       setItems(data.gameData.items);
       setQueues(data.gameData.queueTypes);
-      setSummoners(data.summoners);
+      setSummoners(data.gameData.summoners);
       setTags(data.gameData.tagData);
       setQueuesSimplified(["ARAM", "Draft", "Ranked Solo", "Ranked Flex", "URF", "ARURF", "Summoner's Spellbook", "Other"]);
 
@@ -324,7 +324,7 @@ export function DataProvider({ children }) {
         champions: data.gameData.champions.data,
         items: data.gameData.items,
         queueTypes: data.gameData.queueTypes,
-        summoners: data.summoners,
+        summoners: data.gameData.summoners,
         tagData: data.gameData.tagData,
         matchListQuery: matchListQuery
       }));

@@ -1,15 +1,4 @@
 // resolvers/summoner.js
-const { regionMapping } = require('../config/regionMapping');
-const {
-  getMasteryByPuuid,
-  getRankedDataBySummId,
-  getSummonerDetails,
-  getSummonerDetailsByPuuid,
-  recordRecentMatches,
-  getChallengeDataByPuuid,
-  getChallengeConfig,
-  getSummonerTaglineByPuuid,
-} = require('../controllers/riot');
 
 const summonerResolvers = {
   Query: {
