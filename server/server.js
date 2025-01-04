@@ -38,7 +38,7 @@ async function startServer() {
     
     // Create new server instance
     server = new ApolloServer({
-      typeDefs: await typeDefs(),
+      typeDefs: await typeDefs(data.tags),
       resolvers,
       context: async ({ req }) => {
         // Add auth context

@@ -30,7 +30,7 @@ const dataResolvers = {
       }
     },
     // returns a tag yaml file by version
-    tagFileByVersion: async (_, __, { data }) => {
+    tagFileByVersion: async (_, { version }, { data }) => {
       try {
         const data = await getTagFileByVersion(version);
         return data;

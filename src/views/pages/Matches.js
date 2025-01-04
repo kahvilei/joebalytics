@@ -6,13 +6,12 @@ import { useGameData } from "../../context/DataContext";
 import { useState, useMemo, memo } from "react";
 import MatchCardLoad from "../components/MarchCardLoad";
 import MatchFilters from "../components/MatchFilters";
-import { set } from "mongoose";
+import { getMatchListQueryWithTagData } from "../../graphql/queries";
 
 // Memoize components to prevent unnecessary re-renders
 const MemoizedMatchFilters = memo(MatchFilters);
 const MemoizedShowMatchList = memo(ShowMatchList);
 
-// New Stats Viewer Component using Mantine components
 const StatsViewer = memo(({ matchStats, matchCount, isLoading }) => {
   if (isLoading) return (
       <MatchCardLoad />
@@ -71,8 +70,7 @@ const StatsViewer = memo(({ matchStats, matchCount, isLoading }) => {
 
 function Matches() {
   const [hasMoreMatches, setHasMoreMatches] = useState(true);
-  const { getMatchListQuery, summoners, getQueueIdsFromDisplayNames } = useGameData();
-  const matchPageQuery = getMatchListQuery();
+  const { summoners, getQueueIdsFromDisplayNames, getTags } = useGameData();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -103,7 +101,7 @@ function Matches() {
     { path: "challenges/soloKills", aggregation: "AVG" }
   ], []);
 
-  const { loading, error, data, fetchMore } = useQuery(matchPageQuery, {
+  const { loading, error, data, fetchMore } = useQuery(getMatchListQueryWithTagData(getTags()), {
     variables: {
       ...filterParams,
       stats: statsConfig

@@ -6,17 +6,18 @@ import 'prismjs/themes/prism.css';
 
 import yaml from 'js-yaml';
 
-import { Container, Group, Text, Title, Button, Stack, Loader, ActionIcon, Select, Card, rem, Tooltip, Grid, Paper, Collapse } from '@mantine/core';
+import { Container, Group, Text, Button, Stack, Loader, ActionIcon, Select, Card, Tooltip, Grid, Paper, Collapse } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import { useGameData } from '../../context/DataContext';
 
 import { useMutation, useQuery } from '@apollo/client';
-import { IconDatabaseEdit, IconPlus, IconReload, IconUpload } from '@tabler/icons-react';
+import { IconDatabaseEdit, IconPlus, IconUpload } from '@tabler/icons-react';
+import {BACK_FILL_TAGS_MUTATION, TAG_FILE_BY_VERSION_QUERY, UPDATE_TAGS_MUTATION} from "../../graphql/queries";
 
 
 function TagUpdate() {
-  const { tags, tagsFileVersions, tagsCurrentVersion, getUpdateTagsMutation, getTagFileByVersionQuery, reloadAdminTagData, tagsLastBackFill, getBackFillMutation } = useGameData();
+  const { tags, tagsFileVersions, tagsCurrentVersion, reloadAdminTagData, tagsLastBackFill } = useGameData();
 
 
   const [loading, setLoading] = useState(false);
@@ -69,7 +70,7 @@ function TagUpdate() {
     return removeNulls(removeTypename(value));
   }
 
-  const [updateTags] = useMutation(getUpdateTagsMutation(), {
+  const [updateTags] = useMutation( UPDATE_TAGS_MUTATION, {
     onCompleted: () => {
       setSuccess(true);
       setLoading(false);
@@ -82,7 +83,7 @@ function TagUpdate() {
     }
   });
 
-  const [backFill] = useMutation(getBackFillMutation(), {
+  const [backFill] = useMutation( BACK_FILL_TAGS_MUTATION, {
     onCompleted: () => {
       setBackFillLoading(false);
       reloadAdminTagData();
@@ -118,9 +119,7 @@ function TagUpdate() {
     }
   }
 
-  const getTagFile = getTagFileByVersionQuery();
-
-  const { data, fetchMore } = useQuery(getTagFile, {
+  const { data, fetchMore } = useQuery( TAG_FILE_BY_VERSION_QUERY, {
     variables: {
       version: selectedId
     }

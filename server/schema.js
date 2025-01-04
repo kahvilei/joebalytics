@@ -1,13 +1,10 @@
 //get string from schema.gql and put it in typeDefs
 const fs = require('fs');
 
-const { getTagFile } = require('./controllers/tags');
 
-
-const typeDefs = async () => {
+const typeDefs = async (tags) => {
     const raw = fs.readFileSync('./server/schema.gql', 'utf8');
     try{
-    const tags = await getTagFile();
     // Generate GraphQL type for individual tag fields
     const tagList = tags.tags;
     const tagFields = tagList.map(tag => {

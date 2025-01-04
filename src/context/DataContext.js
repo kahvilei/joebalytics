@@ -1,233 +1,23 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
-import { get, set } from 'mongoose';
-import { Container, Loader, Stack } from '@mantine/core';
-
-const GAME_DATA_QUERY = gql`
-  query GameData {
-    gameData {
-      champions {
-        data
-        version
-        type
-        format
-      }
-      items {
-        id
-        name
-        description
-        iconPath
-      }
-      summonerSpells {
-        data
-        version
-        type
-      }
-      queueTypes {
-        queueId
-        map
-        description
-      }
-      tagData {
-        precalcs{
-          name
-          type
-          from {
-            list
-            type
-            path
-            conditions 
-          }
-          list
-          value
-          conditions 
-        }
-        tags{
-          key
-          text
-          color
-          description
-          triggers
-          value
-        }
-      }
-       summoners {
-        id
-        name
-        regionDisplay
-        regionURL
-        tagline
-        profileIconId
-        puuid
-        summonerLevel
-        rankedData {
-          tier
-          rank
-          leaguePoints
-        }
-      }
-    }
-  }
-`;
-
-const MATCHES_PAGE_QUERY = gql`
- query MatchesPageData(
-    $region: String
-    $names: [String!]
-    $roles: [String!]
-    $championIds: [Int!]
-    $queueIds: [Int!]
-    $limit: Int
-    $timestamp: Float
-    $tags: [String!]
-    $stats: [StatRequest!]
-    
-  ) {
-    matches(
-      region: $region
-      summonerNames: $names
-      roles: $roles
-      championIds: $championIds
-      queueIds: $queueIds
-      limit: $limit
-      timestamp: $timestamp
-      tags: $tags
-      stats: $stats
-    ) {
-      matchData {
-        metadata {
-          matchId
-          participants
-        }
-        info {
-          gameMode
-          gameStartTimestamp
-          gameDuration
-          platformId
-          queueId
-          gameCreation
-
-          participants {
-            teamPosition
-            championId
-            championName
-            kills
-            deaths
-            assists
-            win
-            summonerName
-            puuid
-            teamId
-            riotIdTagline
-            riotIdGameName
-            matchId
-            totalMinionsKilled
-            neutralMinionsKilled
-            goldEarned
-            totalDamageDealtToChampions
-            visionScore
-            wardsPlaced
-            wardsKilled
-            gameEndedInEarlySurrender
-            gameEndedInSurrender
-            challenges {
-              killParticipation
-              kda
-              visionScorePerMinute
-              soloKills
-            }
-
-            tags {
-              blind {
-                isTriggered
-                value
-              }
-            }
-            }
-          }
-        }
-      statData
-    }
-  }
-`;
-
-const TAG_VERSIONS_QUERY = gql`
-  query TagVersions{
-    gameData {
-        tagFileVersions{
-            id
-            user
-        }
-        tagCurrentVersion{
-            id
-            user
-        }
-        tagLastBackFill {
-            id
-            user
-            results {
-                total
-                success
-                failed
-                errors
-            }
-        }
-    }
-  }
-`;
-
-const UPDATE_TAGS_MUTATION = gql`
-  mutation UpdateTagData($file: String!) {
-    updateTagData(file: $file) {
-      message
-      success
-    }
-  }
-`;
-
-const TAG_FILE_BY_VERSION_QUERY = gql`
-query TagFileByVersion($version: ID!) {
-  tagFileByVersion(version: $version) {
-    precalcs {
-      name
-      type
-      from {
-        list
-        type
-        path
-        conditions
-      }
-      list
-      value
-      conditions
-    }
-    tags {
-      key
-      text
-      color
-      description
-      triggers
-      value
-    }
-  }
-}
-`;
-
-const BACK_FILL_MUTATION = gql`
- mutation FormatAllParticipants {
-  formatAllParticipants {
-    total
-    success
-    failed
-    errors
-  }
-}
-`;
-
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { Loader, Stack } from '@mantine/core';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import { gameDataUtils } from '../utils/gameDataUtils';
+import _ from 'lodash';
+import { GAME_DATA_QUERY, TAG_VERSIONS_QUERY } from "../graphql/queries";
 
 export const DataContext = createContext(null);
 
+function compareData(oldData, newData) {
+  return !_.isEqual(oldData, newData);
+}
+
 export function DataProvider({ children }) {
+  // Local storage hooks
+  const [gameData, setGameData] = useLocalStorage('gameData', null);
+  const [adminTagData, setAdminTagData] = useLocalStorage('adminTagData', null);
+
+  // State management
   const [champions, setChampions] = useState(null);
   const [items, setItems] = useState(null);
   const [queues, setQueues] = useState(null);
@@ -235,394 +25,163 @@ export function DataProvider({ children }) {
   const [queuesSimplified, setQueuesSimplified] = useState(null);
   const [summoners, setSummoners] = useState(null);
   const [tags, setTags] = useState(null);
+
+  // Admin state
   const [tagsFileVersions, setTagsFileVersions] = useState(null);
   const [tagsCurrentVersion, setTagsCurrentVersion] = useState(null);
   const [tagsLastBackFill, setTagsLastBackFill] = useState(null);
-  const [matchListQuery, setMatchListQuery] = useState(MATCHES_PAGE_QUERY);
 
-  const [shouldFetch, setShouldFetch] = useState(false);
-  const [shouldFetchAdmin, setShouldFetchAdmin] = useState(false);
+  // Initial data loading and background sync queries
+  const { data: freshGameData, loading: gameDataLoading } = useQuery(GAME_DATA_QUERY, {
+    fetchPolicy: "network-only"
+  });
 
-  useLayoutEffect(() => {
-    const loadData = async () => {
-      const cachedData = localStorage.getItem('gameData');
-      const cachedTimestamp = localStorage.getItem('gameDataTimestamp');
-      const timeInterval = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+  const { data: freshAdminData, loading: adminDataLoading, refetch: refectAdminTagData } = useQuery(TAG_VERSIONS_QUERY, {
+    fetchPolicy: "network-only"
+  });
 
-      if (cachedData && cachedTimestamp && (Date.now() - parseInt(cachedTimestamp)) < timeInterval) {
-        const parsedData = JSON.parse(cachedData);
-        setChampions(parsedData.champions);
-        setItems(parsedData.items);
-        setQueues(parsedData.queueTypes);
-        setSummoners(parsedData.summoners);
-        setTags(parsedData.tagData);
-        setQueuesSimplified(["ARAM", "Draft", "Ranked Solo", "Ranked Flex", "URF", "ARURF", "Summoner's Spellbook", "Other"]);
-        setMatchListQuery(parsedData.matchListQuery);
-      } else {
-        setShouldFetch(true);
-      }
-    };
+  // Initial setup from cached data
+  useEffect(() => {
+    if (gameData) {
+      setChampions(gameData.champions);
+      setItems(gameData.items);
+      setQueues(gameData.queueTypes);
+      setSummoners(gameData.summoners);
+      setTags(gameData.tagData);
+      setQueuesSimplified(["ARAM", "Draft", "Ranked Solo", "Ranked Flex", "URF", "ARURF", "Summoner's Spellbook", "Other"]);
+    }
 
-    const loadAdminData = async () => {
-      const cachedData = localStorage.getItem('adminTagData');
-      if (cachedData) {
-        const parsedData = JSON.parse(cachedData);
-        setTagsFileVersions(parsedData.tagFileVersions);
-        setTagsCurrentVersion(parsedData.tagCurrentVersion);
-        setTagsLastBackFill(parsedData.tagLastBackFill);
-      } else {
-        setShouldFetchAdmin(true);
-      }
-    };
-
-    loadData();
-    loadAdminData();
+    if (adminTagData) {
+      setTagsFileVersions(adminTagData.tagFileVersions);
+      setTagsCurrentVersion(adminTagData.tagCurrentVersion);
+      setTagsLastBackFill(adminTagData.tagLastBackFill);
+    }
   }, []);
 
-  const { loading, error, data } = useQuery(GAME_DATA_QUERY, {
-    skip: !shouldFetch,
-    fetchPolicy: "network-only"
-  });
-
-  const adminTag = useQuery(TAG_VERSIONS_QUERY, {
-    skip: !shouldFetchAdmin,
-    fetchPolicy: "network-only"
-  });
-
+  // Background sync effect
   useEffect(() => {
-    if (data) {
-      setChampions(data.gameData.champions.data);
-      setItems(data.gameData.items);
-      setQueues(data.gameData.queueTypes);
-      setSummoners(data.gameData.summoners);
-      setTags(data.gameData.tagData);
-      setQueuesSimplified(["ARAM", "Draft", "Ranked Solo", "Ranked Flex", "URF", "ARURF", "Summoner's Spellbook", "Other"]);
+    if (freshGameData?.gameData) {
+      const newGameData = {
+        champions: freshGameData.gameData.champions.data,
+        items: freshGameData.gameData.items,
+        queueTypes: freshGameData.gameData.queueTypes,
+        summoners: freshGameData.gameData.summoners,
+        tagData: freshGameData.gameData.tagData,
+      };
 
-      if (data.gameData.tagData) {
-        // Replace contents of tag section of the match page query with the tags from the server
-        let matchListTemp = matchListQuery;
-        matchListTemp.definitions[0].selectionSet.selections.at(0).selectionSet.selections.at(0).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections = data.gameData.tagData.tags.map(tag => ({
-          kind: "Field",
-          name: { kind: "Name", value: tag.key },
-          selectionSet: {
-            kind: "SelectionSet",
-            selections: [
-              {
-                kind: "Field",
-                name: { kind: "Name", value: "isTriggered" }
-              },
-              {
-                kind: "Field",
-                name: { kind: "Name", value: "value" }
-              }
-            ]
-          }
-        }));
-        setMatchListQuery(matchListQuery);
+      // Only update if data has changed
+      if (compareData(gameData, newGameData)) {
+        setGameData(newGameData);
+        setChampions(newGameData.champions);
+        setItems(newGameData.items);
+        setQueues(newGameData.queueTypes);
+        setSummoners(newGameData.summoners);
+        setTags(newGameData.tagData);
       }
-
-      // Cache the data in local storage with a timestamp
-      localStorage.setItem('gameData', JSON.stringify({
-        champions: data.gameData.champions.data,
-        items: data.gameData.items,
-        queueTypes: data.gameData.queueTypes,
-        summoners: data.gameData.summoners,
-        tagData: data.gameData.tagData,
-        matchListQuery: matchListQuery
-      }));
-      localStorage.setItem('gameDataTimestamp', Date.now().toString());
     }
-    if (adminTag.data?.gameData) {
-      setTagsFileVersions(adminTag.data.gameData.tagFileVersions);
-      setTagsCurrentVersion(adminTag.data.gameData.tagCurrentVersion);
-      setTagsLastBackFill(adminTag.data.gameData.tagLastBackFill);
 
-      // Cache the admin tag data in local storage with a timestamp
-      localStorage.setItem('adminTagData', JSON.stringify({
-        tagFileVersions: adminTag.data.tagFileVersions,
-        tagCurrentVersion: adminTag.data.tagCurrentVersion,
-        tagLastBackFill: adminTag.data.tagLastBackFill
-      }));
+    if (freshAdminData?.gameData) {
+      const newAdminData = {
+        tagFileVersions: freshAdminData.gameData.tagFileVersions,
+        tagCurrentVersion: freshAdminData.gameData.tagCurrentVersion,
+        tagLastBackFill: freshAdminData.gameData.tagLastBackFill
+      };
+
+      // Only update if admin data has changed
+      if (compareData(adminTagData, newAdminData)) {
+        setAdminTagData(newAdminData);
+        setTagsFileVersions(newAdminData.tagFileVersions);
+        setTagsCurrentVersion(newAdminData.tagCurrentVersion);
+        setTagsLastBackFill(newAdminData.tagLastBackFill);
+      }
     }
-  }, [data, adminTag.data]);
+  }, [freshGameData, freshAdminData]);
 
+  // Queue map effect
   useEffect(() => {
-    if (adminTag.data) {
-      setTagsFileVersions(adminTag.data.tagFileVersions);
-      setTagsCurrentVersion(adminTag.data.tagCurrentVersion);
-      setTagsLastBackFill(adminTag.data.tagLastBackFill);
-    }
-  }, [adminTag.data]);
-
-  useEffect(() => {
-    //sort queues into ARAM, Draft, Ranked, URF, ARURF, Summoner's Spellbook, and Other
     if (queues) {
-      const aram = queues.filter(q => q.description?.includes("ARAM"));
-      const draft = queues.filter(q => q.description?.includes("Draft"));
-      const rankedSolo = queues.filter(q => q.description?.includes("Ranked") && q.description?.includes("Solo"));
-      const rankedFlex = queues.filter(q => q.description?.includes("Ranked") && q.description?.includes("Flex"));
-      const urf = queues.filter(q => q.description?.includes("URF"));
-      const arurf = queues.filter(q => q.description?.includes("ARURF"));
-      const spellbook = queues.filter(q => q.description?.includes("Spellbook"));
-      const other = queues.filter(q => !q.description?.includes("ARAM") && !q.description?.includes("Draft") && !q.description?.includes("Ranked") && !q.description?.includes("URF") && !q.description?.includes("ARURF") && !q.description?.includes("Spellbook"));
-      setQueueMap({ aram, draft, rankedSolo, rankedFlex, urf, arurf, spellbook, other });
+      const queueTypes = {
+        aram: queues.filter(q => q.description?.includes("ARAM")),
+        draft: queues.filter(q => q.description?.includes("Draft")),
+        rankedSolo: queues.filter(q => q.description?.includes("Ranked") && q.description?.includes("Solo")),
+        rankedFlex: queues.filter(q => q.description?.includes("Ranked") && q.description?.includes("Flex")),
+        urf: queues.filter(q => q.description?.includes("URF")),
+        arurf: queues.filter(q => q.description?.includes("ARURF")),
+        spellbook: queues.filter(q => q.description?.includes("Spellbook")),
+        other: queues.filter(q => !q.description?.includes("ARAM") &&
+            !q.description?.includes("Draft") &&
+            !q.description?.includes("Ranked") &&
+            !q.description?.includes("URF") &&
+            !q.description?.includes("ARURF") &&
+            !q.description?.includes("Spellbook"))
+      };
+      setQueueMap(queueTypes);
     }
   }, [queues]);
 
-  if (loading) {
+  // Loading states
+  if ((!gameData && gameDataLoading) || (!adminTagData && adminDataLoading)) {
     return (
-      <Stack w={"100vw"} h={"100vh"} justify={"center"} align={"center"}>
-        <Loader type='bars' size='xl' />
-      </Stack>
-    )
-  } else if (!champions || !items || !queues || !summoners || !tags) {
-    return <div>no data</div>;
+        <Stack w="100vw" h="100vh" justify="center" align="center">
+          <Loader type='bars' size='xl' />
+        </Stack>
+    );
   }
 
-  if (error) {
-    return <div>Error loading game data</div>;
+  if (!champions || !items || !queues || !summoners || !tags) {
+    return <div>No data available</div>;
   }
 
-  const utils = {
-    getSummonerIcon: (id) => {
-      return `https://cdn.communitydragon.org/latest/profile-icon/${id}`;
-    },
-
-    getChallengeIcon: (id, rank) => {
-      return `https://raw.communitydragon.org/latest/game/assets/challenges/config/${id}/tokens/${rank.toLowerCase()}.png`;
-    },
-
-    getChampIcon: (id) => {
-      return `https://cdn.communitydragon.org/latest/champion/${id}/square`;
-    },
-
-    getChampSplash: (id) => {
-      return `https://cdn.communitydragon.org/latest/champion/${id}/splash-art/centered/skin/0`;
-    },
-
-    getChampName: (id) => {
-      const championArray = Object.values(champions);
-      const champion = championArray.find(c => parseInt(c.key) === parseInt(id));
-      return champion ? champion.name : "unnamed";
-    },
-
-    getChampList: () => champions,
-
-    getChampArray: () => Object.values(champions),
-
-    getChampionDetails: (id) => {
-      id = id.replace(/\s/g, '').replace(/'/g, '');
-      if (id === "BelVeth") id = "Belveth";
-      return champions[id];
-    },
-
-    getRoleName: (id) => {
-      const roleMap = {
-        UTILITY: "Support",
-        BOTTOM: "Bot",
-        JUNGLE: "Jungle",
-        TOP: "Top",
-        MIDDLE: "Mid"
-      };
-      return roleMap[id] || "unnamed";
-    },
-
-    getRoleIcon: (id) => {
-      if (id === undefined || id === "") return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-middle.svg`;
-      return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${id.toLowerCase()}.svg`;
-    },
-
-    getQueueName: (id) => {
-      const queue = queues.find(q => q.queueId === id);
-      return queue ? queue.description : "any";
-    },
-
-    getItemIcon: (id) => {
-      const item = items.find(i => parseInt(i.id) === id);
-      if (item && item.iconPath) {
-        const pathArray = item.iconPath.split("/lol-game-data/assets/");
-        return "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" + pathArray[1].toLowerCase();
-      }
-      return "unnamed";
-    },
-
-    getItemName: (id) => {
-      const item = items.find(i => parseInt(i.id) === id);
-      return item ? item.name : "unnamed";
-    },
-
-    getSpellIcon: (id) => {
-      return `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id}.png`;
-    },
-
-    getRuneIcon: (id) => {
-      return `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perk-images/styles/${id.style}.png`;
-    },
-
-    getPerkStyleIcon: (id) => {
-      const perkName = utils.getPerkStyleName(id);
-      const perkFileName = utils.getPerkStyleFileName(perkName);
-      return `https://raw.communitydragon.org/latest/game/assets/perks/styles/${perkFileName}`;
-    },
-
-    getPerkStyleFileName: (name) => {
-      const fileNames = {
-        Precision: "7201_precision.png",
-        Domination: "7200_domination.png",
-        Sorcery: "7202_sorcery.png",
-        Inspiration: "7203_whimsy.png",
-        Resolve: "7204_resolve.png"
-      };
-      return fileNames[name] || "unnamed";
-    },
-
-    getPerkStyleName: (id) => {
-      const perkNames = {
-        8000: "Precision",
-        8100: "Domination",
-        8200: "Sorcery",
-        8300: "Inspiration",
-        8400: "Resolve"
-      };
-      return perkNames[id] || "unnamed";
-    },
-
-    getSummonerSpellIcon: (id) => {
-      const spellFileName = utils.getSummonerSpellFileName(id);
-      return `https://raw.communitydragon.org/latest/game/data/spells/icons2d/${spellFileName}`;
-    },
-
-    getSummonerSpellFileName: (id) => {
-      const spellFiles = {
-        1: "summoner_boost.png",
-        3: "summoner_exhaust.png",
-        4: "summoner_flash.png",
-        6: "summoner_haste.png",
-        7: "summoner_heal.png",
-        11: "summoner_smite.png",
-        12: "summoner_teleport.png",
-        13: "summonermana.png",
-        14: "summonerignite.png",
-        21: "summonerbarrier.png",
-        30: "summoner_poro_recall.png",
-        31: "summoner_poro_throw.png",
-        32: "summoner_mark.png"
-      };
-      return spellFiles[id] || "unnamed";
-    },
-
-    getSummonerSpellName: (id) => {
-      const spellNames = {
-        1: "Cleanse",
-        3: "Exhaust",
-        4: "Flash",
-        6: "Ghost",
-        7: "Heal",
-        11: "Smite",
-        12: "Teleport",
-        13: "Clarity",
-        14: "Ignite",
-        21: "Barrier",
-        30: "To the King!",
-        31: "Poro Toss",
-        32: "Mark"
-      };
-      return spellNames[id] || "unnamed";
-    },
-
-    getRegionName: (id) => {
-      const regionNames = {
-        NA1: "na",
-        EUN1: "eune",
-        EUW1: "euw",
-        KR: "kr",
-        BR1: "br",
-        LA1: "lan",
-        LA2: "las",
-        OC1: "oce",
-        RU: "ru",
-        TR1: "tr"
-      };
-      return regionNames[id] || "unnamed";
-    },
-
+  // Create the final context value by binding the data to the utility functions
+  const contextValue = {
+    // Bind data to utility functions
+    getSummonerIcon: gameDataUtils.getSummonerIcon,
+    getChallengeIcon: gameDataUtils.getChallengeIcon,
+    getChampIcon: gameDataUtils.getChampIcon,
+    getChampSplash: gameDataUtils.getChampSplash,
+    getChampName: (id) => gameDataUtils.getChampName(id, champions),
+    getChampList: () => gameDataUtils.getChampList(champions),
+    getChampArray: () => gameDataUtils.getChampArray(champions),
+    getChampionDetails: (id) => gameDataUtils.getChampionDetails(id, champions),
+    getRoleName: gameDataUtils.getRoleName,
+    getRoleIcon: gameDataUtils.getRoleIcon,
+    getQueueName: (id) => gameDataUtils.getQueueName(id, queues),
+    getItemIcon: (id) => gameDataUtils.getItemIcon(id, items),
+    getItemName: (id) => gameDataUtils.getItemName(id, items),
+    getSpellIcon: gameDataUtils.getSpellIcon,
+    getRuneIcon: gameDataUtils.getRuneIcon,
+    getPerkStyleIcon: gameDataUtils.getPerkStyleIcon,
+    getPerkStyleFileName: gameDataUtils.getPerkStyleFileName,
+    getPerkStyleName: gameDataUtils.getPerkStyleName,
+    getSummonerSpellIcon: gameDataUtils.getSummonerSpellIcon,
+    getSummonerSpellFileName: gameDataUtils.getSummonerSpellFileName,
+    getSummonerSpellName: gameDataUtils.getSummonerSpellName,
+    getRegionName: gameDataUtils.getRegionName,
+    getDisplayNameFromQueueId: (id) => gameDataUtils.getDisplayNameFromQueueId(id, queues),
+    getDisplayNamesFromQueueIds: (ids) => gameDataUtils.getDisplayNamesFromQueueIds(ids, queues),
+    getQueueIdsFromDisplayNames: (names) => gameDataUtils.getQueueIdsFromDisplayNames(names, queueMap),
     getTags: () => tags.tags,
 
-    getTag: (id) => {
-      return tags.tags[id];
-    },
+    // server/data interaction
+    reloadAdminTagData: () => refectAdminTagData(),
 
-    getPrecalcs: () => tags.precalcs,
-
-    getMatchListQuery: () => matchListQuery,
-
-    getDisplayNameFromQueueId: (id) => {
-      const queue = queues.find(q => q.queueId === id);
-      if (queue) {
-        if (queue.description.includes("ARAM")) return "ARAM";
-        else if (queue.description.includes("Draft")) return "Draft";
-        else if (queue.description.includes("Ranked Solo")) return "Ranked Solo";
-        else if (queue.description.includes("Ranked Flex")) return "Ranked Flex";
-        else if (queue.description.includes("URF")) return "URF";
-        else if (queue.description.includes("ARURF")) return "ARURF";
-        else if (queue.description.includes("Spellbook")) return "Summoner's Spellbook";
-        else return "Other";
-      }
-      return "unnamed";
-    },
-
-    getDisplayNamesFromQueueIds: (ids) => {
-
-      let displayNames = [];
-      ids.forEach(id => {
-        const queue = queues.find(q => q.queueId === id);
-        if (queue) {
-          if (queue.description.includes("ARAM")) displayNames.push("ARAM");
-          else if (queue.description.includes("Draft")) displayNames.push("Draft");
-          else if (queue.description.includes("Ranked")) displayNames.push("Ranked");
-          else if (queue.description.includes("URF")) displayNames.push("URF");
-          else if (queue.description.includes("ARURF")) displayNames.push("ARURF");
-          else if (queue.description.includes("Spellbook")) displayNames.push("Summoner's Spellbook");
-          else displayNames.push("Other");
-        }
-      });
-      return displayNames;
-    },
-
-    getQueueIdsFromDisplayNames: (names) => {
-      let queueIds = [];
-      if (queueMap === null) return ["0"];
-      names.forEach(name => {
-        if (name === "ARAM") queueIds.push(...queueMap.aram.map(queue => queue.queueId));
-        else if (name === "Draft") queueIds.push(...queueMap.draft.map(queue => queue.queueId));
-        else if (name === "Ranked Solo") queueIds.push(...queueMap.rankedSolo.map(queue => queue.queueId));
-        else if (name === "Ranked Flex") queueIds.push(...queueMap.rankedFlex.map(queue => queue.queueId));
-        else if (name === "URF") queueIds.push(...queueMap.urf.map(queue => queue.queueId));
-        else if (name === "ARURF") queueIds.push(...queueMap.arurf.map(queue => queue.queueId));
-        else if (name === "Summoner's Spellbook") queueIds.push(...queueMap.spellbook.map(queue => queue.queueId));
-        else queueIds.push("0");
-      });
-      return queueIds;
-    },
-
-    getUpdateTagsMutation: () => UPDATE_TAGS_MUTATION,
-
-    getTagFileByVersionQuery: () => TAG_FILE_BY_VERSION_QUERY,
-
-    getBackFillMutation: () => BACK_FILL_MUTATION,
-
-    reloadAdminTagData: async () => {
-      const { data } = await adminTag.refetch();
-      setTagsFileVersions(data.tagFileVersions);
-      setTagsCurrentVersion(data.tagCurrentVersion);
-      setTagsLastBackFill(data.tagLastBackFill);
-    }
+    // Raw data
+    summoners,
+    champions,
+    items,
+    queues,
+    tags,
+    tagsFileVersions,
+    tagsCurrentVersion,
+    tagsLastBackFill,
+    queueMap,
+    queuesSimplified,
   };
 
   return (
-    <DataContext.Provider value={{ ...utils, summoners, champions, items, queues, tags, tagsFileVersions, tagsCurrentVersion, tagsLastBackFill, queueMap, queuesSimplified, matchListQuery }}>
-      {children}
-    </DataContext.Provider>
+      <DataContext.Provider value={contextValue}>
+        {children}
+      </DataContext.Provider>
   );
 }
 

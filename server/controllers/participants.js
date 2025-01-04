@@ -1,45 +1,7 @@
 const { performance } = require('perf_hooks');
 const { addBackFillData, processTags } = require('./tags');
 
-async function formatParticipant(participant, match, stats) {
-    try {
-    const participantObject = participant.toObject();
-    const participantStartTime = performance.now();
-    participantObject.challenges = participantObject.challenges? Object.fromEntries(participantObject.challenges) : {};
-    participantObject.tags = participantObject.tags ? Object.fromEntries(participantObject.tags) : {};
-    const matchObject = match.toObject();
-    // make standard objects out of challenges and perks for each participant
-    matchObject.info.participants = matchObject.info.participants.map(participant => {
-        let newParticipant = participant;
-        if (newParticipant.challenges) {
-            newParticipant.challenges = newParticipant.challenges? Object.fromEntries(newParticipant.challenges) : {};
-        }
-        if (newParticipant.tags) {
-            newParticipant.tags = newParticipant.tags? Object.fromEntries(newParticipant.tags) : {};
-        }
-        return newParticipant;
-    });
-    participant.tags = await processTags(participantObject, matchObject);
-    
-    await participant.save();
-
-    const participantEndTime = performance.now();
-    console.log(`Processed ${participant.summonerName} in ${participantEndTime - participantStartTime}ms`);
-    stats.success++;
-    
-    return { status: 'fulfilled' };
-} catch (error) {
-    console.error('Error processing participant:', error);
-    stats.failed++;
-    stats.errors.push({
-      id: participant._id,
-      error: error.message
-    });
-    return { status: 'rejected', reason: error.message };
-}
-}
-
-async function formatAllParticipants(models, user) {
+async function formatAllParticipants(models, user, data) {
     const BATCH_SIZE = 50;
     const startTime = performance.now();
     console.log('Starting batch format of participants for tracked summoners');
@@ -54,7 +16,7 @@ async function formatAllParticipants(models, user) {
 
     try {
         // Get all summoner PUUIDs
-        const summoners = await models.Summoner.find();
+        const summoners = data.summoners;
         const trackedPuuids = new Set(summoners.map(s => s.puuid));
 
         // Create cursor for memory efficient querying
@@ -70,7 +32,7 @@ async function formatAllParticipants(models, user) {
             matches.push(match);
             
             if (matches.length === BATCH_SIZE) {
-                await processMatchBatch(matches, trackedPuuids, stats);
+                await processMatchBatch(models, matches, trackedPuuids, stats, data);
                 batchCount++;
                 console.log(`Processed batch ${batchCount}, total processed: ${stats.processed}`);
                 matches = []; // Clear batch
@@ -79,7 +41,7 @@ async function formatAllParticipants(models, user) {
 
         // Process remaining matches
         if (matches.length > 0) {
-            await processMatchBatch(matches, trackedPuuids, stats);
+            await processMatchBatch(models, matches, trackedPuuids, stats, data);
         }
 
         const endTime = performance.now();
@@ -93,26 +55,86 @@ async function formatAllParticipants(models, user) {
     }
 }
 
-async function processMatchBatch(matches, trackedPuuids, stats) {
+async function processMatchBatch(models, matches, trackedPuuids, stats, data) {
+    // Array to store all participants that need to be processed
+    const participantsToProcess = [];
+
+    // Collect all relevant participants first
     for (let match of matches) {
-        const relevantParticipants = match.info.participants.filter(p => 
+        const relevantParticipants = match.info.participants.filter(p =>
             trackedPuuids.has(p.puuid)
         );
-        
+        participantsToProcess.push(...relevantParticipants.map(p => ({ participant: p, match })));
         stats.total += relevantParticipants.length;
+    }
 
-        for (let participant of relevantParticipants) {
-            try {
-                await formatParticipant(participant, match, stats);
-                stats.processed++;
-            } catch (error) {
-                stats.failed++;
-                stats.errors.push({
-                    puuid: participant.puuid,
-                    matchId: match.metadata.matchId,
-                    error: error.message
-                });
-            }
+    // Process all participants and collect their updates
+    const bulkOps = [];
+
+    for (let { participant, match } of participantsToProcess) {
+        try {
+            const participantStartTime = performance.now();
+
+            // Convert to plain objects if they're Mongoose documents
+            const participantObject = participant.toObject();
+            const matchObject = match.toObject();
+
+            // Process challenges and tags
+            participantObject.challenges = participantObject.challenges ? Object.fromEntries(participantObject.challenges) : {};
+            participantObject.tags = participantObject.tags ? Object.fromEntries(participantObject.tags) : {};
+
+            // Process match participants
+            matchObject.info.participants = matchObject.info.participants.map(p => {
+                let newParticipant = p;
+                if (newParticipant.challenges) {
+                    newParticipant.challenges = newParticipant.challenges ? Object.fromEntries(newParticipant.challenges) : {};
+                }
+                if (newParticipant.tags) {
+                    newParticipant.tags = newParticipant.tags ? Object.fromEntries(newParticipant.tags) : {};
+                }
+                return newParticipant;
+            });
+
+            // Process tags
+            const processedTags = await processTags(participantObject, matchObject, data);
+            const tagsVersion = data.tagCurrentVersion.id;
+
+            // Create update operation
+            bulkOps.push({
+                updateOne: {
+                    filter: { uniqueId: participant.uniqueId },
+                    update: { $set: { tags: processedTags, tagsVersion: tagsVersion } },
+                }
+            });
+
+            const participantEndTime = performance.now();
+            console.log(`Processed ${participant.summonerName} in ${participantEndTime - participantStartTime}ms`);
+
+            stats.success++;
+            stats.processed++;
+
+        } catch (error) {
+            console.error('Error processing participant:', error);
+            stats.failed++;
+            stats.errors.push({
+                puuid: participant.puuid,
+                matchId: match.metadata.matchId,
+                error: error.message
+            });
+        }
+    }
+
+    // Execute bulk operations if there are any updates
+    if (bulkOps.length > 0) {
+        try {
+            await models.Participant.bulkWrite(bulkOps, { ordered: false });
+        } catch (error) {
+            console.error('Error executing bulk operations:', error);
+            // Add failed bulk operation to stats
+            stats.errors.push({
+                error: `Bulk operation failed: ${error.message}`,
+                affectedCount: bulkOps.length
+            });
         }
     }
 }
@@ -189,6 +211,5 @@ async function processParticipantBatch(participants, trackedPuuids, stats) {
 }
 
 module.exports = {
-    formatParticipant,
     formatAllParticipants
 };

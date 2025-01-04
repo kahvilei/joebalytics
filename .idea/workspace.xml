@@ -5,17 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="more cleaning, saving">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/85fff50c-cc2a-477f-aff3-44eb7468677d.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/graphql/backFillTagsMutation.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/graphql/gameDataQuery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/graphql/matchListQuery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/graphql/queries.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/graphql/tagFileByVersionQuery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/graphql/tagVersionsQuery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/graphql/updateTagsMutation.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/hooks/useLocalStorage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/gameDataUtils.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/participant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/schema.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/context/DataContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/context/DataContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/pages/Matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pages/Matches.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/pages/TagUpdate.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pages/TagUpdate.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="GraphQL File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -58,8 +80,9 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
-    "javascript.nodejs.core.library.configured.version": "22.10.0",
-    "javascript.nodejs.core.library.typings.version": "22.10.5",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.nodejs.core.library.configured.version": "20.11.1",
+    "javascript.nodejs.core.library.typings.version": "20.11.30",
     "last_opened_file_path": "/Users/katie/Desktop/joebalytics",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -68,8 +91,8 @@
     "nodejs_package_manager_path": "npm",
     "npm.dev-react.executor": "Debug",
     "npm.dev-serv.executor": "Debug",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -102,6 +125,8 @@
       <workItem from="1736009098577" duration="23000" />
       <workItem from="1736009126960" duration="1488000" />
       <workItem from="1736010626033" duration="3737000" />
+      <workItem from="1736015879524" duration="103000" />
+      <workItem from="1736015987698" duration="9987000" />
     </task>
     <task id="LOCAL-00001" summary="more cleaning">
       <option name="closed" value="true" />
