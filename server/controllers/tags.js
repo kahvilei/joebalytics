@@ -8,6 +8,8 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 const bucketName = process.env.BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
 
+let versions = { versions: [], currentVersion : {id:0, user:'user'}, lastBackFill: {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}}};
+
 
 function calculatePrecalc(precalc, context) {
   const evalAllConditions = (conditions, item) => {
@@ -67,11 +69,14 @@ function calculatePrecalc(precalc, context) {
 
     case 'boolean':
       return evalAllConditions(precalc.conditions);
+
+    default:
+      return 0;
   }
 }
 
-async function processTags(participant, match) {
-  const tags = await getTagFile();
+async function processTags(participant, match, data) {
+  const tags = data?.tags || await getTagFile();
   // Process precalculations
   const precalcs = {};
   const context = { match, participant, precalcs };
@@ -101,24 +106,21 @@ async function processTags(participant, match) {
       console.log(e);
     }
 
-    const tagResult = {
+    results[tag.key] = {
       isTriggered: tag.triggers.every(trigger => {
-        try {
-          const evaluateCondition = new Function('match', 'participant', 'precalcs', `return ${trigger}`);
-          const isTriggered = evaluateCondition(context.match, context.participant, context.precalcs);
-          return isTriggered;
-        } catch (e) {
-          console.log('Error in condition:', trigger);
-          console.log(e);
-          return false;
-        }
-      }
+            try {
+              const evaluateCondition = new Function('match', 'participant', 'precalcs', `return ${trigger}`);
+              return evaluateCondition(context.match, context.participant, context.precalcs);
+            } catch (e) {
+              console.log('Error in condition:', trigger);
+              console.log(e);
+              return false;
+            }
+          }
       ),
 
       value: value
     };
-
-    results[tag.key] = tagResult;
   }
 
   return results;
@@ -135,7 +137,6 @@ async function updateTagFile(file, user) {
   const timestamp = new Date().getTime();
   await bucket.file(`data/tags/tags.${timestamp}.yaml`).save(tags);
   // get versions yaml, if it doesn't exist, create it
-  let versions;
   try {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());
@@ -159,7 +160,6 @@ async function revertTagFile(version, user) {
   //save the tags file
   await bucket.file("data/tags/tags.yaml").save(yaml.dump(tags));
   //get versions yaml, if it doesn't exist, create it
-  let versions;
   try {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());
@@ -178,7 +178,7 @@ async function getAllVersions() {
   } catch (error) {
     versions = { versions: [], currentVersion: {id:0, user:'user'}, lastBackFill: {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}}};
   }
-  //fille any missing data
+  //fill any missing data
   if (!versions.currentVersion) {
     versions.currentVersion = {id:0, user:'user'};
   }
@@ -188,14 +188,12 @@ async function getAllVersions() {
   return versions;
 }
 
-getTagFileByVersion = async (version) => {
+const getTagFileByVersion = async (version) => {
   const [tagsfile] = await bucket.file(`data/tags/tags.${version}.yaml`).download();
-  const file = yaml.load(tagsfile.toString());
-  return file;
+  return yaml.load(tagsfile.toString());
 }
 
-addBackFillData = async (results, user) => {
-  let versions;
+const addBackFillData = async (results, user) => {
   try {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());

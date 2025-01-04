@@ -1,6 +1,5 @@
-const { UserInputError } = require('apollo-server-express');
 const { performance } = require('perf_hooks');
-const { getTagFile, addBackFillData, processTags } = require('./tags');
+const { addBackFillData, processTags } = require('./tags');
 
 async function formatParticipant(participant, match, stats) {
     try {
@@ -9,7 +8,7 @@ async function formatParticipant(participant, match, stats) {
     participantObject.challenges = participantObject.challenges? Object.fromEntries(participantObject.challenges) : {};
     participantObject.tags = participantObject.tags ? Object.fromEntries(participantObject.tags) : {};
     const matchObject = match.toObject();
-    // objectize challenges and perks for each participant
+    // make standard objects out of challenges and perks for each participant
     matchObject.info.participants = matchObject.info.participants.map(participant => {
         let newParticipant = participant;
         if (newParticipant.challenges) {
@@ -20,8 +19,7 @@ async function formatParticipant(participant, match, stats) {
         }
         return newParticipant;
     });
-    const tags = await processTags(participantObject, matchObject);
-    participant.tags = tags;
+    participant.tags = await processTags(participantObject, matchObject);
     
     await participant.save();
 

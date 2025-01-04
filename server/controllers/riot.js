@@ -99,8 +99,8 @@ const collectMatchDataFromArray = async (region, list) => {
   let matchList = [];
   const Participant = models.Participant;
   for (let match of list) {
-    let exists = await Match.find({ "metadata.matchId": match });
-    if (exists.length == 0) {
+    const exists = await Match.find({ "metadata.matchId": match });
+    if (exists.length === 0) {
       try {
         let res = await axios.get(
           `https://${region}.api.riotgames.com/lol/match/v5/matches/${match}?api_key=${key}`

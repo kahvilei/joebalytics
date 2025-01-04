@@ -18,13 +18,13 @@ async function updateData(models, data) {
 
     // Fetch new data
     const champions = await axios.get(
-        `http://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
+        `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
     );
     const items = await axios.get(
         `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/items.json`
     );
     const summonerSpells = await axios.get(
-        `http://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/summoner.json`
+        `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/summoner.json`
     );
     const queueTypes = await axios.get(
         `https://static.developer.riotgames.com/docs/lol/queues.json`
@@ -33,9 +33,8 @@ async function updateData(models, data) {
     // Add mastery data to champions
     for (let champion in champions.data.data) {
         const champId = champions.data.data[champion].key;
-        const mastery = await models.Mastery.find({ championId: champId })
+        champions.data.data[champion].mastery = await models.Mastery.find({ championId: champId })
             .sort({ championPoints: 'desc', championLevel: 'desc' });
-        champions.data.data[champion].mastery = mastery;
     }
 
     // Save to bucket
