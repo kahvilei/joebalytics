@@ -153,23 +153,25 @@ const MATCHES_PAGE_QUERY = gql`
 
 const TAG_VERSIONS_QUERY = gql`
   query TagVersions{
-    tagFileVersions{
-      id
-      user
-    }
-    tagCurrentVersion{
-      id
-      user
-    }
-    tagLastBackFill {
-      id
-      user
-      results {
-        total
-        success
-        failed
-        errors
-      }
+    gameData {
+        tagFileVersions{
+            id
+            user
+        }
+        tagCurrentVersion{
+            id
+            user
+        }
+        tagLastBackFill {
+            id
+            user
+            results {
+                total
+                success
+                failed
+                errors
+            }
+        }
     }
   }
 `;
@@ -330,10 +332,10 @@ export function DataProvider({ children }) {
       }));
       localStorage.setItem('gameDataTimestamp', Date.now().toString());
     }
-    if (adminTag.data) {
-      setTagsFileVersions(adminTag.data.tagFileVersions);
-      setTagsCurrentVersion(adminTag.data.tagCurrentVersion);
-      setTagsLastBackFill(adminTag.data.tagLastBackFill);
+    if (adminTag.data?.gameData) {
+      setTagsFileVersions(adminTag.data.gameData.tagFileVersions);
+      setTagsCurrentVersion(adminTag.data.gameData.tagCurrentVersion);
+      setTagsLastBackFill(adminTag.data.gameData.tagLastBackFill);
 
       // Cache the admin tag data in local storage with a timestamp
       localStorage.setItem('adminTagData', JSON.stringify({

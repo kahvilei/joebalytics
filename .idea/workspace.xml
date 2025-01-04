@@ -4,21 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/joebalytics.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="more cleaning, saving">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/85fff50c-cc2a-477f-aff3-44eb7468677d.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/data.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/riot.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/riot.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/tags.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/tags.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/context/DataContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/context/DataContext.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,27 +78,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager" selected="npm.dev-react">
-    <configuration name="dev-react" type="js.build_tools.npm" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev-react" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="dev-serv" type="js.build_tools.npm" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev-serv" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="npm.dev-serv">
     <list>
       <item itemvalue="npm.dev-react" />
       <item itemvalue="npm.dev-serv" />
@@ -129,8 +101,17 @@
       <updated>1689958275473</updated>
       <workItem from="1736009098577" duration="23000" />
       <workItem from="1736009126960" duration="1488000" />
-      <workItem from="1736010626033" duration="2215000" />
+      <workItem from="1736010626033" duration="3737000" />
     </task>
+    <task id="LOCAL-00001" summary="more cleaning">
+      <option name="closed" value="true" />
+      <created>1736013057008</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1736013057008</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,16 +155,9 @@
       </map>
     </option>
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/server/controllers/matches.js</url>
-          <line>79</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="more cleaning" />
+    <MESSAGE value="more cleaning, saving" />
+    <option name="LAST_COMMIT_MESSAGE" value="more cleaning, saving" />
   </component>
 </project>

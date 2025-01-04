@@ -159,8 +159,8 @@ async function deleteOrphanMatches(models, user, data) {
             "metadata.participants": { $nin: puuids }
         });
 
-        if (result.deletedCount === 0) {
-
+        if (!result.deletedCount){
+            result.deletedCount = 0;
         }
 
         return {
