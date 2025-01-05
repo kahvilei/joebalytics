@@ -22,7 +22,8 @@ async function generateParticipantSchema() {
   const ParticipantSchema = new Schema({
     uniqueId: {
       type: String,
-      unique: true
+      unique: true,
+      required: [true, "uniqueId required"],
     },
     gameMode: {
       type: String,
@@ -243,6 +244,7 @@ async function generateParticipantSchema() {
   ParticipantSchema.index({ win: 1 });
   ParticipantSchema.index({ role: 1 });
   ParticipantSchema.index({ queueId: 1 });
+  ParticipantSchema.index({ uniqueId: 1 });
 
   //compound indexes 
   ParticipantSchema.index({ puuid: 1, gameStartTimestamp: -1 });

@@ -16,14 +16,14 @@ function calculatePrecalc(precalc, context) {
     return conditions.every(condition => {
       try {
         const evaluateConditions = new Function('match', 'participant', 'precalcs', 'item', `return ${condition}`);
-        return evaluateConditions(context.match, context.participant, context.precalcs, item) || 0;
+        return evaluateConditions(context.match, context.participant, context.precalcs, item) || false;
       } catch (e) {
         if (context.match.info.gameMode === 'ARAM' && condition.includes('team') && condition.includes('challenge')) {
-          return 0;
+          return false;
         }
         console.log('Error in condition:', condition);
         console.log(e);
-        return 0;
+        return false;
       }
     }
     );
@@ -62,6 +62,7 @@ function calculatePrecalc(precalc, context) {
         //if this is an aram match, and the error is on team.[laner].challenge, it's because the laner is not defined, do not print error
         if (context.match.info.gameMode === 'ARAM' && precalc.value.includes('team') && precalc.value.includes('challenge')) {
           return 0;
+
         }
         console.log('Error in calculate:', precalc.value);
         return 0;
@@ -71,7 +72,7 @@ function calculatePrecalc(precalc, context) {
       return evalAllConditions(precalc.conditions);
 
     default:
-      return 0;
+      return false;
   }
 }
 
@@ -106,10 +107,15 @@ async function processTags(participant, match, data) {
       console.log(e);
     }
 
+
     results[tag.key] = {
       isTriggered: tag.triggers.every(trigger => {
             try {
               const evaluateCondition = new Function('match', 'participant', 'precalcs', `return ${trigger}`);
+              if (tag.key === 'jackOfAllTrades' && evaluateCondition(context.match, context.participant, context.precalcs)){
+                //we stop here for debugginh.
+                return true;
+              }
               return evaluateCondition(context.match, context.participant, context.precalcs);
             } catch (e) {
               console.log('Error in condition:', trigger);
@@ -117,10 +123,14 @@ async function processTags(participant, match, data) {
               return false;
             }
           }
-      ),
+      ) || false,
 
       value: value
     };
+      // if (tag.key === 'jackOfAllTrades' && results[tag.key].isTriggered){
+      //   //we stop here for debugginh.
+      //  console.log('deb');
+      // }
   }
 
   return results;
@@ -131,7 +141,7 @@ async function getTagFile() {
   return yaml.load(tagsfile.toString());
 }
 
-async function updateTagFile(file, user) {
+async function updateTagFile(file, user, data) {
   const tags = yaml.dump(file);
   //get current tags file and save it as tag.[timestamp].yaml
   const timestamp = new Date().getTime();
@@ -148,6 +158,11 @@ async function updateTagFile(file, user) {
   versions.currentVersion = { id: timestamp, user: user };
   //save the versions file
   await bucket.file("data/tags/versions.yaml").save(yaml.dump(versions));
+
+  data.tags = file;
+  data.tagFileVersions = versions.versions;
+  data.tagCurrentVersion = versions.currentVersion;
+  data.tagLastBackFill = versions.lastBackFill;
 
   //save the new tags file
   await bucket.file("data/tags/tags.yaml").save(tags);
@@ -193,7 +208,7 @@ const getTagFileByVersion = async (version) => {
   return yaml.load(tagsfile.toString());
 }
 
-const addBackFillData = async (results, user) => {
+const addBackFillData = async (results, user, data) => {
   try {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());
@@ -202,6 +217,7 @@ const addBackFillData = async (results, user) => {
   }
   versions.lastBackFill = { id: versions.currentVersion.id, user: user.username, results: results };
   await bucket.file("data/tags/versions.yaml").save(yaml.dump(versions));
+  data.tagLastBackFill = versions.lastBackFill;
 }
 
 

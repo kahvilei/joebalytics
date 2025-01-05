@@ -17,8 +17,7 @@ import {BACK_FILL_TAGS_MUTATION, TAG_FILE_BY_VERSION_QUERY, UPDATE_TAGS_MUTATION
 
 
 function TagUpdate() {
-  const { tags, tagsFileVersions, tagsCurrentVersion, reloadAdminTagData, tagsLastBackFill } = useGameData();
-
+  const { tags, tagsFileVersions, tagsCurrentVersion, reloadAdminTagData, tagsLastBackFill, refreshAllData } = useGameData();
 
   const [loading, setLoading] = useState(false);
   const [loadingYAML, setLoadingYAML] = useState(false);
@@ -73,8 +72,8 @@ function TagUpdate() {
   const [updateTags] = useMutation( UPDATE_TAGS_MUTATION, {
     onCompleted: () => {
       setSuccess(true);
+      refreshAllData();
       setLoading(false);
-      reloadAdminTagData();
       setTimeout(() => setSuccess(false), 3000); // Clear success after 3s
     },
     onError: (error) => {
@@ -86,7 +85,7 @@ function TagUpdate() {
   const [backFill] = useMutation( BACK_FILL_TAGS_MUTATION, {
     onCompleted: () => {
       setBackFillLoading(false);
-      reloadAdminTagData();
+      refreshAllData();
     },
     onError: (error) => {
       setErrorBackFill(error.message);
@@ -102,6 +101,7 @@ function TagUpdate() {
       await updateTags({
         variables: { file: parsedYaml }
       });
+      setLoading(false);
     } catch (e) {
       setErrorUpload(e.message);
       setLoading(false);

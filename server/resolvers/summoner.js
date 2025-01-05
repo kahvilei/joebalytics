@@ -18,7 +18,6 @@ const summonerResolvers = {
   
   Mutation: {
     updateSummoner: async (_, { puuid }, { models, user }) => {
-
       const summoner = await models.Summoner.findOne({ puuid });
       if (!summoner) {
         throw new UserInputError('Summoner not found');
@@ -34,7 +33,6 @@ const summonerResolvers = {
     },
 
     updateAllSummoners: async (_, __, { models, user }) => {
-
       const summoners = await models.Summoner.find();
       const results = await Promise.allSettled(
         summoners.map(async summoner => {
@@ -48,7 +46,6 @@ const summonerResolvers = {
           }
         })
         );
-
       return summoners;
     }
   }

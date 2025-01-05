@@ -4,27 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="more cleaning, saving">
-      <change afterPath="$PROJECT_DIR$/src/graphql/backFillTagsMutation.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphql/gameDataQuery.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphql/matchListQuery.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphql/queries.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphql/tagFileByVersionQuery.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphql/tagVersionsQuery.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphql/updateTagsMutation.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/hooks/useLocalStorage.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/gameDataUtils.js" afterDir="false" />
+    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="stabler">
+      <change afterPath="$PROJECT_DIR$/src/graphql/updateAllSummonersMutation.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/riot.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/riot.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/tags.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/tags.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Participant.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/participant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/schema.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/summoner.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/context/DataContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/context/DataContext.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/pages/Matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pages/Matches.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/graphql/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphql/queries.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/pages/TagUpdate.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pages/TagUpdate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/partials/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/partials/Navigation.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,8 +48,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/kahvilei/joebalytics.git&quot;,
-    &quot;accountId&quot;: &quot;86d16040-60fa-423a-ab3e-65ba2453853d&quot;
+    &quot;url&quot;: &quot;https://github.com/kahvilei/joebalytics&quot;,
+    &quot;accountId&quot;: &quot;2207bca5-d47d-444e-9462-90458c7c7c7f&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -73,35 +66,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "20.11.1",
-    "javascript.nodejs.core.library.typings.version": "20.11.30",
-    "last_opened_file_path": "/Users/katie/Desktop/joebalytics",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev-react.executor": "Debug",
-    "npm.dev-serv.executor": "Debug",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.11.1&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.11.30&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/katie/Desktop/joebalytics&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev-react.executor&quot;: &quot;Debug&quot;,
+    &quot;npm.dev-serv.executor&quot;: &quot;Debug&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2024.3.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mongo"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mongo&quot;
     ]
   }
-}]]></component>
-  <component name="RunManager" selected="npm.dev-serv">
+}</component>
+  <component name="RunManager" selected="npm.dev-react">
     <list>
       <item itemvalue="npm.dev-react" />
       <item itemvalue="npm.dev-serv" />
@@ -126,7 +119,8 @@
       <workItem from="1736009126960" duration="1488000" />
       <workItem from="1736010626033" duration="3737000" />
       <workItem from="1736015879524" duration="103000" />
-      <workItem from="1736015987698" duration="9987000" />
+      <workItem from="1736015987698" duration="11897000" />
+      <workItem from="1736096305592" duration="13498000" />
     </task>
     <task id="LOCAL-00001" summary="more cleaning">
       <option name="closed" value="true" />
@@ -136,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736013057008</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="more cleaning, moving out functions">
+      <option name="closed" value="true" />
+      <created>1736026599983</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1736026599983</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,6 +185,32 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="more cleaning" />
     <MESSAGE value="more cleaning, saving" />
-    <option name="LAST_COMMIT_MESSAGE" value="more cleaning, saving" />
+    <MESSAGE value="more cleaning, moving out functions" />
+    <MESSAGE value="stabler" />
+    <option name="LAST_COMMIT_MESSAGE" value="stabler" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/views/partials/Navigation.js</url>
+          <line>50</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/server/controllers/participants.js</url>
+          <line>129</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="js.build_tools.npm">
+        <watch expression="participant.challenges.quickFirstTurret" />
+        <watch expression="participants[&quot;0&quot;]" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

@@ -32,11 +32,11 @@ export function DataProvider({ children }) {
   const [tagsLastBackFill, setTagsLastBackFill] = useState(null);
 
   // Initial data loading and background sync queries
-  const { data: freshGameData, loading: gameDataLoading } = useQuery(GAME_DATA_QUERY, {
+  const { data: freshGameData, loading: gameDataLoading, refetch: refetchGameData } = useQuery(GAME_DATA_QUERY, {
     fetchPolicy: "network-only"
   });
 
-  const { data: freshAdminData, loading: adminDataLoading, refetch: refectAdminTagData } = useQuery(TAG_VERSIONS_QUERY, {
+  const { data: freshAdminData, loading: adminDataLoading, refetch: refetchAdminTagData } = useQuery(TAG_VERSIONS_QUERY, {
     fetchPolicy: "network-only"
   });
 
@@ -132,6 +132,12 @@ export function DataProvider({ children }) {
     return <div>No data available</div>;
   }
 
+  const refreshAllData = async () => {
+    // manually refreshes our data
+    await refetchGameData();
+    await refetchAdminTagData();
+  }
+
   // Create the final context value by binding the data to the utility functions
   const contextValue = {
     // Bind data to utility functions
@@ -163,7 +169,8 @@ export function DataProvider({ children }) {
     getTags: () => tags.tags,
 
     // server/data interaction
-    reloadAdminTagData: () => refectAdminTagData(),
+    reloadAdminTagData: () => refetchAdminTagData(),
+    refreshAllData: () => refreshAllData(),
 
     // Raw data
     summoners,

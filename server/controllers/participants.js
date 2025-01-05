@@ -47,7 +47,7 @@ async function formatAllParticipants(models, user, data) {
         const endTime = performance.now();
         console.log(`Batch processing completed in ${endTime - startTime}ms`);
         console.log(`Processed ${stats.processed} participants out of ${stats.total} total`);
-        addBackFillData(stats, user);
+        await addBackFillData(stats, user, data);
         return stats;
     } catch (error) {
         console.error('Error processing participants:', error);
@@ -102,7 +102,7 @@ async function processMatchBatch(models, matches, trackedPuuids, stats, data) {
             // Create update operation
             bulkOps.push({
                 updateOne: {
-                    filter: { uniqueId: participant.uniqueId },
+                    filter: { _id: participant._id },
                     update: { $set: { tags: processedTags, tagsVersion: tagsVersion } },
                 }
             });

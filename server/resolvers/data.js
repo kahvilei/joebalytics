@@ -54,14 +54,14 @@ const dataResolvers = {
     },
 
     // Update tag data from user uploaded file
-    updateTagData: async (_, { file }, { user, updateSchema }) => {
+    updateTagData: async (_, { file }, { user, updateSchema, data }) => {
       if (!user?.admin) {
         throw new AuthenticationError('Admin access required');
       }
 
       try {
         const tags = yaml.parse(file);
-        await updateTagFile(tags, user.username);
+        await updateTagFile(tags, user.username, data);
         await updateSchema();
         return {
           message: "Tag data updated successfully",

@@ -75,14 +75,12 @@ const recordRecentMatches = async (puuid, region, init) => {
         let newMatch = await Match.create(match);
       } catch (err) {
         //delete the 10 participants that were added, unless this is a duplicate match key error
-        if (err.code != 11000) {
         for (let participant of match.info.participants) {
           try{
-          await models.Participant.deleteOne({ uniqueId: participant.uniqueId });
+          await models.Participant.deleteOne({ _id: participant._id });
           } catch (err) {
             console.log(err);
           }
-        }
       }
         console.log(err);
       }

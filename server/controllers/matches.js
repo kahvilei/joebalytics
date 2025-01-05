@@ -81,11 +81,21 @@ async function getMatchData(models, info, data, filters) {
     const participantFields = requestedFields.matchData.info.participants;
     participantFields.uniqueId = 1;
 
-    const matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } })
+    let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } })
         .sort({ "info.gameStartTimestamp": 'desc' })
         .populate('info.participants');
 
     console.log(`Match query took ${performance.now() - totalTimeStart}ms`);
+
+    matches = matches.map(match => {
+        const newMatch = match.toObject();
+        newMatch.info.participants = newMatch.info.participants.map(participant => {
+            if (participant.challenges) participant.challenges = Object.fromEntries(participant.challenges);
+            if (participant.tags) participant.tags = Object.fromEntries(participant.tags);
+            return participant;
+        });
+        return newMatch;
+    })
 
     const allParticipants = matches.flatMap(match =>
         match.info.participants.filter(p =>
@@ -134,15 +144,7 @@ async function getMatchData(models, info, data, filters) {
     console.log(`Total time: ${performance.now() - totalTimeStart}ms`);
 
     return {
-        matchData: matches.map(match => {
-            const newMatch = match.toObject();
-            newMatch.info.participants = newMatch.info.participants.map(participant => {
-                if (participant.challenges) participant.challenges = Object.fromEntries(participant.challenges);
-                if (participant.tags) participant.tags = Object.fromEntries(participant.tags);
-                return participant;
-            });
-            return newMatch;
-        }),
+        matchData: matches,
         statData: {
             stats: results,
             matchCount: matches.length
