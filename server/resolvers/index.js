@@ -6,26 +6,23 @@ const masteryResolvers = require('./mastery');
 const challengeResolvers = require('./challenge');
 const dataResolvers = require('./data');
 const participantResolvers = require('./participant');
-const { GraphQLJSON } = require('graphql-type-json');
+const {GraphQLJSON} = require('graphql-type-json');
 
 module.exports = {
-  JSON: GraphQLJSON,
-  Query: {
-    ...userResolvers.Query,
-    ...summonerResolvers.Query,
-    ...matchResolvers.Query,
-    ...masteryResolvers.Query,
-    ...challengeResolvers.Query,
-    ...dataResolvers.Query,
-    ...participantResolvers.Query
-  },
-  Mutation: {
-    ...userResolvers.Mutation,
-    ...summonerResolvers.Mutation,
-    ...matchResolvers.Mutation,
-    ...masteryResolvers.Mutation,
-    ...challengeResolvers.Mutation,
-    ...dataResolvers.Mutation,
-    ...participantResolvers.Mutation
-  }
+    JSON: GraphQLJSON,
+    Query: {
+        ...userResolvers.Query,
+        ...summonerResolvers.Query,
+        ...matchResolvers.Query,
+        ...masteryResolvers.Query,
+        ...challengeResolvers.Query,
+        ...dataResolvers.Query
+    },
+    Mutation: {
+        ...userResolvers.Mutation,
+        ...summonerResolvers.Mutation,
+        ...matchResolvers.Mutation,
+        ...dataResolvers.Mutation,
+        ...participantResolvers.Mutation
+    }
 };

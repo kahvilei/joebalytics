@@ -5,29 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="server organization">
+      <change afterPath="$PROJECT_DIR$/.gcloudignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/sampleMatches.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/tests/testing and example files/sampleMatches.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/tags.1733774001542.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/tests/testing and example files/tags.1733774001542.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/tags.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/tests/tags.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/tags.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/tests/testing and example files/tags.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/versions.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/tests/testing and example files/versions.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/data/champions.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/data/items.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/data/queueTypes.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/data/sampleMatchIDs.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/data/summonerSpells.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/middleware.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/challenges.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/data.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/masteries.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/matches.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/summoners.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/routes/user.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.gql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/utils/tagUtils.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/challenge.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/challenge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/mastery.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/mastery.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/match.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/match.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/participant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/summoner.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,7 +141,7 @@
       <workItem from="1736015879524" duration="103000" />
       <workItem from="1736015987698" duration="11897000" />
       <workItem from="1736096305592" duration="17525000" />
-      <workItem from="1736177927567" duration="1159000" />
+      <workItem from="1736177927567" duration="2734000" />
     </task>
     <task id="LOCAL-00001" summary="more cleaning">
       <option name="closed" value="true" />
@@ -181,7 +167,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736111094754</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="server organization">
+      <option name="closed" value="true" />
+      <created>1736179145093</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1736179145093</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
