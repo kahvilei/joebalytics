@@ -3,7 +3,7 @@ const fs = require('fs');
 
 
 const typeDefs = async (tags) => {
-    const raw = fs.readFileSync('./server/schema.gql', 'utf8');
+    const raw = fs.readFileSync('./server/graphql/schema.gql', 'utf8');
     try{
     // Generate GraphQL type for individual tag fields
     const tagList = tags.tags;

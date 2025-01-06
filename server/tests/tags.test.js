@@ -1,4 +1,4 @@
-const { processTags, getTagFile} = require('./tags.js');
+const { processTags, getTagFile} = require('../controllers/tags.js');
 const fs = require('fs');
 const path = require('path');
 

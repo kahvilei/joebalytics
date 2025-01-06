@@ -48,6 +48,19 @@ async function formatAllParticipants(models, user, data) {
         console.log(`Batch processing completed in ${endTime - startTime}ms`);
         console.log(`Processed ${stats.processed} participants out of ${stats.total} total`);
         await addBackFillData(stats, user, data);
+        
+        // reprocess Participant Indexes
+        console.log('Reprocessing participant indexes...');
+        try {
+            await models.Participant.syncIndexes();
+            console.log('Participant indexes reprocessed successfully.');
+        } catch (error) {
+            console.error('Error reprocessing participant indexes:', error);
+            stats.errors.push({
+                error: `Index reprocessing failed: ${error.message}`
+            });
+        }
+        
         return stats;
     } catch (error) {
         console.error('Error processing participants:', error);
