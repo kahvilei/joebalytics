@@ -99,7 +99,7 @@ async function getMatchData(models, info, data, filters) {
 
     const allParticipants = matches.flatMap(match =>
         match.info.participants.filter(p =>
-            participants.some(op => op.uniqueId === p.uniqueId)
+            summoners.some(op => op.puuid === p.puuid)
         )
     );
 
