@@ -1,5 +1,9 @@
 // resolvers/summoner.js
+
+//third party
 const {AuthenticationError} = require("apollo-server-express");
+
+//resolvers
 const summonerResolvers = {
     Query: {
         summoner: async (_, {region, name}, {models}) => {

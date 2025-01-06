@@ -29,10 +29,10 @@ async function startServer() {
     // Connect Database
     const db = process.env.MONGO_CONNECT;
     connectDB(db);
-    models.Participant = await models.participantFunctions.createParticipantModel();
 
     const data = {}
     await initializeData(data);
+    models.Participant = await models.participantFunctions.createParticipantModelFromMemory(data.tags);
 
     data.summoners = await models.Summoner.find();
     

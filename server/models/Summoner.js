@@ -12,8 +12,8 @@ const {
 } = require("../controllers/riot");
 const { regionMapping } = require("../config/regionMapping");
 // Load Mastery model
-const Mastery = require("./Mastery");
-const Challenge = require("./Challenge");
+const Mastery = mongoose.models.Mastery;
+const Challenge = mongoose.models.Challenge;
 
 const SummonerSchema = new Schema({
   regionDisplay: {
@@ -40,6 +40,7 @@ const SummonerSchema = new Schema({
         let geo = regionMapping[this.regionDisplay].geo;
         this.regionServer = server;
         this.regionGeo = geo;
+        let tagline;
 
         let response;
         let init = false; //this determines whether or not this is treated as a first time save
@@ -308,4 +309,6 @@ SummonerSchema.pre(
 SummonerSchema.index({ nameURL: 1, regionURL: 1 });
 SummonerSchema.index({ puuid: 1 });
 
-module.exports = mongoose.model("Summoner", SummonerSchema);
+const Summoner = mongoose.model("Summoner", SummonerSchema);
+
+module.exports = { Summoner };

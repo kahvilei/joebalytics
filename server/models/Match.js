@@ -87,8 +87,9 @@ MatchSchema.index({ 'metadata.participants': 1 });
 MatchSchema.index({ 'info.gameStartTimestamp': -1 });
 MatchSchema.index({ 'info.queueId': 1 });
 
-
 //compound index
 MatchSchema.index({ 'metadata': 1, 'info.gameStartTimestamp': -1 });
 
-module.exports = mongoose.model('Match', MatchSchema);
+const Match= mongoose.model('Match', MatchSchema);
+
+module.exports = { Match };

@@ -1,9 +1,8 @@
 type Query {
-    # Summoner-related queries
     summoner(region: String!, name: String!): Summoner
     summoners: [Summoner!]!
-
-    # Match-related queries
+    match(id: ID!): Match
+    participant(id: ID!): Participant
     matches(
         limit: Int
         timestamp: Float
@@ -15,86 +14,99 @@ type Query {
         tags: [String!]
         stats: [StatRequest!]
     ): MatchData!
-
-    # Champion Mastery
+    mastery(id: ID!): Mastery
     masteries(
         limit: Int
         championId: Int
         puuid: String
         sortBy: MasterySortInput
     ): [Mastery!]!
-
-    # Challenges
+    challenge(id: ID!): Challenge
     challenges(
         limit: Int
         puuid: String
         sortBy: ChallengeSortInput
     ): [Challenge!]!
-
-    # Game Data
-    gameData: GameData!
-
-    # Tag Data
-    tagFileByVersion( version: ID! ): TagData!
-
-    # Authentication
-    me: User
 }
 
-### Mutation
+
 type Mutation {
-    # Summoner Management
     addSummoner(region: String!, name: String!): Summoner!
     updateSummoner(id: ID!): Summoner!
     updateAllSummoners: [Summoner!]!
     deleteSummoner(id: ID!): DeleteResponse!
-
-    # Match Management
     deleteOrphanMatches: DeleteResponse!
     formatOneParticipant(id: ID!): Participant!
     formatAllParticipants: FormatParticipantsResponse!
     recoverMatchDataFromOrphanParticipants: FormatParticipantsResponse!
-
-    # Game Data Management
-    updateGameData: UpdateResponse!
-    updateTagData(file: String!): UpdateResponse!
-
-    # Authentication
-    register(username: String!, password: String!): AuthResponse!
-    login(username: String!, password: String!): AuthResponse!
 }
 
-## Core Types
+type MatchData {
+    matchData: [Match!]!
+    statData: JSON!
+}
 
-### Summoner-Related Types
 type Summoner {
-    # Basic Info
     id: ID!
-    name: String!
-    tagline: String!
-    profileIconId: Int!
-    summonerLevel: Int!
-
-    # Region Info
     regionDisplay: String!
     regionServer: String!
     regionGeo: String!
     regionURL: String!
     nameURL: String!
-
-    # IDs
+    tagline: String!
     accountId: String!
     puuid: String!
-
-    # Metadata
+    name: String!
+    profileIconId: Int!
     revisionDate: Float!
+    summonerLevel: Int!
     lastUpdated: Float!
-
-    # Related Data
     rankedData: [RankedData!]!
     challengeData: ChallengeData!
     masteryData: [Mastery!]!
     matches(limit: Int, queueId: Int): [Match!]!
+}
+
+type Match {
+    id: ID!
+    metadata: MatchMetadata!
+    info: MatchInfo!
+}
+
+type Mastery {
+    id: ID!
+    uniqueId: String!
+    championId: Int!
+    championLevel: Int!
+    championPoints: Int!
+    lastPlayTime: Float!
+    championPointsSinceLastLevel: Int!
+    championPointsUntilNextLevel: Int!
+    chestGranted: Boolean!
+    tokensEarned: Int!
+    summonerId: String!
+    puuid: String!
+    profileIconId: Int!
+    summonerName: String!
+    winRate: Float
+    gamesPlayed: Int!
+    summoner: Summoner!
+}
+
+type Challenge {
+    id: ID!
+    uniqueId: String!
+    puuid: String!
+    profileIconId: Int!
+    summonerName: String!
+    challengeId: Int!
+    challengeName: String!
+    shortDesc: String!
+    percentile: Float!
+    level: String!
+    value: Float!
+    achievedTime: Float!
+    summoner: Summoner!
 }
 
 type RankedData {
@@ -141,16 +153,42 @@ type ChallengePreferences {
     challengeIds: [Int!]!
 }
 
-### Match-Related Types
-type Match {
-    id: ID
-    metadata: MatchMetadata
-    info: MatchInfo
+type AuthPayload {
+    token: String!
+    message: String!
 }
 
-type MatchData {
-    matchData: [Match!]!
-    statData: JSON!
+type DeleteResponse {
+    message: String!
+    success: Boolean!
+}
+
+input MasterySortInput {
+    field: MasterySortField!
+    direction: SortDirection!
+}
+
+input ChallengeSortInput {
+    field: ChallengeSortField!
+    direction: SortDirection!
+}
+
+enum MasterySortField {
+    CHAMPION_POINTS
+    CHAMPION_LEVEL
+    LAST_PLAY_TIME
+    WIN_RATE
+}
+
+enum ChallengeSortField {
+    PERCENTILE
+    VALUE
+    ACHIEVED_TIME
+}
+
+enum SortDirection {
+    ASC
+    DESC
 }
 
 type MatchMetadata {
@@ -211,8 +249,6 @@ type Ban {
     championId: Int!
     pickTurn: Int!
 }
-
-### Participant Type
 
 type Participant {
     uniqueId: String!
@@ -354,8 +390,7 @@ type FormatParticipantsResponse {
 }
 
 type Tags {
-    ## filled by schema.js
-    default: TagValueFloat
+
 }
 
 type TagValueFloat {
@@ -388,60 +423,134 @@ type Selection {
 }
 
 type Challenges {
-    ## filled by schema.js
-    default: Int
+    TwelveAssistStreakCount: Int
+    abilityUses: Int
+    acesBefore15Minutes: Int
+    alliedJungleMonsterKills: Int
+    baronTakedowns: Int
+    blastConeOppositeOpponentCount: Int
+    bountyGold: Int
+    buffsStolen: Int
+    completeSupportQuestInTime: Int
+    controlWardsPlaced: Int
+    damagePerMinute: Float
+    damageTakenOnTeamPercentage: Float
+    dancedWithRiftHerald: Int
+    deathsByEnemyChamps: Int
+    dodgeSkillShotsSmallWindow: Int
+    doubleAces: Int
+    dragonTakedowns: Int
+    earlyLaningPhaseGoldExpAdvantage: Int
+    effectiveHealAndShielding: Float
+    elderDragonKillsWithOpposingSoul: Int
+    elderDragonMultikills: Int
+    enemyChampionImmobilizations: Int
+    enemyJungleMonsterKills: Int
+    epicMonsterKillsNearEnemyJungler: Int
+    epicMonsterKillsWithin3NumberSecondsOfSpawn: Int
+    epicMonsterSteals: Int
+    epicMonsterStolenWithoutSmite: Int
+    firstTurretKilledTime: Int
+    flawlessAces: Int
+    fullTeamTakedown: Int
+    gameLength: Float
+    getTakedownsInAllLanesEarlyJungleAsLaner: Int
+    goldPerMinute: Float
+    hadOpenNexus: Int
+    immobilizeAndKillWithAlly: Int
+    initialBuffCount: Int
+    initialCrabCount: Int
+    jungleCsBefore1NumberMinutes: Int
+    junglerTakedownsNearDamagedEpicMonster: Int
+    kTurretsDestroyedBeforePlatesFall: Int
+    kda: Float
+    killAfterHiddenWithAlly: Int
+    killParticipation: Float
+    killedChampTookFullTeamDamageSurvived: Int
+    killsNearEnemyTurret: Int
+    killsOnOtherLanesEarlyJungleAsLaner: Int
+    killsOnRecentlyHealedByAramPack: Int
+    killsUnderOwnTurret: Int
+    killsWithHelpFromEpicMonster: Int
+    knockEnemyIntoTeamAndKill: Int
+    landSkillShotsEarlyGame: Int
+    laneMinionsFirst10Minutes: Int
+    laningPhaseGoldExpAdvantage: Int
+    legendaryCount: Int
+    lostAnInhibitor: Int
+    maxCsAdvantageOnLaneOpponent: Float
+    maxKillDeficit: Int
+    maxLevelLeadLaneOpponent: Int
+    moreEnemyJungleThanOpponent: Int
+    multiKillOneSpell: Int
+    multiTurretRiftHeraldCount: Int
+    multikills: Int
+    multikillsAfterAggressiveFlash: Int
+    mythicItemUsed: Int
+    outerTurretExecutesBefore1NumberMinutes: Int
+    outnumberedKills: Int
+    outnumberedNexusKill: Int
+    perfectDragonSoulsTaken: Int
+    perfectGame: Int
+    pickKillWithAlly: Int
+    poroExplosions: Int
+    quickCleanse: Int
+    quickFirstTurret: Int
+    quickSoloKills: Int
+    riftHeraldTakedowns: Int
+    saveAllyFromDeath: Int
+    scuttleCrabKills: Int
+    skillshotsDodged: Int
+    skillshotsHit: Int
+    snowballsHit: Int
+    soloBaronKills: Int
+    soloKills: Int
+    stealthWardsPlaced: Int
+    survivedSingleDigitHpCount: Int
+    survivedThreeImmobilizesInFight: Int
+    takedownOnFirstTurret: Int
+    takedowns: Int
+    takedownsAfterGainingLevelAdvantage: Int
+    takedownsBeforeJungleMinionSpawn: Int
+    takedownsFirst25Minutes: Int
+    takedownsInAlcove: Int
+    takedownsInEnemyFountain: Int
+    teamBaronKills: Int
+    teamDamagePercentage: Float
+    teamElderDragonKills: Int
+    teamRiftHeraldKills: Int
+    threeWardsOneSweeperCount: Int
+    tookLargeDamageSurvived: Int
+    turretPlatesTaken: Int
+    turretTakedowns: Int
+    turretsTakenWithRiftHerald: Int
+    twentyMinionsIn3SecondsCount: Int
+    unseenRecalls: Int
+    visionScoreAdvantageLaneOpponent: Float
+    visionScorePerMinute: Float
+    wardTakedowns: Int
+    wardTakedownsBefore2NumberM: Int
+    wardsGuarded: Int
 }
 
-### Champion Mastery Types
-type Mastery {
-    # Basic Info
-    id: ID!
-    uniqueId: String!
-    championId: Int!
-    championLevel: Int!
-    championPoints: Int!
-
-    # Progress
-    championPointsSinceLastLevel: Int!
-    championPointsUntilNextLevel: Int!
-
-    # Stats
-    lastPlayTime: Float!
-    chestGranted: Boolean!
-    tokensEarned: Int!
-    winRate: Float
-    gamesPlayed: Int!
-
-    # Summoner Info
-    summonerId: String!
-    puuid: String!
-    profileIconId: Int!
-    summonerName: String!
-    summoner: Summoner!
+type Query {
+    gameData: GameData!
+    championData: ChampionData!
+    itemData: ItemData!
+    summonerSpellData: SummonerSpellData!
+    queueTypeData: [QueueType!]!
+    tagData: TagData!
+    tagFileVersions: [TagFileVersion!]!
+    tagCurrentVersion: TagFileVersion!
+    tagFileByVersion( version: ID! ): TagData!
+    tagLastBackFill: TagFileBackFill!
 }
 
-### Challenge Types
-type Challenge {
-    id: ID!
-    uniqueId: String!
-    challengeId: Int!
-    challengeName: String!
-    shortDesc: String!
-
-    # Progress
-    percentile: Float!
-    level: String!
-    value: Float!
-    achievedTime: Float!
-
-    # Summoner Info
-    puuid: String!
-    profileIconId: Int!
-    summonerName: String!
-    summoner: Summoner!
+type Mutation {
+    updateGameData: UpdateResponse!
+    updateTagData( file: String! ): UpdateResponse!
 }
 
-### Game Data Types
 type GameData {
     champions: ChampionData!
     items: [ItemData!]!
@@ -500,6 +609,11 @@ type QueueType {
     notes: String
 }
 
+type UpdateResponse {
+    message: String!
+    success: Boolean!
+}
+
 type TagData {
     precalcs: [Precalc!]!
     tags: [Tag!]!
@@ -523,6 +637,14 @@ type Precalc {
     conditions: [String!]
 }
 
+enum PrecalcType {
+    list
+    copy
+    boolean
+    calculate
+    avg
+}
+
 type FromClause {
     list: String
     type: String
@@ -530,7 +652,18 @@ type FromClause {
     conditions: [String!]
 }
 
-## Authentication Types
+scalar JSON
+
+# Basic User Types
+type Query {
+    me: User
+}
+
+type Mutation {
+    register(username: String!, password: String!): AuthResponse!
+    login(username: String!, password: String!): AuthResponse!
+}
+
 type User {
     id: ID!
     username: String!
@@ -543,52 +676,52 @@ type AuthResponse {
     user: User
 }
 
-## Basic Response Types
+# Extended User Types for Auth
+input RegisterInput {
+    username: String!
+    password: String!
+}
 
-type DeleteResponse {
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+# Shared Types
+type Error {
+    path: String!
     message: String!
-    success: Boolean!
 }
 
-type UpdateResponse {
+type ValidationError {
+    field: String!
     message: String!
+}
+
+type SuccessResponse {
     success: Boolean!
+    message: String
 }
 
+# Auth Directives
+directive @auth on FIELD_DEFINITION
+directive @admin on FIELD_DEFINITION
 
-## Input Types
-input MasterySortInput {
-    field: MasterySortField!
-    direction: SortDirection!
-}
-
-input ChallengeSortInput {
-    field: ChallengeSortField!
-    direction: SortDirection!
+# stats.graphql
+type Query {
+    stats(region: String
+        summonerName: String
+        role: String
+        championId: Int
+        queueId: Int
+        limit: Int
+        stats: [StatRequest!]!
+    ): MatchStats!
 }
 
 input StatRequest {
     path: String!
     aggregation: AggregationType!
-}
-
-## Enums
-enum MasterySortField {
-    CHAMPION_POINTS
-    CHAMPION_LEVEL
-    LAST_PLAY_TIME
-    WIN_RATE
-}
-
-enum ChallengeSortField {
-    PERCENTILE
-    VALUE
-    ACHIEVED_TIME
-}
-
-enum SortDirection {
-    ASC
-    DESC
 }
 
 enum AggregationType {
@@ -601,17 +734,7 @@ enum AggregationType {
     LIST
 }
 
-enum PrecalcType {
-    list
-    copy
-    boolean
-    calculate
-    avg
+type MatchStats {
+    results: JSON!
+    matchCount: Int!
 }
-
-## Directives
-directive @auth on FIELD_DEFINITION
-directive @admin on FIELD_DEFINITION
-
-## Scalars
-scalar JSON

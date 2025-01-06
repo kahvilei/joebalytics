@@ -1,3 +1,6 @@
+// resolvers/user.js
+
+//third party
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const {AuthenticationError, UserInputError} = require('apollo-server-express');

@@ -79,18 +79,18 @@ async function getMatchData(models, info, data, filters) {
 
     const requestedFields = extractFields(info);
     const participantFields = requestedFields.matchData.info.participants;
-    participantFields.uniqueId = 1;
+    const requestedFieldsMatch = new Object(requestedFields.matchData);
+    requestedFieldsMatch.info.participants = 1;
 
-    let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } })
+    let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } }, requestedFieldsMatch)
         .sort({ "info.gameStartTimestamp": 'desc' })
-        .populate('info.participants');
+        .populate('info.participants', participantFields);
 
     console.log(`Match query took ${performance.now() - totalTimeStart}ms`);
 
     matches = matches.map(match => {
         const newMatch = match.toObject();
         newMatch.info.participants = newMatch.info.participants.map(participant => {
-            if (participant.challenges) participant.challenges = Object.fromEntries(participant.challenges);
             if (participant.tags) participant.tags = Object.fromEntries(participant.tags);
             return participant;
         });

@@ -1,4 +1,6 @@
 // resolvers/index.js
+
+//internal
 const userResolvers = require('./user');
 const summonerResolvers = require('./summoner');
 const matchResolvers = require('./match');

@@ -4,16 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="server organization">
-      <change afterPath="$PROJECT_DIR$/.gcloudignore" afterDir="false" />
+    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="cleaning resolvers">
+      <change afterPath="$PROJECT_DIR$/schema-old.gql.text" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/challenge.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/challenge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/graphql/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.gql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/graphql/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Challenge.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Challenge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Mastery.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Mastery.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Match.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Match.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Participant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Summoner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/User.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/resolvers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/mastery.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/mastery.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/match.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/match.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/resolvers/participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/participant.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/resolvers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/summoner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,8 +89,8 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "npm.deploy.executor": "Run",
-    "npm.dev-react.executor": "Debug",
-    "npm.dev-serv.executor": "Run",
+    "npm.dev-react.executor": "Run",
+    "npm.dev-serv.executor": "Debug",
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
@@ -93,12 +103,13 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Katie\OneDrive\Documents\Repos\Summoner-Tracker\lol-summoner-tracker\joebalytics" />
       <recent name="C:\Users\Katie\OneDrive\Documents\Repos\Summoner-Tracker\lol-summoner-tracker\joebalytics\server\tests" />
       <recent name="C:\Users\Katie\OneDrive\Documents\Repos\Summoner-Tracker\lol-summoner-tracker\joebalytics\server\graphql" />
       <recent name="C:\Users\Katie\OneDrive\Documents\Repos\Summoner-Tracker\lol-summoner-tracker\joebalytics\server\controllers\testing and example files" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev-serv">
+  <component name="RunManager" selected="npm.dev-react">
     <configuration name="deploy" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -141,7 +152,8 @@
       <workItem from="1736015879524" duration="103000" />
       <workItem from="1736015987698" duration="11897000" />
       <workItem from="1736096305592" duration="17525000" />
-      <workItem from="1736177927567" duration="2734000" />
+      <workItem from="1736177927567" duration="16789000" />
+      <workItem from="1736195397967" duration="2156000" />
     </task>
     <task id="LOCAL-00001" summary="more cleaning">
       <option name="closed" value="true" />
@@ -175,7 +187,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736179145093</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="cleaning resolvers">
+      <option name="closed" value="true" />
+      <created>1736181304255</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1736181304255</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,7 +246,8 @@
     <MESSAGE value="stabler" />
     <MESSAGE value="stablerer" />
     <MESSAGE value="server organization" />
-    <option name="LAST_COMMIT_MESSAGE" value="server organization" />
+    <MESSAGE value="cleaning resolvers" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleaning resolvers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -241,13 +262,13 @@
           <line>144</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/server/controllers/matches.js</url>
+          <line>145</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="js.build_tools.npm">
-        <watch expression="participant.challenges.quickFirstTurret" />
-        <watch expression="participants[&quot;0&quot;]" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

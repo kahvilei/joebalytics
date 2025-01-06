@@ -1,6 +1,12 @@
+// resolvers/participant.js
+
+// third party
 const {performance} = require('perf_hooks');
-const {formatAllParticipants, recoverMatchDataFromOrphanParticipants} = require('../controllers/participants');
 const {AuthenticationError} = require("apollo-server-express");
+
+//internal
+const {formatAllParticipants, recoverMatchDataFromOrphanParticipants} = require('../controllers/participants');
+
 
 const participantResolvers = {
     Mutation: {

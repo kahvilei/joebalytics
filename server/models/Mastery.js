@@ -26,4 +26,6 @@ MasterySchema.index({ championId: 1 });
 MasterySchema.index({ puuid: 1 });
 MasterySchema.index({ championPoints: -1 });
 
-module.exports = mongoose.model('Mastery', MasterySchema);
+const Mastery = mongoose.model('Mastery', MasterySchema);
+
+module.exports = { Mastery };

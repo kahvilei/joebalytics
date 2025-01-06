@@ -20,8 +20,10 @@ const ChallengeSchema = new Schema(
     }
 );
 
-ChallengeSchema.index({ puuid: 1 });
-ChallengeSchema.index({ percentile: -1 });
-ChallengeSchema.index({ challengeId: 1 });
+ChallengeSchema.index({puuid: 1});
+ChallengeSchema.index({percentile: -1});
+ChallengeSchema.index({challengeId: 1});
 
-module.exports = mongoose.model('Challenge', ChallengeSchema);
+const Challenge = mongoose.model('Challenge', ChallengeSchema);
+
+module.exports = { Challenge};
