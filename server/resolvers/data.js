@@ -5,7 +5,7 @@ const yaml = require('yaml');
 
 // internal
 const {updateTagFile, getTagFileByVersion} = require('../controllers/tags');
-const {updateData} = require('../controllers/data');
+const {updateDataFromRiot} = require('../controllers/data');
 const {AuthenticationError} = require("apollo-server-express");
 const { cache: data } = require('../controllers/data');
 
@@ -47,7 +47,7 @@ const dataResolvers = {
                 throw new AuthenticationError('Admin access required');
             }
             try {
-                return updateData(models);
+                return updateDataFromRiot(models);
             } catch (error) {
                 throw new Error(`Failed to update game data: ${error.message}`);
             }
