@@ -2,12 +2,13 @@
 const fs = require('fs');
 const mongoose = require("mongoose");
 
+const { cache: data } = require('../controllers/data');
 
-const typeDefs = (tags) => {
+const typeDefs = () => {
     const raw = fs.readFileSync('./server/graphql/schema.gql', 'utf8');
     try {
         // Generate GraphQL type for individual tag fields
-        const tagList = tags.tags;
+        const tagList = data.tags.tags;
         const tagFields = tagList.map(tag => {
             return `    ${tag.key}: TagValueFloat`;
         }).join(',\n');

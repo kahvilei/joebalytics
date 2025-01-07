@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-function generateParticipantSchema(tagsInMemory) {
-    if (!tagsInMemory) {
-        tagsInMemory = {
-            tags: []
-        };
+const { cache: data } = require('../controllers/data');
+
+function generateParticipantSchema() {
+    let tags;
+    if (!data.tags) {
+        tags = [];
+    } else{
+        tags = data.tags;
     }
-    const config = tagsInMemory;
+    const config = tags;
     // Base schema definition
     const ParticipantSchema = new Schema({
         uniqueId: {
@@ -371,8 +374,8 @@ function generateParticipantSchema(tagsInMemory) {
 module.exports = {
     generateParticipantSchema,
     // Export a function to create the model once the schema is generated
-    createParticipantModelFromMemory: (tagsInMemory) => {
-        const schema = generateParticipantSchema(tagsInMemory);
+    createParticipantModelFromMemory: () => {
+        const schema = generateParticipantSchema();
         return mongoose.model("Participant", schema);
     },
 };

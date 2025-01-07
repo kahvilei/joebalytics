@@ -4,21 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="stats calculation fix">
-      <change afterPath="$PROJECT_DIR$/server/controllers/summoner.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/riot.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/riot.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/tags.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/tags.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/Summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Summoner.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/match.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/match.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/participant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/summoner.js" afterDir="false" />
+    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="refactored server cache">
+      <change beforePath="$PROJECT_DIR$/server/graphql/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Participant.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -150,7 +138,7 @@
       <workItem from="1736096305592" duration="17525000" />
       <workItem from="1736177927567" duration="16789000" />
       <workItem from="1736195397967" duration="4644000" />
-      <workItem from="1736260785313" duration="13778000" />
+      <workItem from="1736260785313" duration="14357000" />
     </task>
     <task id="LOCAL-00001" summary="more cleaning">
       <option name="closed" value="true" />
@@ -208,7 +196,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736198559415</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="refactored server cache">
+      <option name="closed" value="true" />
+      <created>1736278085501</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1736278085501</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -262,7 +258,8 @@
     <MESSAGE value="cleaning resolvers" />
     <MESSAGE value="cleaning schemas and reducing double work when schema changes" />
     <MESSAGE value="stats calculation fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="stats calculation fix" />
+    <MESSAGE value="refactored server cache" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored server cache" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

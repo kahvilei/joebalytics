@@ -31,11 +31,11 @@ async function startServer() {
     connectDB(db);
 
     await data.initializeCache()
-    models.Participant = await models.participantFunctions.createParticipantModelFromMemory(data.cache.tags);
+    models.Participant = await models.participantFunctions.createParticipantModelFromMemory();
     
     // Create new server instance
     server = new ApolloServer({
-      typeDefs: await typeDefs(data.cache.tags),
+      typeDefs: await typeDefs(),
       resolvers,
       context: async ({ req }) => {
         // Add auth context
