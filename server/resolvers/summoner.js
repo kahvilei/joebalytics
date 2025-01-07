@@ -2,6 +2,7 @@
 
 //third party
 const {AuthenticationError} = require("apollo-server-express");
+const validateAndUpdateSummoner = require("../controllers/summoner");
 
 //resolvers
 const summonerResolvers = {
@@ -28,6 +29,7 @@ const summonerResolvers = {
                 summoners.map(async summoner => {
                     try {
                         console.log(`Updating ${summoner.name}`);
+                        summoner = await validateAndUpdateSummoner(summoner, models);
                         await summoner.save();
                         console.log(`Updated ${summoner.name}`);
                         return {status: 'fulfilled'};

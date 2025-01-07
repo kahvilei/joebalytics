@@ -1,11 +1,12 @@
 const axios = require("axios");
 
 const { processTags } = require('./tags');
+//internal
+const { cache: data } = require('../controllers/data');
 
 const key = process.env.RIOT_KEY;
 
 // Load Match model
-const Match = require("../models/Match");
 const { models } = require("mongoose");
 
 const getSummonerDetails = async (name, region) => {
@@ -32,7 +33,7 @@ const getChallengeDataByPuuid = async (puuid, region) => {
   );
 };
 
-const getChallengeConfig = async (id) => {
+const getChallengeConfig = async () => {
   return await axios.get(`https://na1.api.riotgames.com/lol/challenges/v1/challenges/config?api_key=${key}`)
 }
 
@@ -49,7 +50,7 @@ const getMasteryByPuuid = async (id, region) => {
 };
 
 const recordRecentMatches = async (puuid, region, init) => {
-  let mostRecent = await Match.find({ "metadata.participants": puuid })
+  let mostRecent = await models.Match.find({ "metadata.participants": puuid })
     .sort({ "info.gameEndTimestamp": -1 })
     .limit(1);
   let games = init
@@ -72,9 +73,9 @@ const recordRecentMatches = async (puuid, region, init) => {
     //insert matches one at a time, so that if one fails, the others will still be added, and we can delete the 10 participants that were added
     for (let match of matchList) {
       try {
-        let newMatch = await Match.create(match);
+        await models.Match.create(match);
       } catch (err) {
-        //delete the 10 participants that were added, unless this is a duplicate match key error
+        //delete the 10 participants that were added, avoiding dups and loose participants
         for (let participant of match.info.participants) {
           try{
           await models.Participant.deleteOne({ _id: participant._id });
@@ -97,7 +98,7 @@ const collectMatchDataFromArray = async (region, list) => {
   let matchList = [];
   const Participant = models.Participant;
   for (let match of list) {
-    const exists = await Match.find({ "metadata.matchId": match });
+    const exists = await models.Match.find({ "metadata.matchId": match });
     if (exists.length === 0) {
       try {
         let res = await axios.get(
@@ -105,14 +106,19 @@ const collectMatchDataFromArray = async (region, list) => {
         );
         let matchData = res.data;
         let newParticipantList = [];
+        const focusedSummoners = data.summoners.map(s => s.puuid);
         for (let participant of matchData.info.participants) {
           participant.matchId = matchData.metadata.matchId;
           participant.gameMode = matchData.info.gameMode;
           participant.queueId = matchData.info.queueId;
           participant.gameStartTimestamp = matchData.info.gameStartTimestamp;
           participant.uniqueId = matchData.metadata.matchId + participant.puuid;
-          let tags = await processTags(participant, matchData);
-          participant.tags = tags;
+          if (focusedSummoners.includes(participant.puuid)) {
+            participant.tags = processTags(participant, matchData);
+            participant.tagsVersion = data.tagCurrentVersion.id;
+          } else {
+            participant.tags = {};
+          }
           let newParticipant = await Participant.create(participant);
           newParticipantList.push(newParticipant);
         }

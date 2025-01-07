@@ -10,7 +10,7 @@ const {formatAllParticipants, recoverMatchDataFromOrphanParticipants} = require(
 
 const participantResolvers = {
     Mutation: {
-        formatAllParticipants: async (_, __, {models, user, data}) => {
+        formatAllParticipants: async (_, __, {models, user}) => {
             if (!user?.admin) throw new AuthenticationError('Admin access required');
             const startTime = performance.now();
             console.log('Starting batch format of all participants');
@@ -23,7 +23,7 @@ const participantResolvers = {
             };
 
             try {
-                stats = await formatAllParticipants(models, user, data);
+                stats = await formatAllParticipants(models, user);
             } catch (error) {
                 console.log('Error processing participants:', error);
                 throw new Error(`Failed to format participants: ${error.message}`);

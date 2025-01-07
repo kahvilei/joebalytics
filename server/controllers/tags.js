@@ -9,6 +9,7 @@ const bucketName = process.env.BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
 
 let versions = { versions: [], currentVersion : {id:0, user:'user'}, lastBackFill: {id:0, user:'user', results: {failed:0, success:0, total:0, errors:[]}}};
+const { cache: data } = require('../controllers/data');
 
 
 function calculatePrecalc(precalc, context) {
@@ -76,8 +77,8 @@ function calculatePrecalc(precalc, context) {
   }
 }
 
-async function processTags(participant, match, data) {
-  const tags = data?.tags || await getTagFile();
+function processTags(participant, match) {
+  const tags = data.tags;
   // Process precalculations
   const precalcs = {};
   const context = { match, participant, precalcs };
@@ -141,7 +142,7 @@ async function getTagFile() {
   return yaml.load(tagsfile.toString());
 }
 
-async function updateTagFile(file, user, data) {
+async function updateTagFile(file, user) {
   const tags = yaml.dump(file);
   //get current tags file and save it as tag.[timestamp].yaml
   const timestamp = new Date().getTime();
@@ -208,7 +209,7 @@ const getTagFileByVersion = async (version) => {
   return yaml.load(tagsfile.toString());
 }
 
-const addBackFillData = async (results, user, data) => {
+const addBackFillData = async (results, user) => {
   try {
     [versions] = await bucket.file("data/tags/versions.yaml").download();
     versions = yaml.load(versions.toString());

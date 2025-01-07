@@ -4,6 +4,8 @@
 const { performance } = require('perf_hooks');
 const {AuthenticationError} = require("apollo-server-express");
 
+//internal
+const { cache: data } = require('../controllers/data');
 
 // helper functions
 const getRequestedFields = (selectionSet) => {
@@ -25,7 +27,7 @@ const extractFields = (info) => {
 };
 
 // mode function
-async function getMatchData(models, info, data, filters) {
+async function getMatchData(models, info, filters) {
     const {
         region,
         summonerNames = [],
@@ -59,7 +61,7 @@ async function getMatchData(models, info, data, filters) {
         ...(summoners.length > 0 && { puuid: { $in: summoners.map(summoner => summoner.puuid) } })
     };
 
-    const participants = await models.Participant.find(query, { matchId: 1, uniqueId: 1, gameMode: 1, abstract: 1 })
+    const participants = await models.Participant.find(query, { matchId: 1, uniqueId: 1, gameMode: 1, abstract: 1 }, { lean: true })
         .sort({ gameStartTimestamp: 'desc' })
         .limit(limit * summoners.length);
 
@@ -79,7 +81,7 @@ async function getMatchData(models, info, data, filters) {
 
     const requestedFields = extractFields(info);
     const participantFields = requestedFields.matchData.info.participants;
-    const requestedFieldsMatch = new Object(requestedFields.matchData);
+    const requestedFieldsMatch = requestedFields.matchData;
     requestedFieldsMatch.info.participants = 1;
 
     let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } }, requestedFieldsMatch)
@@ -91,7 +93,8 @@ async function getMatchData(models, info, data, filters) {
     matches = matches.map(match => {
         const newMatch = match.toObject();
         newMatch.info.participants = newMatch.info.participants.map(participant => {
-            if (participant.tags) participant.tags = Object.fromEntries(participant.tags);
+            if (!participant.tags) participant.tags = {};
+            participant.tags = Object.fromEntries(participant.tags);
             return participant;
         });
         return newMatch;
@@ -152,7 +155,8 @@ async function getMatchData(models, info, data, filters) {
     };
 }
 
-async function deleteOrphanMatches(models, user, data) {
+// deletes matches not attached to a currently tracked user
+async function deleteOrphanMatches(models, user) {
     if (!user?.admin) throw new AuthenticationError('Admin access required');
     try {
         const summoners = data.summoners;

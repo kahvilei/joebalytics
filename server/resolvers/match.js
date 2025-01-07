@@ -20,9 +20,9 @@ const matchResolvers = {
             queueIds = [],
             tags = [],
             stats = []
-        }, {models, data}, info) => {
+        }, {models}, info) => {
 
-            return await getMatchData(models, info, data, {
+            return await getMatchData(models, info, {
                 region,
                 summonerNames,
                 roles,

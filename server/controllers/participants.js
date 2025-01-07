@@ -1,7 +1,9 @@
 const { performance } = require('perf_hooks');
 const { addBackFillData, processTags } = require('./tags');
+//internal
+const { cache: data } = require('../controllers/data');
 
-async function formatAllParticipants(models, user, data) {
+async function formatAllParticipants(models, user) {
     const BATCH_SIZE = 50;
     const startTime = performance.now();
     console.log('Starting batch format of participants for tracked summoners');
@@ -68,7 +70,7 @@ async function formatAllParticipants(models, user, data) {
     }
 }
 
-async function processMatchBatch(models, matches, trackedPuuids, stats, data) {
+async function processMatchBatch(models, matches, trackedPuuids, stats) {
     // Array to store all participants that need to be processed
     const participantsToProcess = [];
 
@@ -93,15 +95,11 @@ async function processMatchBatch(models, matches, trackedPuuids, stats, data) {
             const matchObject = match.toObject();
 
             // Process challenges and tags
-            participantObject.challenges = participantObject.challenges ? Object.fromEntries(participantObject.challenges) : {};
             participantObject.tags = participantObject.tags ? Object.fromEntries(participantObject.tags) : {};
 
             // Process match participants
             matchObject.info.participants = matchObject.info.participants.map(p => {
                 let newParticipant = p;
-                if (newParticipant.challenges) {
-                    newParticipant.challenges = newParticipant.challenges ? Object.fromEntries(newParticipant.challenges) : {};
-                }
                 if (newParticipant.tags) {
                     newParticipant.tags = newParticipant.tags ? Object.fromEntries(newParticipant.tags) : {};
                 }

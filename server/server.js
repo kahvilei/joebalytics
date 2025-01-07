@@ -4,7 +4,7 @@ const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./graphql/schema');
 const resolvers = require('./resolvers');
 const models = require('./models');
-const { initializeData } = require('./controllers/data');
+const data = require('./controllers/data');
 
 const jwt = require('jsonwebtoken');
 const path = require('path');
@@ -30,15 +30,12 @@ async function startServer() {
     const db = process.env.MONGO_CONNECT;
     connectDB(db);
 
-    const data = {}
-    await initializeData(data);
-    models.Participant = await models.participantFunctions.createParticipantModelFromMemory(data.tags);
-
-    data.summoners = await models.Summoner.find();
+    await data.initializeCache()
+    models.Participant = await models.participantFunctions.createParticipantModelFromMemory(data.cache.tags);
     
     // Create new server instance
     server = new ApolloServer({
-      typeDefs: await typeDefs(data.tags),
+      typeDefs: await typeDefs(data.cache.tags),
       resolvers,
       context: async ({ req }) => {
         // Add auth context
@@ -51,7 +48,7 @@ async function startServer() {
             console.error('Invalid token');
           }
         }
-        return { models, user, updateSchema, data };
+        return { models, user, updateSchema};
       }
     });
 
@@ -74,5 +71,7 @@ async function startServer() {
   });
 
 }
+
+module.exports = data;
 
 startServer();
