@@ -4,28 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="updated function name on update game data route">
+    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="more cleaning, refactoring">
+      <change afterPath="$PROJECT_DIR$/.idea/icon.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/summoner.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/tags.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/tags.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/graphql/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.gql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/graphql/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/Participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Participant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/mastery.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/mastery.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/match.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/match.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/participant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/summoner.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/resolvers/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/tests/tags.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/tests/tags.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/graphql/matchListQuery.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphql/matchListQuery.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/graphql/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphql/queries.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/pages/Matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pages/Matches.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,9 +47,10 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 4
-}</component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "5a594fe3",
+  "associatedIndex": 4
+}]]></component>
   <component name="ProjectId" id="2StG4wQZcPx6yxTqFYJxVFD89As" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -157,7 +139,7 @@
       <workItem from="1736177927567" duration="16789000" />
       <workItem from="1736195397967" duration="4644000" />
       <workItem from="1736260785313" duration="15854000" />
-      <workItem from="1736348273252" duration="17228000" />
+      <workItem from="1736348273252" duration="18181000" />
     </task>
     <task id="LOCAL-00001" summary="more cleaning">
       <option name="closed" value="true" />
@@ -239,7 +221,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736278626272</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="more cleaning, refactoring">
+      <option name="closed" value="true" />
+      <created>1736368970803</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1736368970803</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -296,7 +286,8 @@
     <MESSAGE value="refactored server cache" />
     <MESSAGE value="moved out passing down cached data from server" />
     <MESSAGE value="updated function name on update game data route" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated function name on update game data route" />
+    <MESSAGE value="more cleaning, refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="more cleaning, refactoring" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
