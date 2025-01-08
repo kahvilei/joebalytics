@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="26 16 148 168">
   <!-- Encompassing hexagon -->
   <path d="M100 20 L170 60 L170 140 L100 180 L30 140 L30 60 Z" 
         fill="#1a1a2e" 
@@ -23,14 +23,14 @@
           stroke="#08979c" 
           stroke-width="3"/>
   
-  <!-- Transparent lens circle (now smaller) -->
-  <circle cx="80" cy="80" r="35" 
+  <!-- Transparent lens circle -->
+  <circle cx="80" cy="85" r="35" 
           fill="none" 
           stroke="#c9aa71" 
           stroke-width="10"/>
   
-  <!-- Handle (adjusted for smaller lens) -->
-  <path d="M105 105 L140 140" 
+  <!-- Handle -->
+  <path d="M105 110 L140 145" 
         stroke="#c9aa71" 
         stroke-width="10" 
         stroke-linecap="round"/>
