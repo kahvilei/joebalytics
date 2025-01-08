@@ -371,6 +371,8 @@ function generateParticipantSchema() {
     return ParticipantSchema;
 }
 
+const Participant = mongoose.model("Participant", generateParticipantSchema());
+
 module.exports = {
     generateParticipantSchema,
     // Export a function to create the model once the schema is generated
@@ -378,4 +380,5 @@ module.exports = {
         const schema = generateParticipantSchema();
         return mongoose.model("Participant", schema);
     },
+    Participant
 };

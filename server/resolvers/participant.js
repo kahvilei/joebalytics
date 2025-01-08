@@ -10,7 +10,7 @@ const {formatAllParticipants, recoverMatchDataFromOrphanParticipants} = require(
 
 const participantResolvers = {
     Mutation: {
-        formatAllParticipants: async (_, __, {models, user}) => {
+        formatAllParticipants: async (_, __, {user}) => {
             if (!user?.admin) throw new AuthenticationError('Admin access required');
             const startTime = performance.now();
             console.log('Starting batch format of all participants');
@@ -23,7 +23,7 @@ const participantResolvers = {
             };
 
             try {
-                stats = await formatAllParticipants(models, user);
+                stats = await formatAllParticipants(user);
             } catch (error) {
                 console.log('Error processing participants:', error);
                 throw new Error(`Failed to format participants: ${error.message}`);
@@ -34,7 +34,7 @@ const participantResolvers = {
             return stats;
         },
 
-        recoverMatchDataFromOrphanParticipants: async (_, __, {models, user}) => {
+        recoverMatchDataFromOrphanParticipants: async (_, __, {user}) => {
             if (!user?.admin) throw new AuthenticationError('Admin access required');
             const startTime = performance.now();
             console.log('Starting match data recovery from orphan participants');
@@ -47,7 +47,7 @@ const participantResolvers = {
             };
 
             try {
-                stats = await recoverMatchDataFromOrphanParticipants(models, user);
+                stats = await recoverMatchDataFromOrphanParticipants(user);
             } catch (error) {
                 console.log('Error processing participants:', error);
                 throw new Error(`Failed to recover match data: ${error.message}`);

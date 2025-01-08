@@ -42,12 +42,12 @@ const dataResolvers = {
 
     Mutation: {
         // Update game data from Riot API, see controllers/data.js
-        updateGameData: async (_, __, {user, models}) => {
+        updateGameData: async (_, __, {user}) => {
             if (!user?.admin) {
                 throw new AuthenticationError('Admin access required');
             }
             try {
-                return updateDataFromRiot(models);
+                return updateDataFromRiot();
             } catch (error) {
                 throw new Error(`Failed to update game data: ${error.message}`);
             }

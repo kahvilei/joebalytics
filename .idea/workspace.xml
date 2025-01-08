@@ -4,10 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="refactored server cache">
+    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="updated function name on update game data route">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/summoner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/tags.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/tags.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/graphql/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.gql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/graphql/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/graphql/schema.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/models/Participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Participant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/mastery.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/mastery.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/match.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/match.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/participant.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/summoner.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/summoner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/resolvers/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/resolvers/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/tests/tags.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/tests/tags.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/graphql/matchListQuery.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphql/matchListQuery.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/graphql/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphql/queries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/pages/Matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pages/Matches.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,35 +74,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "20.11.1",
-    "javascript.nodejs.core.library.typings.version": "20.11.30",
-    "last_opened_file_path": "/Users/katie/Desktop/joebalytics",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.deploy.executor": "Run",
-    "npm.dev-react.executor": "Debug",
-    "npm.dev-serv.executor": "Debug",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.11.1&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.11.30&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/katie/Desktop/joebalytics&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.deploy.executor&quot;: &quot;Run&quot;,
+    &quot;npm.dev-react.executor&quot;: &quot;Debug&quot;,
+    &quot;npm.dev-serv.executor&quot;: &quot;Debug&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2024.3.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mongo"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mongo&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Katie\OneDrive\Documents\Repos\Summoner-Tracker\lol-summoner-tracker\joebalytics" />
@@ -138,7 +156,8 @@
       <workItem from="1736096305592" duration="17525000" />
       <workItem from="1736177927567" duration="16789000" />
       <workItem from="1736195397967" duration="4644000" />
-      <workItem from="1736260785313" duration="14357000" />
+      <workItem from="1736260785313" duration="15854000" />
+      <workItem from="1736348273252" duration="17228000" />
     </task>
     <task id="LOCAL-00001" summary="more cleaning">
       <option name="closed" value="true" />
@@ -204,7 +223,23 @@
       <option name="project" value="LOCAL" />
       <updated>1736278085501</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="moved out passing down cached data from server">
+      <option name="closed" value="true" />
+      <created>1736278462198</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1736278462198</updated>
+    </task>
+    <task id="LOCAL-00010" summary="updated function name on update game data route">
+      <option name="closed" value="true" />
+      <created>1736278626272</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1736278626272</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -259,7 +294,9 @@
     <MESSAGE value="cleaning schemas and reducing double work when schema changes" />
     <MESSAGE value="stats calculation fix" />
     <MESSAGE value="refactored server cache" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored server cache" />
+    <MESSAGE value="moved out passing down cached data from server" />
+    <MESSAGE value="updated function name on update game data route" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated function name on update game data route" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -271,14 +308,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/server/controllers/participants.js</url>
-          <line>142</line>
+          <line>55</line>
           <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/server/resolvers/summoner.js</url>
-          <line>36</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="51" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

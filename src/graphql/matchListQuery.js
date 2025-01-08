@@ -66,13 +66,7 @@ export const MATCHES_LIST_QUERY = gql`
                             visionScorePerMinute
                             soloKills
                         }
-
-                        tags {
-                            blind {
-                                isTriggered
-                                value
-                            }
-                        }
+                        tags
                     }
                 }
             }
@@ -80,26 +74,3 @@ export const MATCHES_LIST_QUERY = gql`
         }
     }
 `;
-
-export function getMatchListQueryWithTagData(tags) {
-    if (tags?.length > 0) {
-        MATCHES_LIST_QUERY.definitions[0].selectionSet.selections.at(0).selectionSet.selections.at(0).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections.at(-1).selectionSet.selections = tags.map(tag => ({
-            kind: "Field",
-            name: { kind: "Name", value: tag.key },
-            selectionSet: {
-                kind: "SelectionSet",
-                selections: [
-                    {
-                        kind: "Field",
-                        name: { kind: "Name", value: "isTriggered" }
-                    },
-                    {
-                        kind: "Field",
-                        name: { kind: "Name", value: "value" }
-                    }
-                ]
-            }
-        }));
-    }
-    return MATCHES_LIST_QUERY;
-}

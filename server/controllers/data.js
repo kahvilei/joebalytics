@@ -23,7 +23,7 @@ const updateCacheValue = (key, data) => {
 };
 
 // Update Data Function
-const updateDataFromRiot = async (models) => {
+const updateDataFromRiot = async () => {
     const version = (await fetchData(`${RIOT_STATIC_BASE_URL}/versions.json`))[0];
 
     // Fetch all necessary data
@@ -38,7 +38,7 @@ const updateDataFromRiot = async (models) => {
     const championData = champions.data;
     for (const championKey in championData.data) {
         const champId = championData.data[championKey].key;
-        championData.data[championKey].mastery = await models.Mastery.find({ championId: champId })
+        championData.data[championKey].mastery = await mongoose.models.Mastery.find({ championId: champId })
             .sort({ championPoints: "desc", championLevel: "desc" });
     }
 

@@ -1,77 +1,76 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
-
 const typeDefs = require('./graphql/schema');
 const resolvers = require('./resolvers');
-const models = require('./models');
 const data = require('./controllers/data');
-
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const connectDB = require('./config/db');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const mongoose = require('mongoose');
+const models = require('./models');
 
+// Constants for environment variables and file paths
+const DB_CONNECTION = process.env.MONGO_CONNECT;
+const PORT = process.env.PORT;
+const STATIC_FILES_PATH = path.join(__dirname, "../build");
+const ROOT_HTML_FILE = 'index.html';
+
+// Update schema function
+const updateSchema = async () => {
+  if (mongoose.modelNames().includes('Participant')) {
+    delete mongoose.models.Participant;
+    models.createParticipantModelFromMemory();
+  }
+  await data.initializeCache();
+};
+
+// Authentication context function
+const createContext = async ({ req }) => {
+  const token = req.headers['authorization']?.split(' ')[1];
+  let user = null;
+  if (token) {
+    try {
+      user = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      console.error('Invalid token');
+    }
+  }
+  return { user, updateSchema };
+};
+
+// Start server function
 async function startServer() {
   const app = express();
-  let server;
 
-  const updateSchema = async () => {
-    // Remove from both mongoose registries
-    if (mongoose.modelNames().includes('Participant')) {
-      delete mongoose.models.Participant;
-    }  
-    // Create and start new server with updated schema
-    await createNewServer();
-  }
-  
-  const createNewServer = async () => {
-    // Connect Database
-    const db = process.env.MONGO_CONNECT;
-    connectDB(db);
+  // Connect to database
+  await connectDB(DB_CONNECTION);
 
-    await data.initializeCache()
-    models.Participant = await models.participantFunctions.createParticipantModelFromMemory();
-    
-    // Create new server instance
-    server = new ApolloServer({
-      typeDefs: await typeDefs(),
-      resolvers,
-      context: async ({ req }) => {
-        // Add auth context
-        const token = req.headers['authorization']?.split(' ')[1];
-        let user = null;
-        if (token) {
-          try {
-            user = jwt.verify(token, process.env.JWT_SECRET);
-          } catch (e) {
-            console.error('Invalid token');
-          }
-        }
-        return { models, user, updateSchema};
-      }
-    });
+  // Initialize cache and update schema
+  await data.initializeCache();
+  await updateSchema();
 
-    await server.start();
-    server.applyMiddleware({ app });
-
-    console.log("Apollo server started");
-  };
-
-  await createNewServer();
-
-  app.listen({ port: process.env.PORT }, () =>
-    console.log(`Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`)
-  );
-
-  app.use(express.static(path.join(__dirname, "../build")));
-
-  app.get('/*', (req, res) => {
-    res.sendFile('index.html', {root: 'build'});
+  // Configure Apollo server
+  const server = new ApolloServer({
+    typeDefs: typeDefs(),
+    resolvers,
+    context: createContext,
   });
 
+  await server.start();
+  server.applyMiddleware({ app });
+  console.log("Apollo server started");
+
+  // Serve static files
+  app.use(express.static(STATIC_FILES_PATH));
+  app.get('/*', (req, res) => {
+    res.sendFile(ROOT_HTML_FILE, { root: STATIC_FILES_PATH });
+  });
+
+  // Start Express server
+  app.listen({ port: PORT }, () =>
+      console.log(`Server ready at http://localhost:${PORT}${server.graphqlPath}`)
+  );
 }
 
-module.exports = data;
-
-startServer();
+startServer().catch((err) => console.error(err));

@@ -6,7 +6,7 @@ import { useGameData } from "../../context/DataContext";
 import { useState, useMemo, memo } from "react";
 import MatchCardLoad from "../components/MarchCardLoad";
 import MatchFilters from "../components/MatchFilters";
-import { getMatchListQueryWithTagData } from "../../graphql/queries";
+import { MATCHES_LIST_QUERY } from "../../graphql/queries";
 
 // Memoize components to prevent unnecessary re-renders
 const MemoizedMatchFilters = memo(MatchFilters);
@@ -101,7 +101,7 @@ function Matches() {
     { path: "challenges/soloKills", aggregation: "AVG" }
   ], []);
 
-  const { loading, error, data, fetchMore } = useQuery(getMatchListQueryWithTagData(getTags()), {
+  const { loading, error, data, fetchMore } = useQuery(MATCHES_LIST_QUERY, {
     variables: {
       ...filterParams,
       stats: statsConfig

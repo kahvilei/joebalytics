@@ -1,6 +1,6 @@
 // graphql/queries.js
 import { GAME_DATA_QUERY } from "./gameDataQuery";
-import { MATCHES_LIST_QUERY, getMatchListQueryWithTagData } from "./matchListQuery";
+import { MATCHES_LIST_QUERY } from "./matchListQuery";
 import { TAG_VERSIONS_QUERY } from "./tagVersionsQuery";
 import { TAG_FILE_BY_VERSION_QUERY } from "./tagFileByVersionQuery";
 
@@ -13,7 +13,6 @@ export {
     // queries
     GAME_DATA_QUERY,
     MATCHES_LIST_QUERY,
-    getMatchListQueryWithTagData,
     TAG_VERSIONS_QUERY,
     TAG_FILE_BY_VERSION_QUERY,
     // mutations

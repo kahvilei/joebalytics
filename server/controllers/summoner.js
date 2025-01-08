@@ -128,4 +128,12 @@ async function validateAndUpdateSummoner(summoner) {
     return summoner;
 }
 
-module.exports = validateAndUpdateSummoner;
+// Extracted function to fetch tracked summoner PUUIDs
+function getTrackedPuuids() {
+    return new Set(data.summoners.map(summoner => summoner.puuid));
+}
+
+module.exports = {
+    validateAndUpdateSummoner,
+    getTrackedPuuids,
+}

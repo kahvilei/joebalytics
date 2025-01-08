@@ -1,184 +1,134 @@
 //controllers/matches.js
-
-// third party
 const { performance } = require('perf_hooks');
-const {AuthenticationError} = require("apollo-server-express");
-
-//internal
+const { AuthenticationError } = require("apollo-server-express");
 const { cache: data } = require('../controllers/data');
+const { models } = require("mongoose");
 
-// helper functions
-const getRequestedFields = (selectionSet) => {
-    const fields = {};
-  
-    selectionSet.selections.forEach((selection) => {
-      if (selection.selectionSet) {
-        fields[selection.name.value] = getRequestedFields(selection.selectionSet);
-      } else {
-        fields[selection.name.value] = 1;
-      }
-    });
-  
-    return fields;
-  };
-  
-const extractFields = (info) => {
-    return getRequestedFields(info.fieldNodes[0].selectionSet);
+// Utility: Map data paths safely
+const fetchNestedValue = (obj, path) => path.split('/').reduce((acc, key) => acc?.[key], obj);
+
+// Utility: Aggregate statistics calculations
+const calculateAggregateStats = (statRequest, participants) => {
+    const values = participants
+        .filter(p => !p.gameEndedInEarlySurrender)
+        .map(participant => fetchNestedValue(participant, statRequest.path))
+        .filter(value => value !== undefined);
+
+    switch (statRequest.aggregation) {
+        case 'AVG':
+            return values.reduce((a, b) => a + b, 0) / values.length || 0;
+        case 'MAX':
+            return Math.max(...values);
+        case 'MIN':
+            return Math.min(...values);
+        case 'MODE':
+            return values.reduce(
+                (a, b, i, arr) => (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
+                values[0]
+            );
+        case 'SUM':
+            return values.reduce((a, b) => a + b, 0);
+        case 'UNIQUE':
+            return [...new Set(values)];
+        case 'COUNT_UNIQUE':
+            return [...new Set(values)].length;
+        case 'COUNT_EACH':
+            return values.reduce((counts, value) => {
+                counts[value] = (counts[value] || 0) + 1;
+                return counts;
+            }, {});
+        case 'LIST':
+        default:
+            return values;
+    }
 };
 
-// mode function
-async function getMatchData(models, info, filters) {
+// Utility: Extract requested fields
+const extractRequestedFields = (info) => {
+    const getFields = (selectionSet) =>
+        selectionSet.selections.reduce((fields, selection) => {
+            fields[selection.name.value] = selection.selectionSet
+                ? getFields(selection.selectionSet)
+                : 1;
+            return fields;
+        }, {});
+    return getFields(info.fieldNodes[0].selectionSet);
+};
+
+// Utility: Build participants query
+const buildParticipantsQuery = (filters, summoners) => ({
+    gameStartTimestamp: { $lt: filters.timestamp },
+    ...(filters.queueIds.length && { queueId: { $in: filters.queueIds } }),
+    ...(filters.championIds.length && { championId: { $in: filters.championIds } }),
+    ...(filters.roles.length && { teamPosition: { $in: filters.roles } }),
+    ...(filters.tags.length && { '$or': filters.tags.map(tag => ({ [`tags.${tag}.isTriggered`]: true })) }),
+    ...(summoners.length && { puuid: { $in: summoners.map(summoner => summoner.puuid) } })
+});
+
+async function getMatchData(info, filters) {
     const {
-        region,
-        summonerNames = [],
-        roles = [],
-        championIds = [],
-        queueIds = [],
-        tags = [],
-        stats = [],
-        limit,
-        timestamp
+        region, summonerNames = [], stats = [], limit
     } = filters;
+    const startTime = performance.now();
 
-    const totalTimeStart = performance.now();
-
-    const summonerQuery = {};
-    if (region) summonerQuery.regionURL = region;
-    if (summonerNames.length > 0) summonerQuery.nameURL = { $in: summonerNames };
-
-    const summoners = Object.keys(summonerQuery).length > 0
-        ? data.summoners.filter(summoner => summonerNames.includes(summoner.nameURL))
+    // Summoner filtering logic
+    const summoners = region
+        ? data.summoners.filter(s => summonerNames.includes(s.nameURL))
         : data.summoners;
+    console.log(`Summoner filtering took ${performance.now() - startTime}ms`);
 
-    console.log(`Collecting summoners took ${performance.now() - totalTimeStart}ms`);
-
-    const query = {
-        gameStartTimestamp: { $lt: timestamp },
-        ...(queueIds.length > 0 && { queueId: { $in: queueIds } }),
-        ...(championIds.length > 0 && { championId: { $in: championIds } }),
-        ...(roles.length > 0 && { teamPosition: { $in: roles } }),
-        ...(tags.length > 0 && { '$or': tags.map(tag => ({ [`tags.${tag}.isTriggered`]: true })) }),
-        ...(summoners.length > 0 && { puuid: { $in: summoners.map(summoner => summoner.puuid) } })
-    };
-
-    const participants = await models.Participant.find(query, { matchId: 1, uniqueId: 1, gameMode: 1, abstract: 1 }, { lean: true })
+    // Build query and fetch participants
+    const matchQuery = buildParticipantsQuery(filters, summoners);
+    const participants = await models.Participant.find(matchQuery, { matchId: 1, uniqueId: 1, gameMode: 1, abstract: 1 }, { lean: true })
         .sort({ gameStartTimestamp: 'desc' })
         .limit(limit * summoners.length);
+    console.log(`Participant query took ${performance.now() - startTime}ms`);
 
-    console.log(`Participant query took ${performance.now() - totalTimeStart}ms`);
+    if (!participants.length) return { matchData: [], statData: { stats: {}, matchCount: 0 } };
 
-    if (participants?.length === 0) {
-        return {
-            matchData: [],
-            statData: {
-                stats: {},
-                matchCount: 0
-            }
-        };
-    }
+    // Fetch matches
+    const matchIds = [...new Set(participants.map(p => p.matchId))].slice(0, limit);
+    const requestedFields = extractRequestedFields(info);
+    const requestedMatchFields = requestedFields.matchData;
+    const requestedParticipantFields = requestedFields.matchData.info.participants;
+    requestedMatchFields.info.participants = 1;
 
-    const matchIds = [...new Set(participants.map(participant => participant.matchId))].slice(0, limit);
-
-    const requestedFields = extractFields(info);
-    const participantFields = requestedFields.matchData.info.participants;
-    const requestedFieldsMatch = requestedFields.matchData;
-    requestedFieldsMatch.info.participants = 1;
-
-    let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } }, requestedFieldsMatch)
+    let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } }, requestedMatchFields)
         .sort({ "info.gameStartTimestamp": 'desc' })
-        .populate('info.participants', participantFields);
+        .populate('info.participants', requestedParticipantFields);
+    console.log(`Match query took ${performance.now() - startTime}ms`);
 
-    console.log(`Match query took ${performance.now() - totalTimeStart}ms`);
-
+    // Format matches
     matches = matches.map(match => {
-        const newMatch = match.toObject();
-        newMatch.info.participants = newMatch.info.participants.map(participant => {
-            if (!participant.tags) participant.tags = {};
-            participant.tags = Object.fromEntries(participant.tags);
-            return participant;
-        });
-        return newMatch;
-    })
+        const matchObj = match.toObject();
+        matchObj.info.participants = matchObj.info.participants.map(p => ({
+            ...p,
+            tags: Object.fromEntries(p.tags || {})
+        }));
+        return matchObj;
+    });
 
-    const allParticipants = matches.flatMap(match =>
-        match.info.participants.filter(p =>
-            summoners.some(op => op.puuid === p.puuid)
-        )
-    );
-
-    const results = stats.reduce((acc, statRequest) => {
-        const values = allParticipants
-            .filter(p => !p.gameEndedInEarlySurrender)
-            .map(participant => statRequest.path.split('/').reduce((obj, key) => obj?.[key], participant))
-            .filter(value => value !== undefined);
-
-        switch (statRequest.aggregation) {
-            case 'AVG':
-                acc[statRequest.path] = values.reduce((a, b) => a + b, 0) / values.length;
-                break;
-            case 'MAX':
-                acc[statRequest.path] = Math.max(...values);
-                break;
-            case 'MIN':
-                acc[statRequest.path] = Math.min(...values);
-                break;
-            case 'MODE':
-                acc[statRequest.path] = values.reduce((a, b, i, arr) => (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b));
-                break;
-            case 'SUM':
-                acc[statRequest.path] = values.reduce((a, b) => a + b, 0);
-                break;
-            case 'UNIQUE':
-                acc[statRequest.path] = [...new Set(values)];
-                break;
-            case 'COUNT_UNIQUE':
-                acc[statRequest.path] = [...new Set(values)].length;
-                break;
-            case 'COUNT_EACH':
-                acc[statRequest.path] = values.reduce((a, b) => ({ ...a, [b]: (a[b] || 0) + 1 }), {});
-                break;
-            case 'LIST':
-            default:
-                acc[statRequest.path] = values;
-        }
+    // Aggregate stats
+    const allParticipants = matches.flatMap(match => match.info.participants.filter(p => summoners.some(s => s.puuid === p.puuid)));
+    const aggregatedStats = stats.reduce((acc, statRequest) => {
+        acc[statRequest.path] = calculateAggregateStats(statRequest, allParticipants);
         return acc;
     }, {});
 
-    console.log(`Total time: ${performance.now() - totalTimeStart}ms`);
-
-    return {
-        matchData: matches,
-        statData: {
-            stats: results,
-            matchCount: matches.length
-        }
-    };
+    console.log(`Total processing time: ${performance.now() - startTime}ms`);
+    return { matchData: matches, statData: { stats: aggregatedStats, matchCount: matches.length } };
 }
 
-// deletes matches not attached to a currently tracked user
-async function deleteOrphanMatches(models, user) {
+async function removeOrphanMatches(user) {
     if (!user?.admin) throw new AuthenticationError('Admin access required');
+
     try {
-        const summoners = data.summoners;
-        const puuids = summoners.map(s => s.puuid);
-        const result = await models.Match.deleteMany({
-            "metadata.participants": { $nin: puuids }
-        });
-
-        if (!result.deletedCount){
-            result.deletedCount = 0;
-        }
-
-        return {
-            message: `Deleted ${result?.deletedCount} orphan matches`,
-            success: true
-        };
+        const puuids = data.summoners.map(s => s.puuid);
+        const result = await models.Match.deleteMany({ "metadata.participants": { $nin: puuids } });
+        return { message: `Deleted ${result?.deletedCount || 0} orphan matches`, success: true };
     } catch (error) {
         throw new Error(`Failed to delete orphan matches: ${error.message}`);
     }
 }
 
-module.exports = {
-    getMatchData,
-    deleteOrphanMatches
-};
+module.exports = { getMatchData, removeOrphanMatches };

@@ -22,7 +22,7 @@ const matchResolvers = {
             stats = []
         }, {models}, info) => {
 
-            return await getMatchData(models, info, {
+            return await getMatchData(info, {
                 region,
                 summonerNames,
                 roles,
@@ -38,9 +38,9 @@ const matchResolvers = {
 
     Mutation: {
         // Delete all matches that do not have a corresponding summoner in the database
-        deleteOrphanMatches: async (_, __, {models, user, data}) => {
+        deleteOrphanMatches: async (_, __, {user, data}) => {
             if (!user?.admin) throw new AuthenticationError('Admin access required');
-            return deleteOrphanMatches(models, user, data);
+            return deleteOrphanMatches(user, data);
         }
     }
 };

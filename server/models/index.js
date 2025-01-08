@@ -1,7 +1,7 @@
 const { User } = require('./User');
 const { Summoner } = require('./Summoner');
 const { Match } = require('./Match');
-const participantFunctions = require('./Participant');
+const { Participant, createParticipantModelFromMemory, generateParticipantSchema} = require('./Participant');
 const { Mastery } = require('./Mastery');
 const { Challenge } = require('./Challenge');
 
@@ -10,7 +10,9 @@ module.exports = {
   User,
   Summoner,
   Match,
-  participantFunctions,
+  Participant,
+  createParticipantModelFromMemory,
+  generateParticipantSchema,
   Mastery,
   Challenge,
 };

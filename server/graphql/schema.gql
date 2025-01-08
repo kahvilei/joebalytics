@@ -314,7 +314,7 @@ type Participant {
     summonerLevel: Int
     summonerName: String
     tagsVersion: Int
-    tags: Tags
+    tags: JSON
     teamEarlySurrendered: Boolean
     teamId: Int
     teamPosition: String
@@ -351,16 +351,6 @@ type FormatParticipantsResponse {
     success: Int!
     failed: Int!
     errors: JSON!
-}
-
-type Tags {
-    ## filled by schema.js
-    default: TagValueFloat
-}
-
-type TagValueFloat {
-    isTriggered: Boolean
-    value: Float
 }
 
 type Perks {

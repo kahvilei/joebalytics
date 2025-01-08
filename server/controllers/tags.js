@@ -91,7 +91,6 @@ function processTags(participant, match) {
     const target = parts.reduce((obj, key) => obj[key] = obj[key] || {}, precalcs);
     target[key] = value;
   }
-  console.log(`Precalcs complete for ${participant.puuid}`);
   // Evaluate tags
   const results = {};
   if (match.info?.gameDuration < 300 || !match.info) {
