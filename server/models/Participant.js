@@ -359,7 +359,6 @@ function generateParticipantSchema() {
     ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, championId: 1, 'tags.$**' : 1, role: 1});
 
 
-
     return ParticipantSchema;
 }
 

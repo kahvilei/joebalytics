@@ -98,4 +98,57 @@ async function formatAllParticipants(user) {
     }
 }
 
-module.exports = { formatAllParticipants };
+/**
+ * Finds and deletes all participants that don't have a corresponding match
+ * @returns {Promise<{ deleted: number, errors: string[], duration: number }>}
+ */
+async function cleanupOrphanedParticipants() {
+    const startTime = performance.now();
+    const stats = { deleted: 0, errors: [], duration: 0 };
+
+    try {
+        console.log('Starting cleanup of orphaned participants');
+
+        // Find all participants where there's no matching match document
+        const orphanedParticipants = await models.Participant.aggregate([
+            {
+                $lookup: {
+                    from: "matches",
+                    localField: "matchId",
+                    foreignField: "metadata.matchId",
+                    as: "matchedDocs"
+                }
+            },
+            { $match: { matchedDocs: { $eq: [] } } },
+            { $project: { matchedDocs: 0 } }
+        ]);
+
+        if (!orphanedParticipants.length) {
+            stats.duration = performance.now() - startTime;
+            console.log('No orphaned participants found');
+            return stats;
+        }
+
+        // Extract IDs for deletion
+        const participantIds = orphanedParticipants.map(p => p._id);
+
+        // Delete the orphaned participants
+        const deleteResult = await models.Participant.deleteMany({
+            _id: { $in: participantIds }
+        });
+
+        stats.deleted = deleteResult.deletedCount;
+        stats.duration = performance.now() - startTime;
+
+        console.log(`Deleted ${stats.deleted} orphaned participants in ${stats.duration}ms`);
+        return stats;
+
+    } catch (error) {
+        console.error('Error cleaning up orphaned participants:', error);
+        stats.errors.push(error.message);
+        stats.duration = performance.now() - startTime;
+        return stats;
+    }
+}
+
+module.exports = { formatAllParticipants, cleanupOrphanedParticipants };

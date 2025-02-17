@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const models = require('./models');
+const { cleanupOrphanedParticipants } = require('./controllers/participants');
 
 // Constants for environment variables and file paths
 const DB_CONNECTION = process.env.MONGO_CONNECT;
@@ -60,6 +61,46 @@ async function startServer() {
   await server.start();
   server.applyMiddleware({ app });
   console.log("Apollo server started");
+
+  // Add JSON parsing middleware for REST endpoints
+  app.use(express.json());
+
+  // Authentication middleware for REST endpoints
+  const authMiddleware = async (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ success: false, error: 'No token provided' });
+    }
+
+    try {
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = user;
+      next();
+    } catch (error) {
+      return res.status(401).json({ success: false, error: 'Invalid token' });
+    }
+  };
+
+  // REST endpoint for cleaning up orphaned participants
+  app.get('/api/participants/clean-up-orphans', async (req, res) => {
+    try {
+      const result = await cleanupOrphanedParticipants();
+      return res.status(200).json({
+        success: true,
+        data: {
+          deletedCount: result.deleted,
+          duration: result.duration,
+          errors: result.errors
+        }
+      });
+    } catch (error) {
+      console.error('Route error in clean-up-orphans:', error);
+      return res.status(500).json({
+        success: false,
+        error: error.message || 'An error occurred while cleaning up orphaned participants'
+      });
+    }
+  });
 
   // Serve static files
   app.use(express.static(STATIC_FILES_PATH));

@@ -49,7 +49,7 @@ function MatchFilters({ filters, setFilters }) {
             />
             <MultiSelect
                 data={[
-                    ...Object.values(queuesSimplified).map((queue) => ({
+                    ...Object.values(queuesSimplified)?.map((queue) => ({
                         label: queue,
                         value: queue
                     }))
@@ -84,7 +84,7 @@ function MatchFilters({ filters, setFilters }) {
             />
             <MultiSelect
                 data={[
-                    ...tagsList.map((tag) => ({
+                    ...tagsList?.map((tag) => ({
                         label: tag.text,
                         value: tag.key
                     }))
