@@ -346,27 +346,19 @@ function generateParticipantSchema() {
     ParticipantSchema.index({uniqueId: 1});
 
     //compound indexes
-    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1});
-    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, championId: 1});
     ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1});
-    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, role: 1});
-    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, championId: 1, role: 1});
+
+    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, championId: 1});
     ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, role: 1});
-    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, championId: 1, queueId: 1});
-    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, championId: 1, queueId: 1, role: 1});
+    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, 'tags.$**' : 1});
 
-    if (config.tags) {
-        for (const tag of config.tags) {
-            // Create index for isTriggered field
-            ParticipantSchema.index({[`tags.${tag.key}.isTriggered`]: 1});
+    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, championId: 1, role: 1});
+    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, 'tags.$**' : 1, role: 1});
+    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, championId: 1, 'tags.$**' : 1});
 
-            tag.triggers = tag.triggers || [];
-            // Create index for value field if the tag has value in its triggers or a value property
-            if (tag.value ||  tag.triggers.some(t => t.includes('value'))) {
-                ParticipantSchema.index({[`tags.${tag.key}.value`]: 1});
-            }
-        }
-    }
+    ParticipantSchema.index({puuid: 1, gameStartTimestamp: -1, queueId: 1, championId: 1, 'tags.$**' : 1, role: 1});
+
+
 
     return ParticipantSchema;
 }

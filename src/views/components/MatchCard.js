@@ -81,7 +81,7 @@ function MatchSummaryTeams() {
   const playerMap = (team, side) => team.map(participant => (
     <Group key={participant.puuid} justify={side} style={{ flexDirection: `row${side === 'end' ? '-reverse' : ''}` }} wrap="nowrap">
       <Image src={getChampIcon(participant.championId)} alt={participant.summonerName} w='lg' h='lg' radius={100} bd={'1px solid yellow'} />
-      <Text c="dimmed" size="sm">
+      <Text className='match-participant' c="dimmed" size="sm">
         {participant.riotIdGameName && <Anchor c="dimmed" target="_blank" href={`https://mobalytics.gg/lol/profile/na/${participant.riotIdGameName}-${participant.riotIdTagline}`}>{participant.riotIdGameName}</Anchor>}
         {!participant.riotIdGameName && (participant.summonerName || 'Unknown')}
       </Text>
@@ -179,7 +179,7 @@ function Participant() {
               <BackgroundImage bgsz={"110%"} src={getChampIcon(participant.championId)} alt={participant.summonerName} w={'3rem'} h={'3rem'} radius={100} bd={`2px solid ${participant.win ? 'green' : 'red'}`} />
             </Tooltip>
             <Image src={getRoleIcon(participant.teamPosition)} alt={participant.summonerName} w='lg' h='lg' />
-            <Text size="sm">{participant.summonerName}</Text>
+            <Text size="sm">{participant.riotIdGameName??participant.summonerName}</Text>
           </Group></Grid.Col>
         <Grid.Col span={{ base: 12, lg: 8 }}>
           <Stack gap="xs" className="key-stats-tags">
