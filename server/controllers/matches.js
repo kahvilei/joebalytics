@@ -72,52 +72,150 @@ async function getMatchData(info, filters) {
     const startTime = performance.now();
 
     // Summoner filtering logic
-    const summoners = region
-        ? data.summoners.filter(s => summonerNames.includes(s.nameURL))
+    const summoners = summonerNames.length>0
+        ? data.summoners.filter(s => summonerNames.includes(s.name))
         : data.summoners;
+    const puuids = summoners.map(s => s.puuid);
     console.log(`Summoner filtering took ${performance.now() - startTime}ms`);
 
-    // Build query and fetch participants
-    const matchQuery = buildParticipantsQuery(filters, summoners);
-    const participants = await models.Participant.find(matchQuery, { matchId: 1, uniqueId: 1, gameMode: 1, abstract: 1 }, { lean: true })
-        .sort({ gameStartTimestamp: 'desc' })
-        .limit(limit * summoners.length);
-    console.log(`Participant query took ${performance.now() - startTime}ms`);
-
-    if (!participants.length) return { matchData: [], statData: { stats: {}, matchCount: 0 } };
-
-    // Fetch matches
-    const matchIds = [...new Set(participants.map(p => p.matchId))].slice(0, limit);
+    // Extract requested fields for projection
     const requestedFields = extractRequestedFields(info);
     const requestedMatchFields = requestedFields.matchData;
     const requestedParticipantFields = requestedFields.matchData.info.participants;
     requestedMatchFields.info.participants = 1;
+    const matchProjection = createMatchProjection(requestedFields.matchData);
+    const participantProjection = createParticipantProjection(requestedParticipantFields);
 
-    let matches = await models.Match.find({ "metadata.matchId": { $in: matchIds } }, requestedMatchFields)
-        .sort({ "info.gameStartTimestamp": 'desc' })
-        .populate('info.participants', requestedParticipantFields);
-    console.log(`Match query took ${performance.now() - startTime}ms`);
+    // Build the base query from filters
+    const baseQuery = buildParticipantsQuery(filters, summoners);
 
-    // Format matches
-    matches = matches.map(match => {
-        const matchObj = match.toObject();
-        matchObj.info.participants = matchObj.info.participants.map(p => ({
-            ...p,
-            tags: Object.fromEntries(p.tags || {})
-        }));
-        return matchObj;
-    });
+    try {
+        const pipeline = [
+            // Start with participants matching our criteria
+            { $match: baseQuery },
 
-    // Aggregate stats
-    const allParticipants = matches.flatMap(match => match.info.participants.filter(p => summoners.some(s => s.puuid === p.puuid)));
-    const aggregatedStats = stats.reduce((acc, statRequest) => {
-        acc[statRequest.path] = calculateAggregateStats(statRequest, allParticipants);
-        return acc;
-    }, {});
+            // Sort by timestamp first to ensure we get the most recent matches
+            { $sort: { gameStartTimestamp: -1 } },
 
-    console.log(`Total processing time: ${performance.now() - startTime}ms`);
-    return { matchData: matches, statData: { stats: aggregatedStats, matchCount: matches.length } };
+            // Group by matchId to remove duplicates and keep track of relevant participants
+            {
+                $group: {
+                    _id: "$matchId",
+                    gameStartTimestamp: { $first: "$gameStartTimestamp" },
+                    participants: { $push: "$$ROOT" }
+                }
+            },
+
+            // Sort again after grouping to maintain order
+            { $sort: { gameStartTimestamp: -1 } },
+
+            // Apply the limit to matches
+            { $limit: limit },
+
+            // Lookup full match data
+            {
+                $lookup: {
+                    from: "matches",
+                    let: { matchId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ["$metadata.matchId", "$$matchId"] }
+                            }
+                        },
+                        { $project: requestedMatchFields }
+                    ],
+                    as: "match"
+                }
+            },
+
+            // Unwind the match array (should only be one match per matchId)
+            { $unwind: "$match" },
+
+            // Lookup all participants for each match
+            {
+                $lookup: {
+                    from: "participants",
+                    let: { matchId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ["$matchId", "$$matchId"] }
+                            }
+                        },
+                        { $project: requestedParticipantFields }
+                    ],
+                    as: "match.info.participants"
+                }
+            }
+        ];
+
+        const results = await models.Participant.aggregate(pipeline);
+        console.log(`Aggregation query took ${performance.now() - startTime}ms`);
+
+        if (!results.length) {
+            return { matchData: [], statData: { stats: {}, matchCount: 0 } };
+        }
+
+        // Format matches
+        const matches = results.map(result => {
+            const match = result.match;
+            match.info.participants = match.info.participants.map(p => ({
+                ...p
+            }));
+            return match;
+        });
+
+        // Aggregate stats
+        const allParticipants = matches.flatMap(match =>
+            match.info.participants.filter(p => puuids.includes(p.puuid))
+        );
+        const aggregatedStats = stats.reduce((acc, statRequest) => {
+            acc[statRequest.path] = calculateAggregateStats(statRequest, allParticipants);
+            return acc;
+        }, {});
+
+        console.log(`Total processing time: ${performance.now() - startTime}ms`);
+        return {
+            matchData: matches,
+            statData: {
+                stats: aggregatedStats,
+                matchCount: matches.length
+            }
+        };
+
+    } catch (error) {
+        console.error('Error in getMatchData:', error);
+        throw new Error(`Failed to fetch match data: ${error.message}`);
+    }
 }
+
+// Helper function to create match projection
+function createMatchProjection(requestedFields) {
+    const projection = {};
+    for (const [key, value] of Object.entries(requestedFields)) {
+        if (typeof value === 'object') {
+            projection[key] = createMatchProjection(value);
+        } else {
+            projection[key] = value;
+        }
+    }
+    return projection;
+}
+
+// Helper function to create participant projection
+function createParticipantProjection(requestedFields) {
+    const projection = { _id: 0 };  // Exclude _id by default
+    for (const [key, value] of Object.entries(requestedFields)) {
+        if (typeof value === 'object') {
+            projection[key] = createParticipantProjection(value);
+        } else {
+            projection[key] = value;
+        }
+    }
+    return projection;
+}
+
 
 async function removeOrphanMatches(user) {
     if (!user?.admin) throw new AuthenticationError('Admin access required');

@@ -3,7 +3,7 @@ import {gql} from "@apollo/client";
 export const MATCHES_LIST_QUERY = gql`
     query MatchesPageData(
         $region: String
-        $names: [String!]
+        $summoners: [String!]
         $roles: [String!]
         $championIds: [Int!]
         $queueIds: [Int!]
@@ -15,7 +15,7 @@ export const MATCHES_LIST_QUERY = gql`
     ) {
         matches(
             region: $region
-            summonerNames: $names
+            summonerNames: $summoners
             roles: $roles
             championIds: $championIds
             queueIds: $queueIds

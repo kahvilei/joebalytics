@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="icon">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="53779831-5055-4ea2-9dad-938b5fca9ff7" name="Changes" comment="little updates/patches">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/controllers/participants.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/participants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/Participant.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Participant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/matches.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/graphql/matchListQuery.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphql/matchListQuery.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/components/MatchFilters.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/components/MatchFilters.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/pages/Matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pages/Matches.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +101,7 @@
       <recent name="C:\Users\Katie\OneDrive\Documents\Repos\Summoner-Tracker\lol-summoner-tracker\joebalytics\server\controllers\testing and example files" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev-serv">
+  <component name="RunManager" selected="npm.deploy">
     <configuration name="deploy" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -246,7 +245,23 @@
       <option name="project" value="LOCAL" />
       <updated>1736369850604</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="little updates/patches">
+      <option name="closed" value="true" />
+      <created>1739818638087</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1739818638087</updated>
+    </task>
+    <task id="LOCAL-00014" summary="little updates/patches">
+      <option name="closed" value="true" />
+      <created>1739818706929</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1739818706929</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,7 +320,8 @@
     <MESSAGE value="updated function name on update game data route" />
     <MESSAGE value="more cleaning, refactoring" />
     <MESSAGE value="icon" />
-    <option name="LAST_COMMIT_MESSAGE" value="icon" />
+    <MESSAGE value="little updates/patches" />
+    <option name="LAST_COMMIT_MESSAGE" value="little updates/patches" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -319,18 +335,6 @@
           <url>file://$PROJECT_DIR$/server/controllers/participants.js</url>
           <line>55</line>
           <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/server/controllers/participants.js</url>
-          <line>137</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/server/controllers/participants.js</url>
-          <line>143</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -6,7 +6,7 @@ import { useGameData } from '../../context/DataContext';
 import { Tag } from './Tags';
 
 function MatchFilters({ filters, setFilters }) {
-    const { getTags, champions, queuesSimplified, getChampIcon, getQueueIdsFromDisplayNames } = useGameData();
+    const { getTags, champions, queuesSimplified, getChampIcon, getQueueIdsFromDisplayNames, summoners:summonersList } = useGameData();
     const tagsList = getTags();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -16,6 +16,7 @@ function MatchFilters({ filters, setFilters }) {
     const queueIds = gameModes ? getQueueIdsFromDisplayNames(gameModes) : [];
     const tags = searchParams.getAll("tag") || null;
     const limit = parseInt(searchParams.get("limit")) || 10;
+    const summoners = searchParams.getAll("summoner") || [];
 
 
     const handleFilterChange = (newFilters) => {
@@ -24,6 +25,7 @@ function MatchFilters({ filters, setFilters }) {
             championId: newFilters.championId || championIds,
             gameMode: newFilters.gameMode || gameModes,
             tag: newFilters.tag || tags,
+            summoner: newFilters.summoner || summoners,
         });
     };
 
@@ -32,7 +34,7 @@ function MatchFilters({ filters, setFilters }) {
     );
 
     return (
-        <Group align="start" wrap="nowrap">
+        <Group align="start" >
             <MultiSelect
                 data={[
                     { label: "Top", value: "TOP" },
@@ -44,6 +46,7 @@ function MatchFilters({ filters, setFilters }) {
                 value={roles}
                 placeholder={roles.length ? "" : "All Roles"}
                 withCheckIcon
+                comboboxProps={{ width: 220, position: 'bottom-start' }}
                 clearable
                 onChange={(value) => handleFilterChange({ role: value })}
             />
@@ -57,6 +60,7 @@ function MatchFilters({ filters, setFilters }) {
                 searchable
                 clearable
                 withCheckIcon
+                comboboxProps={{ width: 220, position: 'bottom-start' }}
                 placeholder={gameModes.length ? "" : "All Game Modes"}
                 value={gameModes}
                 onChange={(value) => handleFilterChange({ gameMode: value })}
@@ -79,6 +83,7 @@ function MatchFilters({ filters, setFilters }) {
                 searchable
                 clearable
                 withCheckIcon
+                comboboxProps={{ width: 200, position: 'bottom-start' }}
                 placeholder={championIds.length ? "" : "All Champions"}
                 onChange={(value) => handleFilterChange({ championId: value.map(id => parseInt(id)) })}
             />
@@ -98,6 +103,19 @@ function MatchFilters({ filters, setFilters }) {
                 placeholder={tags.length ? "" : "All Tags"}
                 value={tags}
                 onChange={(value) => handleFilterChange({ tag: value })}
+            />
+            <MultiSelect
+                data={[
+                    ...summonersList?.map((summ) => ({
+                        label: summ.name,
+                        value: summ.name,
+                    }))
+                ]}
+                value = {summoners}
+                comboboxProps={{ width: 300, position: 'bottom-start' }}
+                placeholder={summoners.length ? "" : "All Summoners"}
+                onChange={(value) => handleFilterChange({ summoner: value })}
+                clearable
             />
             <Tooltip label="Reset Filters" withArrow>
                 <ActionIcon onClick={() => setSearchParams({})} color="blue">

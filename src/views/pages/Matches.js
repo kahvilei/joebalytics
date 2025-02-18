@@ -81,6 +81,7 @@ function Matches() {
     const queueIds = gameModes ? getQueueIdsFromDisplayNames(gameModes) : [];
     const tags = searchParams.getAll("tag") || null;
     const limit = parseInt(searchParams.get("limit")) || 10;
+    const summoners = searchParams.getAll("summoner") || null;
 
     setHasMoreMatches(true);
 
@@ -90,6 +91,7 @@ function Matches() {
       queueIds: gameModes ? queueIds : [],
       limit,
       tags: tags.includes("any") ? [] : tags,
+      summoners: summoners.includes("any") ? [] : summoners,
     };
   }, [searchParams, getQueueIdsFromDisplayNames]);
 

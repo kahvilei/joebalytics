@@ -22,7 +22,7 @@ export function DataProvider({ children }) {
   const [items, setItems] = useState(null);
   const [queues, setQueues] = useState(null);
   const [queueMap, setQueueMap] = useState(null);
-  const [queuesSimplified, setQueuesSimplified] = useState(null);
+  const [queuesSimplified, setQueuesSimplified] = useState(["ARAM", "Draft", "Ranked Solo", "Ranked Flex", "URF", "ARURF", "Summoner's Spellbook", "Other"]);
   const [summoners, setSummoners] = useState(null);
   const [tags, setTags] = useState(null);
 
