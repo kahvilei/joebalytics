@@ -97,6 +97,8 @@ async function getMatchData(info, filters) {
             // Sort by timestamp first to ensure we get the most recent matches
             { $sort: { gameStartTimestamp: -1 } },
 
+            { $limit: limit*10 },
+
             // Group by matchId to remove duplicates and keep track of relevant participants
             {
                 $group: {
@@ -150,7 +152,9 @@ async function getMatchData(info, filters) {
             }
         ];
 
-        const results = await models.Participant.aggregate(pipeline);
+        const results = await models.Participant.aggregate(pipeline, {
+            allowDiskUse: true
+        });
         console.log(`Aggregation query took ${performance.now() - startTime}ms`);
 
         if (!results.length) {
